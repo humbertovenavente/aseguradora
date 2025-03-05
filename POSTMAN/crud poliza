@@ -1,0 +1,89 @@
+{
+	"info": {
+		"_postman_id": "262c2aad-1602-496d-a076-fed0daab9f96",
+		"name": "Aseguradora",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42666956"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Seguro de Vida\",\r\n    \"tipoCobertura\": \"Total\",\r\n    \"porcentajeCobertura\": 80,\r\n    \"costo\": 1200,\r\n    \"vigencia\": \"2026-12-31\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/polizas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"polizas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/polizas/67c7ca66dc01dfdaa9ea1747\n",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"polizas",
+						"67c7ca66dc01dfdaa9ea1747\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/polizas/67c7ca66dc01dfdaa9ea1747",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"polizas",
+						"67c7ca66dc01dfdaa9ea1747"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
