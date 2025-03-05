@@ -17,8 +17,8 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
-    .then(() => console.log('✅ Conectado a MongoDB'))
-    .catch(err => console.error('❌ Error conectando a MongoDB:', err));
+    .then(() => console.log(' Conectado a MongoDB'))
+    .catch(err => console.error(' Error conectando a MongoDB:', err));
 
 app.get('/', (req, res) => {
     res.send('API funcionando correctamente');
