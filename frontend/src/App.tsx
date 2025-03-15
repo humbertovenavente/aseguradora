@@ -1,22 +1,40 @@
-import type { Component } from "solid-js";
-import { createSignal } from "solid-js";
-import Polizas from "./components/Polizas";
-import FormularioPoliza from "./components/FormularioPoliza";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { render } from "solid-js/web";
+import { Router, Route, A } from "@solidjs/router";
+import "./navbar.css";
+import Home from "./views/HomeView";
+import Users from "./views/UsersView";
+import PolizasView from "./views/PolizasView";
+import NotFound from "./views/NotFound";
 
-const App: Component = () => {
-    const [polizaEdit, setPolizaEdit] = createSignal(null);
+// Componente principal
+const App = (props) => (
+  <>
+    {/* NAVBAR */}
+    <nav class="main-nav">
+      <A href="/">Home</A>
+      <A href="/users">Users</A>
+      <A href="/polizas">Polizas</A>
+    </nav>
+    <main>{props.children}</main>
 
-    return (
-        <div className="container">
-            <h1 className="fw-bold text-center mt-4">Sistema de Aseguradora</h1>
-            {polizaEdit() !== null ? (
-                <FormularioPoliza poliza={polizaEdit()} actualizarLista={() => setPolizaEdit(null)} />
-            ) : (
-                <Polizas onEdit={setPolizaEdit} />
-            )}
-        </div>
-    );
-};
+    {/* FOOTER */}
+    <footer class="main-footer">
+      <p>© 2025 Mi Empresa. Todos los derechos reservados.</p>
+    </footer>
+  </>
+);
+
+// Renderizamos el router
+render(
+  () => (
+    <Router root={App}>
+      <Route path="/" component={Home} />
+      <Route path="/users" component={Users} />
+      <Route path="/polizas" component={PolizasView} />
+      <Route path="*paramName" component={NotFound} />
+    </Router>
+  ),
+  document.getElementById("root") as HTMLElement
+);
 
 export default App;

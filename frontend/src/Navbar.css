@@ -1,0 +1,139 @@
+
+  
+/* Paleta de colores */
+:root {
+    --dark-teal: #026E81;    /* Fondo principal navbar */
+    --teal: #00ABBD;         /* Opción para hover o acentos */
+    --blue: #0099DD;         /* Podrías usarlo en botones o bordes */
+    --orange: #FF9933;
+    --light-blue: #A1C7E0;
+  }
+  /* 
+  Reset básico para evitar márgenes por defecto en el body 
+  y permitir que todo el contenido ocupe la pantalla completa.
+*/
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  
+  /* NAVBAR horizontal arriba */
+  .main-nav {
+    background-color: var(--dark-teal);
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    margin: 0;
+  }
+  
+  /* Links de navegación en la barra */
+  .main-nav a {
+    color: #fff; /* Texto blanco para contraste */
+    text-decoration: none;
+    margin-right: 1rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover en los links */
+  .main-nav a:hover {
+    background-color: var(--teal);
+  }
+  
+  /* Título principal del sitio */
+  .site-title {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 2rem;
+  }
+  
+  /* Estructura principal */
+  main {
+    /* Se extiende en la pantalla, sin limitar ancho */
+    flex: 1;
+  }
+  
+  /* HERO SECTION */
+  .hero-section {
+    background-color: var(--light-blue, #a1c7e0);
+    padding: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* 
+     Removemos el max-width y margin: 0 auto 
+     para que, en pantallas grandes, se extienda 
+     ocupando todo el ancho disponible 
+  */
+  .hero-content {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .cta-button {
+    background-color: var(--teal, #00ABBD);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cta-button:hover {
+    background-color: var(--dark-teal, #026E81);
+  }
+  
+  /* SERVICES SECTION */
+  .services-section {
+    background-color: #f3f3f3;
+    padding: 2rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Fuerza a ocupar toda la altura de la ventana */
+  }
+  
+  .services-cards {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    /* 
+      Deja wrap si quieres que, en pantallas pequeñas, 
+      se parta a otra línea en vez de forzar scroll horizontal.
+      Si no deseas wrap: flex-wrap: nowrap;  
+    */
+    flex-wrap: wrap;
+  }
+  
+  .service-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    width: 250px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  /* ABOUT SECTION */
+  .about-section {
+    width: 100%;
+    padding: 2rem 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* FOOTER */
+  .main-footer {
+    background-color: var(--dark-teal, #026E81);
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+

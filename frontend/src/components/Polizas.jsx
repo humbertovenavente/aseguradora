@@ -36,7 +36,12 @@ export default function Polizas() {
             <div className="d-flex justify-content-between align-items-center">
                 <h2 className="fw-bold">Pólizas</h2>
                 {/* Botón para abrir el modal (Agregar) */}
-                <button className="btn btn-dark" onClick={() => abrirModal(null)}>Agregar</button>
+                <button className="btn btn-agregar" onClick={() => abrirModal(null)}>
+  <i className="fa fa-plus me-2"></i>
+</button>
+
+
+
             </div>
 
             {/* Modal para agregar o editar póliza */}
