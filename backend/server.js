@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+import clientesRoutes from './routes/clientesRoutes.js';
 import polizaRoutes from './routes/polizaRoutes.js'; 
 dotenv.config();
 
@@ -10,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
+app.use('/api/clientes', clientesRoutes);
 app.use('/api/polizas', polizaRoutes); 
 
 const PORT = process.env.PORT || 5000;

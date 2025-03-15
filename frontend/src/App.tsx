@@ -4,6 +4,7 @@ import "./navbar.css";
 import Home from "./views/HomeView";
 import Users from "./views/UsersView";
 import PolizasView from "./views/PolizasView";
+import ClientesView from "./views/ClientesView";
 import NotFound from "./views/NotFound";
 
 // Componente principal
@@ -14,6 +15,7 @@ const App = (props) => (
       <A href="/">Home</A>
       <A href="/users">Users</A>
       <A href="/polizas">Polizas</A>
+      <A href="/clientes">Clientes</A>
     </nav>
     <main>{props.children}</main>
 
@@ -32,6 +34,7 @@ render(
       <Route path="/users" component={Users} />
       <Route path="/polizas" component={PolizasView} />
       <Route path="*paramName" component={NotFound} />
+      <Route path="/clientes" component={ClientesView} />
     </Router>
   ),
   document.getElementById("root") as HTMLElement
