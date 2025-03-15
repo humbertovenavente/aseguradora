@@ -35,21 +35,20 @@ const ClienteSchema = new mongoose.Schema({
   email: { type: String },
   fechaNacimiento: { type: Date },
   direccion: { type: String },
-
   // Información de la póliza
   numeroAfiliacion: { type: String, required: true, unique: true },
-  tipoPoliza: { type: String, enum: ['70%', '90%'], default: '70%' },
-  porcentajeCobertura: { type: Number, default: 70 },
+
+  polizaId: { type: mongoose.Schema.Types.ObjectId, ref: "Poliza"},
+  polizaNombre: { type: String, required: true },
+
   fechaVencimiento: { type: Date },
   estadoPago: { type: Boolean, default: false },
-
   // Campo global para rechazar recetas/servicios menores a cierto monto
   montoMinimoCobertura: { type: Number, default: 250.0 },
-
   // Historial de servicios (lo que el cliente ya usó)
   historialServicios: [HistorialServicioSchema]
-
 }, { timestamps: true });
 
 // Exportamos como default para ES Modules
 export default mongoose.model('Cliente', ClienteSchema);
+
