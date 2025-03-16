@@ -6,13 +6,13 @@ export default function Signup() {
     const [correo, setCorreo] = createSignal("");
     const [contrasena, setContrasena] = createSignal("");
     const [loading, setLoading] = createSignal(false);
-    const navigate = useNavigate(); // ✅ Inicializa la navegación
+    const navigate = useNavigate(); // Inicializa la navegación
 
     const handleSignup = async (e) => {
         e.preventDefault();
         setLoading(true); // Activamos el estado de carga
     
-        // ✅ Imprime en la consola los datos antes de enviarlos
+        // Imprime en la consola los datos antes de enviarlos
         console.log("Enviando datos:", {
             correo: correo(),
             contrasena: contrasena()

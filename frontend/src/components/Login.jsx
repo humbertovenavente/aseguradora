@@ -31,7 +31,7 @@ export default function Login() {
                     <input 
                         type="email" 
                         class="form-control" 
-                        value={correo()} // ✅ Esto permite que se actualice al limpiar
+                        value={correo()} //  Esto permite que se actualice al limpiar
                         onInput={(e) => setCorreo(e.target.value)} 
                         required 
                     />
@@ -41,7 +41,7 @@ export default function Login() {
                     <input 
                         type="password" 
                         class="form-control" 
-                        value={contrasena()} // ✅ Esto permite que se actualice al limpiar
+                        value={contrasena()} //  Esto permite que se actualice al limpiar
                         onInput={(e) => setContrasena(e.target.value)} 
                         required 
                     />
@@ -65,8 +65,8 @@ export default function Login() {
                                     class="close" 
                                     onClick={() => {
                                         setShowModal(false);
-                                        setCorreo("");  // ✅ Limpia el correo
-                                        setContrasena("");  // ✅ Limpia la contraseña
+                                        setCorreo("");  // Limpia el correo
+                                        setContrasena("");  //  Limpia la contraseña
                                     }}
                                 >
                                     <span>&times;</span>
@@ -82,8 +82,8 @@ export default function Login() {
                                     onClick={() => {
                                         setShowModal(false);
                                         setUsuario(null);
-                                        setCorreo("");  // ✅ Limpia el correo
-                                        setContrasena("");  // ✅ Limpia la contraseña
+                                        setCorreo("");  //  Limpia el correo
+                                        setContrasena("");  //  Limpia la contraseña
                                     }}
                                 >
                                     Cerrar
