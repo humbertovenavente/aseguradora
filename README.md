@@ -4,11 +4,16 @@ This is a project dedicated to the aseguradora system
 
 Si quieren entrar a backend recuerden seguir estos pasos
 cd backend
-npx nodemon server.js
+nodemon server.js
+
 
 frontend seria
 cd frontend
-npm run dev
+npm run dev -- --host
+
+please make su to set off temporary your firewall on cmd
+netsh advfirewall set allprofiles state off
+
 
 
 Se instalo lo siguiente 
@@ -23,8 +28,8 @@ nodemon - reinicia el servidor automaticamnete en cambios
 
 Frontend se instalo
 
-Solid.js - framework para construir interfaces typescript 
+Solid.js - Framework para construir interfaces en TypeScript.
 @solidjs/router - Manejo de rutas en el frontend.
-axios -  HTTP para conectar con el backend.
-Tailwind CSS - Estilos rápidos y personalizados.
+axios - Cliente HTTP para conectar con el backend.
+Bootstrap - Framework CSS para diseño y estilos.
 postcss & autoprefixer (dev) - Procesadores de CSS.
