@@ -4,8 +4,8 @@ import "./navbar.css";
 import Home from "./views/HomeView";
 import Users from "./views/UsersView";
 import PolizasView from "./views/PolizasView";
-import Signup from "./components/Signup";
-import Login from "./components/Login";
+import Signup from "./views/Signup";
+import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 
 // Componente principal

@@ -4,23 +4,41 @@ import Rol from "../models/Rol.js";
 const router = express.Router();
 
 // Registrar usuario (Signup)
+import mongoose from 'mongoose';
+
 router.post('/signup', async (req, res) => {
     try {
-        const { correo, contrasena, rol_id = null } = req.body;
+        const { correo, contrasena, rol_id } = req.body;
         
-        const nuevoUsuario = new Usuario({ correo, contrasena, rol_id });
+        // Convertir rol_id a ObjectId si existe
+        const rolObjectId = rol_id ? new mongoose.Types.ObjectId(rol_id) : null;
+
+        const nuevoUsuario = new Usuario({ correo, contrasena, rol_id: rolObjectId });
         await nuevoUsuario.save();
+
         res.status(201).json({ mensaje: 'Usuario registrado con éxito' });
     } catch (error) {
         res.status(400).json({ mensaje: 'Error en el registro', error });
     }
 });
 
-// Login de usuario
 router.post('/login', async (req, res) => {
     try {
         const { correo, contrasena } = req.body;
-        const usuario = await Usuario.findOne({ correo }).populate("rol_id");
+
+        // Buscar usuario sin populate para verificar si rol_id está presente
+        const usuarioSinPopulate = await Usuario.findOne({ correo });
+        console.log("Usuario sin populate:", usuarioSinPopulate);
+
+        // Hacer populate con estructura completa
+        const usuario = await Usuario.findOne({ correo })
+            .populate({
+                path: "rol_id", // Referencia al modelo Rol
+                select: "role_name" // Solo traer el nombre del rol
+            })
+            .exec();
+
+        console.log("Usuario con populate:", usuario);
 
         if (!usuario) {
             return res.status(400).json({ mensaje: "Usuario no encontrado" });
@@ -30,14 +48,14 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ mensaje: "Contraseña incorrecta" });
         }
 
-        // Devolver datos del usuario sin generar token
         res.json({
             mensaje: "Login exitoso",
             usuario: {
                 id: usuario._id,
                 correo: usuario.correo,
                 estado: usuario.estado,
-                rol_id: usuario.rol_id
+                rol_id: usuario.rol_id ? usuario.rol_id._id : null, // ✅ Devuelve el ID del rol
+                rol_nombre: usuario.rol_id ? usuario.rol_id.role_name : "Sin rol" // ✅ Devuelve el nombre del rol
             }
         });
 
@@ -46,5 +64,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ mensaje: "Error en el login", error });
     }
 });
+
 
 export default router;

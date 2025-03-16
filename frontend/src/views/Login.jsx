@@ -1,56 +1,45 @@
 import { createSignal } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+import LoginForm from "../components/LoginForm";
 import { login } from "../services/authService";
 
 export default function Login() {
-    const [correo, setCorreo] = createSignal("");
-    const [contrasena, setContrasena] = createSignal("");
     const [usuario, setUsuario] = createSignal(null);
-    const [showModal, setShowModal] = createSignal(false); // Estado del modal
+    const [showModal, setShowModal] = createSignal(false);
+    const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleLogin = async (e, { correo, contrasena }) => {
         e.preventDefault();
         try {
-            const res = await login({ correo: correo(), contrasena: contrasena() });
-            setUsuario(res.data.usuario);
-
-            if (res.data.usuario.estado === 0) {
-                setShowModal(true); // Mostrar el modal si el usuario está inactivo
+            const res = await login({ correo, contrasena });
+            const userData = res.data.usuario;
+    
+            if (userData) {
+                console.log("Usuario autenticado:", userData); // Debug
+                localStorage.setItem("user", JSON.stringify(userData));
+                console.log("Datos guardados en localStorage:", localStorage.getItem("user")); // Verificar que se guardó
+    
+                // Si la cuenta está inactiva, muestra el modal
+                if (userData.estado === 0) {
+                    setShowModal(true);
+                } else {
+                    navigate("/", { replace: true });
+                }
+            } else {
+                alert("Error en la autenticación");
             }
         } catch (error) {
-            alert("Account not found");
+            alert("Cuenta no encontrada");
         }
     };
-
     return (
         <div class="container mt-5">
             <h2>Iniciar Sesión</h2>
-            
-            <form onSubmit={handleLogin}>
-                <div class="mb-3">
-                    <label class="form-label">Correo</label>
-                    <input 
-                        type="email" 
-                        class="form-control" 
-                        value={correo()} //  Esto permite que se actualice al limpiar
-                        onInput={(e) => setCorreo(e.target.value)} 
-                        required 
-                    />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input 
-                        type="password" 
-                        class="form-control" 
-                        value={contrasena()} //  Esto permite que se actualice al limpiar
-                        onInput={(e) => setContrasena(e.target.value)} 
-                        required 
-                    />
-                </div>
-                <button type="submit" class="btn btn-success">Iniciar Sesión</button>
-            </form>
+
+            <LoginForm onSubmit={handleLogin} />
 
             <div class="mt-3">
-                <p>Don't have an account? <a href="/signup" class="text-primary">Create one</a></p>
+                <p>¿No tienes cuenta? <a href="/signup" class="text-primary">Regístrate</a></p>
             </div>
 
             {/* Modal Bootstrap */}
@@ -65,8 +54,7 @@ export default function Login() {
                                     class="close" 
                                     onClick={() => {
                                         setShowModal(false);
-                                        setCorreo("");  // Limpia el correo
-                                        setContrasena("");  //  Limpia la contraseña
+                                        localStorage.removeItem("user");
                                     }}
                                 >
                                     <span>&times;</span>
@@ -82,8 +70,6 @@ export default function Login() {
                                     onClick={() => {
                                         setShowModal(false);
                                         setUsuario(null);
-                                        setCorreo("");  //  Limpia el correo
-                                        setContrasena("");  //  Limpia la contraseña
                                     }}
                                 >
                                     Cerrar
