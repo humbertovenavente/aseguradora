@@ -4,6 +4,7 @@ import App from "./App";
 import Home from "./views/HomeView";
 import Users from "./views/UsersView";
 import PolizasView from "./views/PolizasView";
+import ClientesView from "./views/ClientesView";
 import Signup from "./views/Signup";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
@@ -22,6 +23,7 @@ render(() => (
         <Route path="/" component={App}>
             <Route path="/" component={Home} />
             <Route path="/users" component={Users} />
+            <Route path="/clientes" component={ClientesView} />
             <Route path="/polizas" component={requireRole("admin", PolizasView)} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

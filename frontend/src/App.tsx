@@ -12,6 +12,7 @@ export default function App(props: any) {
                 <A href="/">Home</A>
                 {isLoggedIn() && <A href="/users">Users</A>}
                 {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
+                {userRole() === "admin" && <A href="/clientes">Clientes</A>}                
 
                 {/* Botón de logout */}
                 {isLoggedIn() ? (
