@@ -2,9 +2,9 @@ import { createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import LoginForm from "../components/LoginForm";
 import { login } from "../services/authService";
+import { setUser } from "../stores/authStore";
 
 export default function Login() {
-    const [usuario, setUsuario] = createSignal(null);
     const [showModal, setShowModal] = createSignal(false);
     const navigate = useNavigate();
 
@@ -13,17 +13,14 @@ export default function Login() {
         try {
             const res = await login({ correo, contrasena });
             const userData = res.data.usuario;
-    
+
             if (userData) {
-                console.log("Usuario autenticado:", userData); // Debug
-                localStorage.setItem("user", JSON.stringify(userData));
-                console.log("Datos guardados en localStorage:", localStorage.getItem("user")); // Verificar que se guardó
-    
+                console.log("Usuario autenticado:", userData);
+                setUser(userData.id, userData.rol_nombre, navigate);
+
                 // Si la cuenta está inactiva, muestra el modal
                 if (userData.estado === 0) {
                     setShowModal(true);
-                } else {
-                    navigate("/", { replace: true });
                 }
             } else {
                 alert("Error en la autenticación");
@@ -32,6 +29,7 @@ export default function Login() {
             alert("Cuenta no encontrada");
         }
     };
+
     return (
         <div class="container mt-5">
             <h2>Iniciar Sesión</h2>
@@ -69,7 +67,6 @@ export default function Login() {
                                     class="btn btn-secondary" 
                                     onClick={() => {
                                         setShowModal(false);
-                                        setUsuario(null);
                                     }}
                                 >
                                     Cerrar

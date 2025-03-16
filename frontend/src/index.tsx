@@ -1,25 +1,31 @@
-/* @refresh reload */
+import { render } from "solid-js/web";
+import { Router, Route } from "@solidjs/router";
+import App from "./App";
+import Home from "./views/HomeView";
+import Users from "./views/UsersView";
+import PolizasView from "./views/PolizasView";
+import Signup from "./views/Signup";
+import Login from "./views/Login";
+import NotFound from "./views/NotFound";
+import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
-import "bootstrap/dist/css/bootstrap.min.css";
+// Restaurar sesión al iniciar la app
+restoreSession();
 
+// Middleware para proteger rutas
+const requireRole = (role: string, Component: any) => {
+    return () => (isLoggedIn() && userRole() === role ? <Component /> : <NotFound />);
+};
 
-import { render } from 'solid-js/web';
-
-/**
- * This file was taken from the cheatsheet example of bootstrap.
- * You will most likely remove it if using this template.
- */
-import './cheatsheet.scss';
-
-
-import App from './App';
-
-const root = document.getElementById('root');
-
-if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
-  throw new Error(
-    'Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?',
-  );
-}
-
-render(() => <App />, root!);
+render(() => (
+    <Router>
+        <Route path="/" component={App}>
+            <Route path="/" component={Home} />
+            <Route path="/users" component={Users} />
+            <Route path="/polizas" component={requireRole("admin", PolizasView)} />
+            <Route path="/signup" component={Signup} />
+            <Route path="/login" component={Login} />
+            <Route path="*" component={NotFound} />
+        </Route>
+    </Router>
+), document.getElementById("root") as HTMLElement);

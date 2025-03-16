@@ -1,47 +1,35 @@
-import { render } from "solid-js/web";
-import { Router, Route, A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
+import { isLoggedIn, userRole, logout } from "./stores/authStore";
 import "./navbar.css";
-import Home from "./views/HomeView";
-import Users from "./views/UsersView";
-import PolizasView from "./views/PolizasView";
-import Signup from "./views/Signup";
-import Login from "./views/Login";
-import NotFound from "./views/NotFound";
 
-// Componente principal
-const App = (props) => (
-  <>
-    {/* NAVBAR */}
-    <nav class="main-nav">
-      <A href="/">Home</A>
-      <A href="/users">Users</A>
-      <A href="/polizas">Polizas</A>
-     
-      <A href="/login">Iniciar Sesión</A>
-    </nav>
-    <main>{props.children}</main>
+export default function App(props: any) {
+    const navigate = useNavigate();
 
-    {/* FOOTER */}
-    <footer class="main-footer">
-      <p>© 2025 Mi Empresa. Todos los derechos reservados.</p>
-    </footer>
-  </>
-);
+    return (
+        <>
+            {/* NAVBAR */}
+            <nav class="main-nav">
+                <A href="/">Home</A>
+                {isLoggedIn() && <A href="/users">Users</A>}
+                {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
 
-// Renderizamos el router
-render(
-  () => (
-    <Router root={App}>
-      <Route path="/" component={Home} />
-      <Route path="/users" component={Users} />
-      <Route path="/polizas" component={PolizasView} />
-      <Route path="*paramName" component={NotFound} />
-      <Route path="/signup" component={Signup} />
-      <Route path="/login" component={Login} />
-      
-    </Router>
-  ),
-  document.getElementById("root") as HTMLElement
-);
+                {/* Botón de logout */}
+                {isLoggedIn() ? (
+                    <button class="btn btn-danger ms-3" onClick={() => logout(navigate)}>Logout</button>
+                ) : (
+                    <A href="/login">Iniciar Sesión</A>
+                )}
+            </nav>
 
-export default App;
+            {/* Contenido dinámico de cada vista */}
+            <main>
+                {props.children} {/* 🔥 CORREGIDO: Renderizar las rutas aquí */}
+            </main>
+
+            {/* FOOTER */}
+            <footer class="main-footer">
+                <p>© 2025 Mi Empresa. Todos los derechos reservados.</p>
+            </footer>
+        </>
+    );
+}
