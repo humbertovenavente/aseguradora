@@ -1,0 +1,97 @@
+/* Estilos del contenedor principal de la red de proveedores */
+.proveedores-container {
+    width: 100%;
+    padding: 3rem 1rem;
+    background-color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+  }
+  
+  /* Título de la sección */
+  .proveedores-title {
+    text-align: center;
+    color: #026E81;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+  }
+  
+  /* Grid de proveedores */
+  .red-proveedores {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  /* Tarjeta individual del proveedor */
+  .proveedor-card {
+    width: 280px;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background-color: #f6fbfd;
+    box-shadow: 0 4px 10px rgba(2, 110, 129, 0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .proveedor-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(2, 110, 129, 0.15);
+  }
+  
+  /* Imagen circular del proveedor */
+  .proveedor-card img.proveedor-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid #00ABBD;
+  }
+  
+  /* Nombre del proveedor */
+  .proveedor-nombre {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #026E81; 
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Información descriptiva */
+  .proveedor-info {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Botón de detalles */
+  .proveedor-button {
+    display: inline-block;
+    background-color: #00ABBD;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s;
+  }
+  
+  .proveedor-button:hover {
+    background-color: #0099DD;
+    transform: translateY(-3px);
+  }
+  
+  /* Responsive (dispositivos móviles) */
+  @media (max-width: 768px) {
+    .proveedor-card {
+      width: 100%;
+      max-width: 350px;
+      margin: 0 auto;
+    }
+  
+    .proveedores-title {
+      font-size: 1.75rem;
+    }
+  }
+  
