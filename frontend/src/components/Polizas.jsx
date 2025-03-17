@@ -37,11 +37,8 @@ export default function Polizas() {
                 <h2 className="fw-bold">Pólizas</h2>
                 {/* Botón para abrir el modal (Agregar) */}
                 <button className="btn btn-agregar" onClick={() => abrirModal(null)}>
-  <i className="fa fa-plus me-2"></i>
-</button>
-
-
-
+                    <i className="fa fa-plus me-2"></i>
+                </button>
             </div>
 
             {/* Modal para agregar o editar póliza */}
@@ -68,7 +65,7 @@ export default function Polizas() {
                         <tr>
                             <th>Nombre</th>
                             <th>Tipo de Cobertura</th>
-                            <th>Porcentaje Cubierto</th>
+                            <th>Cobertura</th>
                             <th>Costo</th>
                             <th>Vigencia</th>
                             <th>Opciones</th>
@@ -79,7 +76,12 @@ export default function Polizas() {
                             <tr key={poliza._id}>
                                 <td>{poliza.nombre}</td>
                                 <td>{poliza.tipoCobertura}</td>
-                                <td>{poliza.porcentajeCobertura}%</td>
+                                <td>
+  {poliza.coberturaId 
+    ? `${poliza.coberturaId.nombre} - ${poliza.coberturaId.porcentajeCobertura}%` 
+    : "Sin cobertura"}
+</td>
+
                                 <td>Q{poliza.costo}</td>
                                 <td>{new Date(poliza.vigencia).toLocaleDateString()}</td>
                                 <td>

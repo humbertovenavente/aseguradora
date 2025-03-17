@@ -6,14 +6,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 function PolizasView() {
   const [polizaEdit, setPolizaEdit] = createSignal(null);
 
+  const actualizarLista = () => {
+    setPolizaEdit(null);
+  };
+
   return (
     <div class="container">
       <h1 class="fw-bold text-center mt-4">Sistema de Aseguradora</h1>
-      {polizaEdit() !== null ? (
-        <FormularioPoliza
-          poliza={polizaEdit()}
-          actualizarLista={() => setPolizaEdit(null)}
-        />
+      {polizaEdit() ? (
+        <FormularioPoliza poliza={polizaEdit()} actualizarLista={actualizarLista} />
       ) : (
         <Polizas onEdit={setPolizaEdit} />
       )}
