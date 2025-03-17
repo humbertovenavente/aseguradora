@@ -9,6 +9,7 @@ import clientesRoutes from './routes/clientesRoutes.js';
 import pagoRoutes from './routes/pagoRoutes.js';
 import coberturaRoutes from './routes/coberturaRoutes.js';
 import hospitalRoutes from './routes/hospitalRoutes.js';
+import servicioRoutes from './routes/servicioRoutes.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/api/clientes', clientesRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/coberturas', coberturaRoutes);
 app.use('/api/hospitales', hospitalRoutes);
+app.use('/api/servicios', servicioRoutes);
 
 
 const PORT = process.env.PORT || 5000;

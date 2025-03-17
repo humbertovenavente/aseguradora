@@ -23,7 +23,8 @@ export default function App(props: any) {
                 {userRole() === "admin" && <A href="/clientes">Clientes</A>}    
                 {userRole() === "admin" && <A href="/pagos">Pagos</A>}
                 {userRole() === "admin" && <A href="/coberturas">Coberturas</A>}     
-                {userRole() === "admin" && <A href="/hospitales">Hospitales</A>}              
+                {userRole() === "admin" && <A href="/hospitales">Hospitales</A>}      
+                {userRole() === "admin" && <A href="/servicios-cubiertos">Servicios</A>}           
 
                 {/* Botón de logout */}
                 {isLoggedIn() ? (
