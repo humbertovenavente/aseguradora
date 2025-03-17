@@ -1,6 +1,8 @@
 import { createSignal, createEffect } from "solid-js";
 import { getUsuarios, asignarRol, desactivarUsuario } from "../services/usuariosService";
 import { getRoles } from "../services/rolesService"; 
+import { sendEmail } from "../utils/email";
+
 const UsuariosAdmin = () => {
     const [usuarios, setUsuarios] = createSignal([]);
     const [roles, setRoles] = createSignal([]);
@@ -26,11 +28,27 @@ const UsuariosAdmin = () => {
     // Manejar la asignación de rol y activación de usuario
     const handleAsignarRol = async () => {
         if (selectedUser() && selectedRole()) {
-            await asignarRol(selectedUser(), selectedRole());
-            fetchUsuarios(); // Recargar la lista de usuarios
-            closeModal();
+            try {
+                await asignarRol(selectedUser(), selectedRole());
+                const user = usuarios().find(u => u._id === selectedUser());
+                
+                if (user) {
+                    const emailResponse = await sendEmail(user.correo, "activated");
+                    if (!emailResponse.success) {
+                        alert("Error al hacer proceso.");
+                    } else {
+                        alert("Rol asignado y usuario activado. Se envió un correo de activación.");
+                    }
+                }
+    
+                fetchUsuarios(); // Recargar lista
+                closeModal();
+            } catch (error) {
+                alert("Error al asignar el rol y activar el usuario.");
+            }
         }
     };
+    
 
     // Abrir el modal con el usuario seleccionado
     const openModal = (userId) => {
