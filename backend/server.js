@@ -7,6 +7,7 @@ import polizaRoutes from './routes/polizaRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import clientesRoutes from './routes/clientesRoutes.js';
 import pagoRoutes from './routes/pagoRoutes.js';
+import coberturaRoutes from './routes/coberturaRoutes.js';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/api/polizas', polizaRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/pagos', pagoRoutes);
+app.use('/api/coberturas', coberturaRoutes);
 
 
 const PORT = process.env.PORT || 5000;

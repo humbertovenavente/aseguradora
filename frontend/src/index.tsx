@@ -22,6 +22,7 @@ import PagosView from "./views/PagosView";
 import ContactoView from "./views/ContactoView";
 import HospitalesAView from "./views/HospitalesAView";
 import ServiciosView from "./views/ServiciosView";
+import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -51,6 +52,7 @@ render(() => (
             <Route path="/reportes" component={requireRole("admin", ReportesView)} />
             <Route path="/polizas" component={requireRole("admin", PolizasView)} />
             <Route path="/pagos" component={requireRole("admin", PagosView)} />
+            <Route path="/coberturas" component={requireRole("admin", CoberturasView)} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="*" component={NotFound} />
