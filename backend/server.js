@@ -10,6 +10,7 @@ import pagoRoutes from './routes/pagoRoutes.js';
 import coberturaRoutes from './routes/coberturaRoutes.js';
 import hospitalRoutes from './routes/hospitalRoutes.js';
 import servicioRoutes from './routes/servicioRoutes.js';
+import seguroRoutes from './routes/seguroRoutes.js';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ app.use('/api/pagos', pagoRoutes);
 app.use('/api/coberturas', coberturaRoutes);
 app.use('/api/hospitales', hospitalRoutes);
 app.use('/api/servicios', servicioRoutes);
-
+app.use('/api/seguros', seguroRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

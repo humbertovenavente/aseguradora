@@ -66,6 +66,7 @@ export default function Polizas() {
                             <th>Nombre</th>
                             <th>Tipo de Cobertura</th>
                             <th>Cobertura</th>
+                            <th>Seguro</th>
                             <th>Costo</th>
                             <th>Vigencia</th>
                             <th>Opciones</th>
@@ -76,12 +77,8 @@ export default function Polizas() {
                             <tr key={poliza._id}>
                                 <td>{poliza.nombre}</td>
                                 <td>{poliza.tipoCobertura}</td>
-                                <td>
-  {poliza.coberturaId 
-    ? `${poliza.coberturaId.nombre} - ${poliza.coberturaId.porcentajeCobertura}%` 
-    : "Sin cobertura"}
-</td>
-
+                                <td>{poliza.coberturaId ? `${poliza.coberturaId.nombre} - ${poliza.coberturaId.porcentajeCobertura}%` : "Sin cobertura"}</td>
+                                <td>{poliza.id_seguro ? poliza.id_seguro.nombre : "Sin seguro"}</td>
                                 <td>Q{poliza.costo}</td>
                                 <td>{new Date(poliza.vigencia).toLocaleDateString()}</td>
                                 <td>

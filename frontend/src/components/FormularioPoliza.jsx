@@ -1,38 +1,48 @@
 import { createSignal, createEffect } from "solid-js";
 import { crearPoliza, actualizarPoliza } from "../services/polizasService";
 import { obtenerCoberturas } from "../services/coberturaService";
+import { obtenerSeguros } from "../services/seguroService";
 
 export default function FormularioPoliza({ poliza, actualizarLista }) {
-  const [nombre, setNombre] = createSignal(poliza ? poliza.nombre : "");
-  const [tipoCobertura, setTipoCobertura] = createSignal(poliza ? poliza.tipoCobertura : "");
-  const [coberturaId, setCoberturaId] = createSignal(poliza ? poliza.coberturaId?._id : "");
-  const [costo, setCosto] = createSignal(poliza ? poliza.costo : "");
-  const [vigencia, setVigencia] = createSignal(poliza ? poliza.vigencia : "");
-  const [coberturas, setCoberturas] = createSignal([]);
+  const [nombre, setNombre] = createSignal(poliza ? poliza.nombre : ""); // Nombre de la póliza
+  const [tipoCobertura, setTipoCobertura] = createSignal(poliza ? poliza.tipoCobertura : ""); // Tipo de cobertura
+  const [coberturaId, setCoberturaId] = createSignal(poliza ? poliza.coberturaId?._id : ""); // ID de la cobertura
+  const [id_seguro, setIdSeguro] = createSignal(poliza ? poliza.id_seguro?._id : ""); // ID del seguro
+  const [costo, setCosto] = createSignal(poliza ? poliza.costo : ""); // Costo de la póliza
+  const [vigencia, setVigencia] = createSignal(poliza ? poliza.vigencia : ""); // Fecha de vigencia
 
-  // Cargar coberturas disponibles
+  const [coberturas, setCoberturas] = createSignal([]);
+  const [seguros, setSeguros] = createSignal([]);
+
+  // Cargar coberturas y seguros disponibles
   createEffect(async () => {
-    const data = await obtenerCoberturas();
-    setCoberturas(data);
+    setCoberturas(await obtenerCoberturas());
+    setSeguros(await obtenerSeguros());
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Asegúrate de que se prevenga el comportamiento por defecto del formulario
+
     const nuevaPoliza = {
       nombre: nombre(),
       tipoCobertura: tipoCobertura(),
       coberturaId: coberturaId(),
+      id_seguro: id_seguro(),
       costo: costo(),
-      vigencia: vigencia(),
+      vigencia: new Date(vigencia()), // Convierte la vigencia a un objeto Date si es necesario
     };
 
-    if (poliza) {
-      await actualizarPoliza(poliza._id, nuevaPoliza);
-    } else {
-      await crearPoliza(nuevaPoliza);
+    try {
+      if (poliza) {
+        await actualizarPoliza(poliza._id, nuevaPoliza); // Actualiza la póliza si es edición
+      } else {
+        await crearPoliza(nuevaPoliza); // Crea la póliza si es nueva
+      }
+      actualizarLista(); // Actualiza la lista de pólizas
+    } catch (error) {
+      console.error("Error al guardar la póliza:", error);
+      alert("Error al guardar la póliza: " + error.message); // Muestra el error si lo hay
     }
-
-    actualizarLista();
   };
 
   return (
@@ -40,12 +50,24 @@ export default function FormularioPoliza({ poliza, actualizarLista }) {
       <h2 className="fw-bold">{poliza ? "Editar Póliza" : "Nueva Póliza"}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">Nombre</label>
-          <input type="text" className="form-control" value={nombre()} onInput={(e) => setNombre(e.target.value)} required />
+          <label className="form-label">Nombre de la Póliza</label>
+          <input
+            type="text"
+            className="form-control"
+            value={nombre()}
+            onInput={(e) => setNombre(e.target.value)}
+            required
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Tipo de Cobertura</label>
-          <input type="text" className="form-control" value={tipoCobertura()} onInput={(e) => setTipoCobertura(e.target.value)} required />
+          <input
+            type="text"
+            className="form-control"
+            value={tipoCobertura()}
+            onInput={(e) => setTipoCobertura(e.target.value)}
+            required
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Cobertura</label>
@@ -54,6 +76,17 @@ export default function FormularioPoliza({ poliza, actualizarLista }) {
             {coberturas().map((cobertura) => (
               <option key={cobertura._id} value={cobertura._id}>
                 {cobertura.nombre} - {cobertura.porcentajeCobertura}%
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Seguro</label>
+          <select className="form-control" value={id_seguro()} onChange={(e) => setIdSeguro(e.target.value)} required>
+            <option value="">Selecciona un seguro</option>
+            {seguros().map((seguro) => (
+              <option key={seguro._id} value={seguro._id}>
+                {seguro.nombre}
               </option>
             ))}
           </select>
@@ -78,3 +111,4 @@ export default function FormularioPoliza({ poliza, actualizarLista }) {
     </div>
   );
 }
+

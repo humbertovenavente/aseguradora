@@ -25,6 +25,7 @@ import HospitalesView from "./views/HospitalesView";
 import ServiciosView from "./views/ServiciosView";
 import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
+import SegurosView from "./views/SegurosView";
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
 // Restaurar sesión al iniciar la app
@@ -55,6 +56,7 @@ render(() => (
             <Route path="/pagos" component={requireRole("admin", PagosView)} />
             <Route path="/coberturas" component={requireRole("admin", CoberturasView)} />
             <Route path="/hospitales" component={requireRole("admin", HospitalesView)} />
+            <Route path="/seguros" component={requireRole("admin", SegurosView)} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="*" component={NotFound} />

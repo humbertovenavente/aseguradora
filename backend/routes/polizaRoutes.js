@@ -1,80 +1,88 @@
 import express from 'express';
 import Poliza from '../models/Poliza.js';
-import Cobertura from '../models/Cobertura.js';
 
 const router = express.Router();
 
-// Crear una póliza
+// ✅ Crear una nueva póliza
 router.post('/', async (req, res) => {
+    const { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro } = req.body;
+
     try {
-        const { nombre, tipoCobertura, coberturaId, costo, vigencia } = req.body;
-
-        // Verificar si la cobertura existe
-        const cobertura = await Cobertura.findById(coberturaId);
-        if (!cobertura) {
-            return res.status(404).json({ error: 'Cobertura no encontrada' });
-        }
-
-        const nuevaPoliza = new Poliza({ nombre, tipoCobertura, coberturaId, costo, vigencia });
-        await nuevaPoliza.save();
-        res.status(201).json({ message: 'Póliza creada exitosamente', poliza: nuevaPoliza });
+        const nuevaPoliza = await Poliza.create({
+            nombre,
+            tipoCobertura,
+            coberturaId,
+            costo,
+            vigencia,
+            id_seguro
+        });
+        res.status(201).json({ mensaje: "Póliza creada exitosamente.", poliza: nuevaPoliza });
     } catch (error) {
-        res.status(500).json({ error: 'Error al crear la póliza', details: error.message });
+        res.status(500).json({ mensaje: "Error al crear la póliza", error: error.message });
     }
 });
 
-// Obtener todas las pólizas con datos de cobertura
-// Obtener todas las pólizas con cobertura poblada
+// 📄 Listar todas las pólizas con datos de cobertura y seguro asociados
 router.get('/', async (req, res) => {
     try {
-        const polizas = await Poliza.find().populate('coberturaId');
-        res.status(200).json(polizas);
+        const polizas = await Poliza.find()
+            .populate('id_seguro')       // Poblamos los datos del seguro
+            .populate('coberturaId');    // Poblamos los datos de la cobertura
+        res.json(polizas);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener las pólizas' });
+        res.status(500).json({ mensaje: "Error al obtener las pólizas", error: error.message });
     }
 });
 
-
-// Obtener una póliza por ID con datos de cobertura
+// 🔍 Obtener una póliza por ID
 router.get('/:id', async (req, res) => {
     try {
-        const poliza = await Poliza.findById(req.params.id).populate('coberturaId');
-        if (!poliza) return res.status(404).json({ message: 'Póliza no encontrada' });
-        res.status(200).json(poliza);
+        const poliza = await Poliza.findById(req.params.id)
+            .populate('id_seguro')
+            .populate('coberturaId');
+
+        if (!poliza) {
+            return res.status(404).json({ mensaje: "Póliza no encontrada." });
+        }
+        res.json(poliza);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la póliza' });
+        res.status(500).json({ mensaje: "Error al obtener la póliza", error: error.message });
     }
 });
 
-// Modificar una póliza
+// ✏️ Actualizar una póliza
 router.put('/:id', async (req, res) => {
-    try {
-        const { coberturaId } = req.body;
+    const { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro } = req.body;
 
-        // Verificar si la cobertura existe
-        if (coberturaId) {
-            const cobertura = await Cobertura.findById(coberturaId);
-            if (!cobertura) {
-                return res.status(404).json({ error: 'Cobertura no encontrada' });
-            }
+    try {
+        const polizaActualizada = await Poliza.findByIdAndUpdate(
+            req.params.id,
+            { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro },
+            { new: true }
+        );
+
+        if (!polizaActualizada) {
+            return res.status(404).json({ mensaje: "Póliza no encontrada." });
         }
 
-        const polizaActualizada = await Poliza.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!polizaActualizada) return res.status(404).json({ message: 'Póliza no encontrada' });
-        res.status(200).json({ message: 'Póliza actualizada', poliza: polizaActualizada });
+        res.json({ mensaje: "Póliza actualizada correctamente.", poliza: polizaActualizada });
     } catch (error) {
-        res.status(500).json({ error: 'Error al actualizar la póliza' });
+        res.status(500).json({ mensaje: "Error al actualizar la póliza", error: error.message });
     }
 });
 
-// Eliminar una póliza
+// ❌ Eliminar una póliza
 router.delete('/:id', async (req, res) => {
     try {
         const polizaEliminada = await Poliza.findByIdAndDelete(req.params.id);
-        if (!polizaEliminada) return res.status(404).json({ message: 'Póliza no encontrada' });
-        res.status(200).json({ message: '✅ Póliza eliminada' });
+
+        if (!polizaEliminada) {
+            return res.status(404).json({ mensaje: "Póliza no encontrada." });
+        }
+
+        res.json({ mensaje: "Póliza eliminada correctamente." });
     } catch (error) {
-        res.status(500).json({ error: 'Error al eliminar la póliza' });
+        res.status(500).json({ mensaje: "Error al eliminar la póliza", error: error.message });
     }
 });
 
