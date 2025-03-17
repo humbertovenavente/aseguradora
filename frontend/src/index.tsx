@@ -11,6 +11,17 @@ import ClientesView from "./views/ClientesView";
 import Signup from "./views/Signup";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
+//paginas informativas
+import SubhomeView from "./views/SubhomeView";
+import Subhome2View from "./views/Subhome2View";
+import HistoriaView from "./views/HistoriaView";
+import TestimoniosView from "./views/TestimoniosView";
+import RedProveedores from "./views/RedProveedores";
+import FaqView from "./views/FaqView";
+import ContactoView from "./views/ContactoView";
+import HospitalesAView from "./views/HospitalesAView";
+import ServiciosView from "./views/ServiciosView";
+import ReportesView from "./views/ReportesView";
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
 // Restaurar sesión al iniciar la app
@@ -25,8 +36,18 @@ render(() => (
     <Router>
         <Route path="/" component={App}>
             <Route path="/" component={Home} />
+            <Route path="/subhome1" component={SubhomeView} />
+            <Route path="/subhome2" component={Subhome2View} />
+            <Route path="/historia" component={HistoriaView} />
+            <Route path="/testimonios" component={TestimoniosView} />
+            <Route path="/proveedores" component={RedProveedores} />
+            <Route path="/FAQ" component={FaqView} />
+            <Route path="/contacto" component={ContactoView} />
             <Route path="/users" component={Users} />
-            <Route path="/clientes" component={ClientesView} />
+            <Route path="/clientes" component={requireRole("admin", ClientesView)} />
+            <Route path="/hospitales-afiliados" component={requireRole("admin", HospitalesAView)} />
+            <Route path="/servicios-cubiertos" component={requireRole("admin", ServiciosView)} />
+            <Route path="/reportes" component={requireRole("admin", ReportesView)} />
             <Route path="/polizas" component={requireRole("admin", PolizasView)} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
