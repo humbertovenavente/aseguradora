@@ -7,6 +7,7 @@ import {
 } from "../services/clientesService.js";
 import { obtenerPolizas } from "../services/polizasService.js";
 
+
 const ClientesView = () => {
     // Lista de clientes
     const [clientes, setClientes] = createSignal([]);
