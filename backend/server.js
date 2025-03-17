@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import polizaRoutes from './routes/polizaRoutes.js'; 
 import authRoutes from './routes/authRoutes.js';
 import clientesRoutes from './routes/clientesRoutes.js';
+import pagoRoutes from './routes/pagoRoutes.js';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use('/api/polizas', polizaRoutes); 
 app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
+app.use('/api/pagos', pagoRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

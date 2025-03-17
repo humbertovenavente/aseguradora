@@ -18,6 +18,7 @@ import HistoriaView from "./views/HistoriaView";
 import TestimoniosView from "./views/TestimoniosView";
 import RedProveedores from "./views/RedProveedores";
 import FaqView from "./views/FaqView";
+import PagosView from "./views/PagosView";
 import ContactoView from "./views/ContactoView";
 import HospitalesAView from "./views/HospitalesAView";
 import ServiciosView from "./views/ServiciosView";
@@ -49,6 +50,7 @@ render(() => (
             <Route path="/servicios-cubiertos" component={requireRole("admin", ServiciosView)} />
             <Route path="/reportes" component={requireRole("admin", ReportesView)} />
             <Route path="/polizas" component={requireRole("admin", PolizasView)} />
+            <Route path="/pagos" component={requireRole("admin", PagosView)} />
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="*" component={NotFound} />

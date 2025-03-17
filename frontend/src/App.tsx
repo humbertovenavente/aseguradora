@@ -20,7 +20,8 @@ export default function App(props: any) {
                 <A href="/contacto">contacto</A>
                 {isLoggedIn() && <A href="/users">Users</A>}
                 {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
-                {userRole() === "admin" && <A href="/clientes">Clientes</A>}                
+                {userRole() === "admin" && <A href="/clientes">Clientes</A>}    
+                {userRole() === "admin" && <A href="/pagos">Pagos</A>}             
 
                 {/* Botón de logout */}
                 {isLoggedIn() ? (
