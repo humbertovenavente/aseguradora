@@ -1,62 +1,81 @@
-import { createSignal } from "solid-js";
-import { sendEmail } from "../utils/email";
-
-export default function RedProveedores() {
-  const [nombre, setNombre] = createSignal("");
-  const [correo, setCorreo] = createSignal("");
-  const [mensaje, setMensaje] = createSignal("");
-  const [error, setError] = createSignal("");
-  const [exito, setExito] = createSignal("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setExito("");
-
-    try {
-      // Se utiliza sendEmail para enviar el mensaje de contacto
-      // Se asume que la función sendEmail acepta un tercer parámetro para datos adicionales
-      const respuesta = await sendEmail(correo(), "contact", { nombre: nombre(), mensaje: mensaje() });
-      if (respuesta.success) {
-        setExito("Mensaje enviado exitosamente.");
-      } else {
-        setError("Error al enviar el mensaje.");
-      }
-    } catch (err) {
-      setError("Error al enviar el mensaje.");
-    }
-  };
-
-  return (
-    <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">Contacto</h1>
-      <form onSubmit={handleSubmit} class="flex flex-col space-y-4">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre()}
-          onInput={(e) => setNombre(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={correo()}
-          onInput={(e) => setCorreo(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <textarea
-          placeholder="Mensaje"
-          value={mensaje()}
-          onInput={(e) => setMensaje(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        ></textarea>
-        <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-          Enviar
-        </button>
-      </form>
-      {error() && <p class="text-red-600 mt-4">{error()}</p>}
-      {exito() && <p class="text-green-600 mt-4">{exito()}</p>}
-    </div>
-  );
-}
+function RedProveedores() {
+    return (
+      <>
+        {/* Estilos locales para efecto hover en las tarjetas */}
+        <style>
+          {`
+            .card:hover {
+              transform: translateY(-5px);
+              transition: transform 0.3s ease;
+            }
+          `}
+        </style>
+  
+        <div class="container my-5">
+          <h2 class="text-center mb-5">Nuestros RedProveedores</h2>
+          <div class="row">
+            {/* Proveedor 1 */}
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 border-0 shadow-lg">
+                <img
+                  src="https://www.hospitaleslapaz.com/wp-content/uploads/2021/02/la-paz-logo-standar.png"
+                  class="card-img-top"
+                  alt="Proveedor 1"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Industrial Solutions S.A.</h5>
+                  <p class="card-text">
+                    Líderes en tecnología de manufactura y suministro de materias primas, ofreciendo soluciones integrales y de alta eficiencia.
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                  <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
+                </div>
+              </div>
+            </div>
+            {/* Proveedor 2 */}
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 border-0 shadow-lg">
+                <img
+                  src="https://www.hospitaleslapaz.com/wp-content/uploads/2021/02/la-paz-logo-standar.png"
+                  class="card-img-top"
+                  alt="Proveedor 2"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Logística Global Ltda.</h5>
+                  <p class="card-text">
+                    Expertos en soluciones logísticas y de transporte, garantizando entregas seguras y puntuales.
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                  <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
+                </div>
+              </div>
+            </div>
+            {/* Proveedor 3 */}
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 border-0 shadow-lg">
+                <img
+                  src="https://www.hospitaleslapaz.com/wp-content/uploads/2021/02/la-paz-logo-standar.png"
+                  class="card-img-top"
+                  alt="Proveedor 3"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">Tech Innovators</h5>
+                  <p class="card-text">
+                    Proveedor de soluciones tecnológicas innovadoras que impulsan la productividad y competitividad en el mercado.
+                  </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                  <a href="#" class="btn btn-outline-primary btn-sm">Ver más</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  
+  export default RedProveedores;
+  

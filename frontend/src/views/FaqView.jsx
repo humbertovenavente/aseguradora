@@ -1,62 +1,88 @@
-import { createSignal } from "solid-js";
-import { sendEmail } from "../utils/email";
-
-export default function FaqView() {
-  const [nombre, setNombre] = createSignal("");
-  const [correo, setCorreo] = createSignal("");
-  const [mensaje, setMensaje] = createSignal("");
-  const [error, setError] = createSignal("");
-  const [exito, setExito] = createSignal("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setExito("");
-
-    try {
-      // Se utiliza sendEmail para enviar el mensaje de contacto
-      // Se asume que la función sendEmail acepta un tercer parámetro para datos adicionales
-      const respuesta = await sendEmail(correo(), "contact", { nombre: nombre(), mensaje: mensaje() });
-      if (respuesta.success) {
-        setExito("Mensaje enviado exitosamente.");
-      } else {
-        setError("Error al enviar el mensaje.");
-      }
-    } catch (err) {
-      setError("Error al enviar el mensaje.");
-    }
-  };
-
-  return (
-    <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">Contacto</h1>
-      <form onSubmit={handleSubmit} class="flex flex-col space-y-4">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre()}
-          onInput={(e) => setNombre(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={correo()}
-          onInput={(e) => setCorreo(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <textarea
-          placeholder="Mensaje"
-          value={mensaje()}
-          onInput={(e) => setMensaje(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        ></textarea>
-        <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-          Enviar
-        </button>
-      </form>
-      {error() && <p class="text-red-600 mt-4">{error()}</p>}
-      {exito() && <p class="text-green-600 mt-4">{exito()}</p>}
-    </div>
-  );
-}
+function FaqView() {
+    return (
+      <div class="container my-5">
+        <h2 class="text-center mb-5">Preguntas Frecuentes</h2>
+        <div class="accordion" id="faqAccordion">
+          {/* Pregunta 1 */}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                ¿Qué servicios ofrece la empresa?
+              </button>
+            </h2>
+            <div
+              id="collapseOne"
+              class="accordion-collapse collapse show"
+              aria-labelledby="headingOne"
+              data-bs-parent="#faqAccordion"
+            >
+              <div class="accordion-body">
+                Ofrecemos una amplia gama de servicios, desde desarrollo de software y consultoría tecnológica hasta soporte y mantenimiento de sistemas.
+              </div>
+            </div>
+          </div>
+          {/* Pregunta 2 */}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseTwo"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                ¿Cómo puedo contactarlos?
+              </button>
+            </h2>
+            <div
+              id="collapseTwo"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingTwo"
+              data-bs-parent="#faqAccordion"
+            >
+              <div class="accordion-body">
+                Puedes contactarnos a través de nuestro formulario en línea, por correo electrónico o llamando a nuestro centro de atención.
+              </div>
+            </div>
+          </div>
+          {/* Pregunta 3 */}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree"
+              >
+                ¿Cuál es el horario de atención?
+              </button>
+            </h2>
+            <div
+              id="collapseThree"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingThree"
+              data-bs-parent="#faqAccordion"
+            >
+              <div class="accordion-body">
+                Nuestro horario de atención es de lunes a viernes, de 9:00 a 18:00.
+              </div>
+            </div>
+          </div>
+          {/* Puedes agregar más preguntas siguiendo este formato */}
+        </div>
+      </div>
+    );
+  }
+  
+  export default FaqView;
+  

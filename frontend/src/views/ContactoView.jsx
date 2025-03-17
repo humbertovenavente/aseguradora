@@ -1,62 +1,116 @@
 import { createSignal } from "solid-js";
-import { sendEmail } from "../utils/email";
 
-export default function ContactView() {
+function ContactoView() {
   const [nombre, setNombre] = createSignal("");
-  const [correo, setCorreo] = createSignal("");
+  const [email, setEmail] = createSignal("");
+  const [asunto, setAsunto] = createSignal("");
   const [mensaje, setMensaje] = createSignal("");
+  const [envioExitoso, setEnvioExitoso] = createSignal(false);
   const [error, setError] = createSignal("");
-  const [exito, setExito] = createSignal("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    // Aquí podrías agregar la lógica para enviar el formulario (por ejemplo, via fetch o emailjs)
+    // Simulamos un envío exitoso:
+    setEnvioExitoso(true);
     setError("");
-    setExito("");
-
-    try {
-      // Se utiliza sendEmail para enviar el mensaje de contacto
-      // Se asume que la función sendEmail acepta un tercer parámetro para datos adicionales
-      const respuesta = await sendEmail(correo(), "contact", { nombre: nombre(), mensaje: mensaje() });
-      if (respuesta.success) {
-        setExito("Mensaje enviado exitosamente.");
-      } else {
-        setError("Error al enviar el mensaje.");
-      }
-    } catch (err) {
-      setError("Error al enviar el mensaje.");
-    }
+    // Reiniciar formulario (opcional)
+    setNombre("");
+    setEmail("");
+    setAsunto("");
+    setMensaje("");
   };
 
   return (
-    <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">Contacto</h1>
-      <form onSubmit={handleSubmit} class="flex flex-col space-y-4">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre()}
-          onInput={(e) => setNombre(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={correo()}
-          onInput={(e) => setCorreo(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        />
-        <textarea
-          placeholder="Mensaje"
-          value={mensaje()}
-          onInput={(e) => setMensaje(e.currentTarget.value)}
-          class="border p-2 rounded w-full"
-        ></textarea>
-        <button type="submit" class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-          Enviar
-        </button>
-      </form>
-      {error() && <p class="text-red-600 mt-4">{error()}</p>}
-      {exito() && <p class="text-green-600 mt-4">{exito()}</p>}
+    <div class="container my-5">
+      <h2 class="text-center mb-5">ContactoView</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              {envioExitoso() && (
+                <div class="alert alert-success" role="alert">
+                  ¡Mensaje enviado con éxito!
+                </div>
+              )}
+              {error() && (
+                <div class="alert alert-danger" role="alert">
+                  {error()}
+                </div>
+              )}
+              <form onSubmit={handleSubmit}>
+                <div class="mb-3">
+                  <label for="nombre" class="form-label">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    class="form-control"
+                    placeholder="Tu nombre"
+                    value={nombre()}
+                    onInput={(e) => setNombre(e.currentTarget.value)}
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">
+                    Correo Electrónico
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="nombre@ejemplo.com"
+                    value={email()}
+                    onInput={(e) => setEmail(e.currentTarget.value)}
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="asunto" class="form-label">
+                    Asunto
+                  </label>
+                  <input
+                    type="text"
+                    id="asunto"
+                    class="form-control"
+                    placeholder="Asunto"
+                    value={asunto()}
+                    onInput={(e) => setAsunto(e.currentTarget.value)}
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="mensaje" class="form-label">
+                    Mensaje
+                  </label>
+                  <textarea
+                    id="mensaje"
+                    class="form-control"
+                    rows="5"
+                    placeholder="Escribe tu mensaje aquí..."
+                    value={mensaje()}
+                    onInput={(e) => setMensaje(e.currentTarget.value)}
+                    required
+                  ></textarea>
+                </div>
+                <div class="d-grid">
+                  <button
+                    type="submit"
+                    class="btn"
+                    style="background-color: #FF9933; color: #fff;"
+                  >
+                    Enviar Mensaje
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+export default ContactoView;
