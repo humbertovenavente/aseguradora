@@ -48,14 +48,18 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ mensaje: "Contraseña incorrecta" });
         }
 
+        if (usuario.estado === 0) {
+            return res.status(403).json({ mensaje: "Cuenta inactiva, espera activación" });
+        }
+
         res.json({
             mensaje: "Login exitoso",
             usuario: {
                 id: usuario._id,
                 correo: usuario.correo,
                 estado: usuario.estado,
-                rol_id: usuario.rol_id ? usuario.rol_id._id : null, // ✅ Devuelve el ID del rol
-                rol_nombre: usuario.rol_id ? usuario.rol_id.role_name : "Sin rol" // ✅ Devuelve el nombre del rol
+                rol_id: usuario.rol_id ? usuario.rol_id._id : null, // 
+                rol_nombre: usuario.rol_id ? usuario.rol_id.role_name : "Sin rol" 
             }
         });
 
