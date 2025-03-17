@@ -26,6 +26,7 @@ import ServiciosView from "./views/ServiciosView";
 import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
 import SegurosView from "./views/SegurosView";
+import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
 // Restaurar sesión al iniciar la app

@@ -1,12 +1,13 @@
+import UsuariosAdmin from "../components/UsuariosAdmin";
 
 function UsersView() {
     return (
       <div>
-        <h2>Bienvenido a la UsersView</h2>
-        {/* más contenido */}
-      </div>
+      <UsuariosAdmin />
+  </div>
     );
   }
+  
   
   // Exporta por defecto
   export default UsersView;

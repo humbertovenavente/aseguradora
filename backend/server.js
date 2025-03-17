@@ -13,6 +13,9 @@ import servicioRoutes from './routes/servicioRoutes.js';
 import seguroRoutes from './routes/seguroRoutes.js';
 import categoriaRoutes from './routes/categoriaRoutes.js';
 
+import usuariosRoutes from "./routes/usuariosRoutes.js";
+import rolesRoutes from "./routes/rolesRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -29,6 +32,8 @@ app.use('/api/hospitales', hospitalRoutes);
 app.use('/api/servicios', servicioRoutes);
 app.use('/api/seguros', seguroRoutes);
 app.use('/api/categorias', categoriaRoutes);
+app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/roles", rolesRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -44,3 +49,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
+
+
