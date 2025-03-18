@@ -27,8 +27,10 @@ export default function ServiciosView() {
         try {
             const data = await obtenerServicios();
             const hospitalesData = await obtenerHospitales();
+             const hospitalesFiltrados = hospitalesData.filter(hospital => hospital.convenioActivo === true);
+
             console.log("📌 Servicios obtenidos:", data); // 👀 Verificar la respuesta
-            setHospitales(hospitalesData);
+            setHospitales(hospitalesFiltrados);
             setServicios(data); // 🔹 Guardar TODOS los servicios en la tabla
             setCategorias(data.filter(servicio => servicio.servicioPadre === null)); // 🔹 Filtrar solo categorías principales
         } catch (err) {
@@ -76,7 +78,7 @@ export default function ServiciosView() {
             }
 
             await cargarServicios(); // 🔹 Recargar servicios después de crear o actualizar
-            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalAprobado: "", servicioPadre: null });
+            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalAprobado: "", servicioPadre: "" });
             setError(null);
         } catch (err) {
             setError("Error al guardar el servicio.");
@@ -136,6 +138,7 @@ export default function ServiciosView() {
         <option value={hospital._id}>{hospital.nombre}</option>
     ))}
 </select>
+
 
                 </div>
                 <div class="mb-3">
