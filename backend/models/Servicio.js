@@ -8,7 +8,8 @@ const ServicioSchema = new mongoose.Schema({
     // Relación Many-to-One: Si es null, es un servicio principal; si tiene un valor, es un subservicio.
     servicioPadre: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', default: null },
     // Relación One-to-Many: Un servicio puede tener múltiples subservicios
-    subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }]
+    subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
+    imagenUrl: { type: String } // 📌 Agregado para manejar imágenes
 }, { timestamps: true });
 
 export default mongoose.model('Servicio', ServicioSchema);

@@ -22,6 +22,7 @@ export default function App(props: any) {
                 <A href="/">Home</A>
                 <A href="/subhome1">subhome1</A>
                 <A href="/subhome2">subhome2</A>
+                <A href="/catalogo">catalogo</A>
                 <A href="/historia">historia</A>
                 <A href="/testimonios">testimonios</A>
                 <A href="/proveedores">proveedores</A>

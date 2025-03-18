@@ -17,7 +17,8 @@ export default function ServiciosView() {
         descripcion: "",
         precioAseguradora: "",
         hospitalAprobado: "",
-        servicioPadre: null // 🔹 Inicialmente null (sin categoría)
+        servicioPadre: null, // 🔹 Inicialmente null (sin categoría)
+        imagenUrl: "" 
     });
     const [editId, setEditId] = createSignal(null);
     const [error, setError] = createSignal(null);
@@ -127,6 +128,11 @@ export default function ServiciosView() {
                     <textarea class="form-control" name="descripcion" placeholder="Descripción" value={formData().descripcion} onInput={handleChange} required></textarea>
                 </div>
                 <div class="mb-3">
+    <label class="form-label">URL de la Imagen</label>
+    <input class="form-control" name="imagenUrl" placeholder="URL de la imagen" value={formData().imagenUrl} onInput={handleChange} required />
+</div>
+
+                <div class="mb-3">
                     <label class="form-label">Precio de la aseguradora por el servicio</label>
                     <input type="number" class="form-control" name="precioAseguradora" placeholder="Precio" value={formData().precioAseguradora} onInput={handleChange} required />
                 </div>
@@ -160,6 +166,7 @@ export default function ServiciosView() {
                     <tr>
                         <th>Nombre C-S</th>
                         <th>Descripción</th>
+                        <th>Imagen</th>
                         <th>Precio</th>
                         <th>Hospital</th>
                         <th>Categoría</th>
@@ -171,6 +178,12 @@ export default function ServiciosView() {
                         <tr>
                             <td>{servicio.nombre}</td>
                             <td>{servicio.descripcion}</td>
+                            <td>
+    {servicio.imagenUrl ? (
+        <img src={servicio.imagenUrl} alt={servicio.nombre} style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
+    ) : "N/A"}
+</td>
+
                             <td>${servicio.precioAseguradora}</td>
                             <td>{servicio.hospitalAprobado?.nombre || "N/A"}</td>
                             <td>{servicio.servicioPadre && servicio.servicioPadre.nombre ? servicio.servicioPadre.nombre : "N/A"}</td>

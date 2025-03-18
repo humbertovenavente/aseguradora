@@ -6,7 +6,7 @@ const router = express.Router();
 
 // ✅ Crear un nuevo servicio (puede ser un servicio principal o subservicio)
 router.post('/', async (req, res) => {
-    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre } = req.body;
+    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl  } = req.body;
 
     try {
         // Verificar que el hospital exista
@@ -21,7 +21,8 @@ router.post('/', async (req, res) => {
             descripcion,
             precioAseguradora,
             hospitalAprobado,
-            servicioPadre: servicioPadre || null
+            servicioPadre: servicioPadre || null,
+            imagenUrl // 📌 Se guarda la URL de la imagen
         });
 
         // Si el servicio tiene un padre, actualizarlo para agregar este subservicio
@@ -43,7 +44,8 @@ router.get('/', async (req, res) => {
     try {
         const servicios = await Servicio.find()
     .populate("servicioPadre", "nombre") // 🔹 Trae el nombre del servicio padre si existe
-    .populate("hospitalAprobado", "nombre direccion"); // 🔹 También trae el hospital aprobado
+    .populate("hospitalAprobado", "nombre direccion")
+    .select("nombre descripcion precioAseguradora hospitalAprobado servicioPadre imagenUrl"); // 📌 Incluir imagen
 
 
         res.json(servicios);
@@ -72,7 +74,7 @@ router.get('/:id', async (req, res) => {
 
 // ✏️ Actualizar un servicio
 router.put('/:id', async (req, res) => {
-    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre } = req.body;
+    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl  } = req.body;
 
     try {
         if (hospitalAprobado) {
@@ -84,7 +86,7 @@ router.put('/:id', async (req, res) => {
 
         const servicioActualizado = await Servicio.findByIdAndUpdate(
             req.params.id,
-            { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre },
+            { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl  },
             { new: true }
         );
 

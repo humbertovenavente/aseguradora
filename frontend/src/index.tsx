@@ -23,6 +23,7 @@ import ContactoView from "./views/ContactoView";
 import HospitalesAView from "./views/HospitalesAView";
 import HospitalesView from "./views/HospitalesView";
 import ServiciosView from "./views/ServiciosView";
+import CatalogoServicios from "./views/CatalogoServicios.jsx";
 import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
 import SegurosView from "./views/SegurosView";
@@ -44,6 +45,7 @@ render(() => (
             <Route path="/" component={Home} />
             <Route path="/subhome1" component={SubhomeView} />
             <Route path="/subhome2" component={Subhome2View} />
+            <Route path="/catalogo" component={CatalogoServicios} />
             <Route path="/historia" component={HistoriaView} />
             <Route path="/testimonios" component={TestimoniosView} />
             <Route path="/proveedores" component={RedProveedores} />
