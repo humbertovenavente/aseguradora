@@ -4,25 +4,32 @@ import Hospital from '../models/Hospital.js';
 
 const router = express.Router();
 
-// ✅ Crear un nuevo servicio
+// ✅ Crear un nuevo servicio (puede ser un servicio principal o subservicio)
 router.post('/', async (req, res) => {
-    const { nombre, descripcion, categoria, subcategoria, precio, hospital } = req.body;
+    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre } = req.body;
 
     try {
         // Verificar que el hospital exista
-        const hospitalExistente = await Hospital.findById(hospital);
+        const hospitalExistente = await Hospital.findById(hospitalAprobado);
         if (!hospitalExistente) {
             return res.status(404).json({ mensaje: "Hospital no encontrado." });
         }
 
+        // Crear el nuevo servicio
         const nuevoServicio = await Servicio.create({
             nombre,
             descripcion,
-            categoria,
-            subcategoria,
-            precio,
-            hospital
+            precioAseguradora,
+            hospitalAprobado,
+            servicioPadre: servicioPadre || null
         });
+
+        // Si el servicio tiene un padre, actualizarlo para agregar este subservicio
+        if (servicioPadre) {
+            await Servicio.findByIdAndUpdate(servicioPadre, {
+                $push: { subservicios: nuevoServicio._id }
+            });
+        }
 
         res.status(201).json({ mensaje: "Servicio creado exitosamente.", servicio: nuevoServicio });
     } catch (error) {
@@ -30,23 +37,33 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📄 Listar todos los servicios con información del hospital
+// 📄 Listar todos los servicios principales con sus subservicios y hospital asociado
+// 📄 Listar todos los servicios principales con sus subservicios y hospital asociado
 router.get('/', async (req, res) => {
     try {
-        const servicios = await Servicio.find().populate('hospital', 'nombre direccion');
+        const servicios = await Servicio.find()
+    .populate("servicioPadre", "nombre") // 🔹 Trae el nombre del servicio padre si existe
+    .populate("hospitalAprobado", "nombre direccion"); // 🔹 También trae el hospital aprobado
+
+
         res.json(servicios);
     } catch (error) {
         res.status(500).json({ mensaje: "Error al obtener los servicios", error: error.message });
     }
 });
 
-// 🔍 Obtener un servicio por ID
+
+// 🔍 Obtener un servicio por ID con sus subservicios
 router.get('/:id', async (req, res) => {
     try {
-        const servicio = await Servicio.findById(req.params.id).populate('hospital', 'nombre direccion');
+        const servicio = await Servicio.findById(req.params.id)
+            .populate('subservicios', 'nombre descripcion precioAseguradora')
+            .populate('hospitalAprobado', 'nombre direccion');
+
         if (!servicio) {
             return res.status(404).json({ mensaje: "Servicio no encontrado." });
         }
+
         res.json(servicio);
     } catch (error) {
         res.status(500).json({ mensaje: "Error al obtener el servicio", error: error.message });
@@ -55,11 +72,11 @@ router.get('/:id', async (req, res) => {
 
 // ✏️ Actualizar un servicio
 router.put('/:id', async (req, res) => {
-    const { nombre, descripcion, categoria, subcategoria, precio, hospital } = req.body;
+    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre } = req.body;
 
     try {
-        if (hospital) {
-            const hospitalExistente = await Hospital.findById(hospital);
+        if (hospitalAprobado) {
+            const hospitalExistente = await Hospital.findById(hospitalAprobado);
             if (!hospitalExistente) {
                 return res.status(404).json({ mensaje: "Hospital no encontrado." });
             }
@@ -67,7 +84,7 @@ router.put('/:id', async (req, res) => {
 
         const servicioActualizado = await Servicio.findByIdAndUpdate(
             req.params.id,
-            { nombre, descripcion, categoria, subcategoria, precio, hospital },
+            { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre },
             { new: true }
         );
 
@@ -81,14 +98,25 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar un servicio
+// ❌ Eliminar un servicio y actualizar su servicio padre
 router.delete('/:id', async (req, res) => {
     try {
-        const servicioEliminado = await Servicio.findByIdAndDelete(req.params.id);
-        if (!servicioEliminado) {
+        const servicio = await Servicio.findById(req.params.id);
+        if (!servicio) {
             return res.status(404).json({ mensaje: "Servicio no encontrado." });
         }
+
+        // Si el servicio tiene un servicio padre, removerlo de la lista de subservicios
+        if (servicio.servicioPadre) {
+            await Servicio.findByIdAndUpdate(servicio.servicioPadre, {
+                $pull: { subservicios: servicio._id }
+            });
+        }
+
+        // Eliminar el servicio
+        await Servicio.findByIdAndDelete(req.params.id);
         res.json({ mensaje: "Servicio eliminado correctamente." });
+
     } catch (error) {
         res.status(500).json({ mensaje: "Error al eliminar el servicio", error: error.message });
     }
