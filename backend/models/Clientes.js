@@ -23,32 +23,22 @@ const HistorialServicioSchema = new mongoose.Schema({
   numeroAutorizacion: { type: String }
 }, { _id: false });
 
-/**
- * Esquema principal de "Cliente" en la Aseguradora
- */
 const ClienteSchema = new mongoose.Schema({
-  // Datos personales
   nombre: { type: String, required: true },
   apellido: { type: String },
   documento: { type: String, required: true, unique: true },
   telefono: { type: String },
-  email: { type: String },
   fechaNacimiento: { type: Date },
   direccion: { type: String },
-  // Información de la póliza
+
   numeroAfiliacion: { type: String, required: true, unique: true },
-
-  polizaId: { type: mongoose.Schema.Types.ObjectId, ref: "Poliza"},
+  polizaId: { type: mongoose.Schema.Types.ObjectId, ref: "Poliza" },
   polizaNombre: { type: String, required: true },
-
   fechaVencimiento: { type: Date },
   estadoPago: { type: Boolean, default: false },
-  // Campo global para rechazar recetas/servicios menores a cierto monto
   montoMinimoCobertura: { type: Number, default: 250.0 },
-  // Historial de servicios (lo que el cliente ya usó)
-  historialServicios: [HistorialServicioSchema]
+
+  usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true }
 }, { timestamps: true });
 
-// Exportamos como default para ES Modules
-export default mongoose.model('Cliente', ClienteSchema);
-
+export default mongoose.model("Cliente", ClienteSchema);

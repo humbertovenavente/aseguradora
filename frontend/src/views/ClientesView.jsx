@@ -19,24 +19,32 @@ const ClientesView = () => {
     
     // Indica si estamos creando o editando
     const [isEdit, setIsEdit] = createSignal(false);
+
+    const [usuarioActual, setUsuarioActual] = createSignal({
+      correo: "",
+      contrasena: "",
+      rol_id: "67d652411d30a899ff50a40e" // ID de rol cliente
+    });
+    
     
     // Datos del cliente actual (para crear/editar)
     // Se elimina tipoPoliza y porcentajeCobertura, y se agrega polizaId
     const [clienteActual, setClienteActual] = createSignal({
-      nombre: "",
-      apellido: "",
-      documento: "",
-      telefono: "",
-      email: "",
-      fechaNacimiento: "",
-      direccion: "",
-      numeroAfiliacion: "",
-      polizaId: "", // Referencia a la póliza seleccionada
-      fechaVencimiento: "",
-      estadoPago: false,
-      montoMinimoCobertura: 250,
-      historialServicios: []
-    });
+  nombre: "",
+  apellido: "",
+  documento: "",
+  telefono: "",
+  fechaNacimiento: "",
+  direccion: "",
+  numeroAfiliacion: "",
+  polizaId: "",
+  polizaNombre: "",
+  fechaVencimiento: "",
+  estadoPago: false,
+  montoMinimoCobertura: 250,
+  historialServicios: []
+});
+
   
     // Funciones para el historial de servicios (se mantienen igual)
     const addService = () => {
@@ -72,15 +80,16 @@ const ClientesView = () => {
       await cargarClientes();
       await cargarPolizas();
     });
-  
     const cargarClientes = async () => {
       try {
         const data = await obtenerClientes();
+        console.log("📥 Clientes recibidos:", data); // 👈 Esto te dirá si historialServicios existe o no
         setClientes(data);
       } catch (error) {
         console.error("Error al obtener clientes:", error);
       }
     };
+    
   
     const cargarPolizas = async () => {
       try {
@@ -99,43 +108,64 @@ const ClientesView = () => {
         apellido: "",
         documento: "",
         telefono: "",
-        email: "",
         fechaNacimiento: "",
         direccion: "",
         numeroAfiliacion: "",
-        polizaId: "", // vacío para nuevo cliente
+        polizaId: "",
         polizaNombre: "",
         fechaVencimiento: "",
         estadoPago: false,
         montoMinimoCobertura: 250,
         historialServicios: []
       });
+    
+      setUsuarioActual({
+        correo: "",
+        contrasena: "",
+        rol_id: "67d652411d30a899ff50a40e" // Rol Cliente
+      });
+    
       setShowModal(true);
     };
+    
   
     // Abrir modal para editar
     const abrirModalEditar = (cliente) => {
       setIsEdit(true);
       setClienteActual({ ...cliente });
+    
+      setUsuarioActual({
+        correo: cliente.usuarioId?.correo || "", 
+        contrasena: cliente.usuarioId?.contrasena || "", // No cargamos la contraseña por seguridad
+        rol_id: "67d652411d30a899ff50a40e"
+      });
+    
       setShowModal(true);
     };
+    
   
     // Guardar (crear o actualizar)
     const guardarCliente = async (e) => {
       e.preventDefault();
       try {
+        const clienteData = { ...clienteActual() };
+        const usuarioData = { ...usuarioActual() };
+    
+        console.log("📤 Enviando datos:", { ...clienteData, ...usuarioData });
+    
         if (isEdit()) {
-          await actualizarCliente(clienteActual()._id, clienteActual());
+          await actualizarCliente(clienteActual()._id, { ...clienteData, ...usuarioData });
         } else {
-          await crearCliente(clienteActual());
+          await crearCliente({ ...clienteData, ...usuarioData });
         }
+    
         setShowModal(false);
         await cargarClientes();
       } catch (error) {
-        console.error("Error al guardar cliente:", error);
+        console.error(" Error al guardar cliente:", error);
       }
     };
-  
+    
     // Eliminar un cliente
     const handleEliminar = async (id) => {
       if (confirm("¿Estás seguro de eliminar este cliente?")) {
@@ -165,6 +195,9 @@ const ClientesView = () => {
   <thead>
     <tr>
       <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Correo</th>
+      <th>Contrasena</th>
       <th>Documento</th>
       <th>Póliza</th>
       <th>Vencimiento</th>
@@ -176,7 +209,11 @@ const ClientesView = () => {
     {clientes().map((cli) => (
       <>
               <tr key={cli._id}>
-                <td>{cli.nombre} {cli.apellido}</td>
+                <td>{cli.nombre} </td>
+                <td> {cli.apellido}</td>
+                <td> {cli.usuarioId?.correo || "Sin correo"}</td>
+                <td> {cli.usuarioId?.contrasena || "No disponible"}</td>
+
                 <td>{cli.documento}</td>
                 <td>
                   {cli.polizaNombre}
@@ -218,16 +255,38 @@ const ClientesView = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {cli.historialServicios.map((servicio, index) => (
-                          <tr key={index}>
-                            <td>{servicio.hospital}</td>
-                            <td>{servicio.servicio}</td>
-                            <td>{new Date(servicio.fechaServicio).toLocaleDateString()}</td>
-                            <td>{servicio.costo}</td>
-                            <td>{servicio.copago}</td>
-                            <td>{servicio.comentarios}</td>
-                          </tr>
-                        ))}
+                      {Array.isArray(cli.historialServicios) && cli.historialServicios.length > 0 && (
+  <tr key={`${cli._id}-historial`}>
+    <td colSpan="6">
+      <h6>Historial de Servicios</h6>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Hospital</th>
+            <th>Servicio</th>
+            <th>Fecha</th>
+            <th>Costo</th>
+            <th>Copago</th>
+            <th>Comentarios</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cli.historialServicios.map((servicio, index) => (
+            <tr key={index}>
+              <td>{servicio.hospital}</td>
+              <td>{servicio.servicio}</td>
+              <td>{new Date(servicio.fechaServicio).toLocaleDateString()}</td>
+              <td>{servicio.costo}</td>
+              <td>{servicio.copago}</td>
+              <td>{servicio.comentarios}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </td>
+  </tr>
+)}
+
                       </tbody>
                     </table>
                   </td>
@@ -275,7 +334,27 @@ const ClientesView = () => {
                       value={clienteActual().apellido}
                       onInput={(e) => handleChange("apellido", e.target.value)}
                     />
-                  </div>
+                    </div>
+                    <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input
+  type="text"
+  class="form-control"
+  value={usuarioActual().correo}  
+  onInput={(e) => setUsuarioActual({ ...usuarioActual(), correo: e.target.value })}
+  required
+/>
+</div>
+<div class="mb-3">
+<label class="form-label">Contrasena</label>
+<input
+  type="password"
+  class="form-control"
+  value={usuarioActual().contrasena}  
+  onInput={(e) => setUsuarioActual({ ...usuarioActual(), contrasena: e.target.value })}
+  required
+/>
+</div>
                   <div class="mb-3">
                     <label class="form-label">Documento</label>
                     <input
