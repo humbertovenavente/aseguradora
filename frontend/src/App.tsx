@@ -46,6 +46,7 @@ export default function App(props: any) {
                     </div>
                     <div class="offcanvas-body">
                         {isLoggedIn() && <A href="/users">Users</A>}
+                        {userRole() === "admin" && <A href="/operadoras">Operadoras</A>}
                         {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
                         {userRole() === "admin" && <A href="/clientes">Clientes</A>}    
                         {userRole() === "admin" && <A href="/pagos">Pagos</A>}
