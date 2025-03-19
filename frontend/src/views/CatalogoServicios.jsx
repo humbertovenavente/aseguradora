@@ -1,70 +1,99 @@
 import { createSignal, onMount } from "solid-js";
+import { useNavigate, useParams } from "@solidjs/router";
 import { obtenerServicios } from "../services/servicioService";
-import { obtenerHospitales } from "../services/hospitalService";
 
 export default function CatalogoServicios() {
-    const [servicios, setServicios] = createSignal([]);
-    const [hospitales, setHospitales] = createSignal([]);
-    const [categorias, setCategorias] = createSignal([]);
-    const [filtroHospital, setFiltroHospital] = createSignal("");
-    const [filtroCategoria, setFiltroCategoria] = createSignal("");
+    const [servicios, setServicios] = createSignal([]);  
+    const [categorias, setCategorias] = createSignal([]); 
+    const [subcategorias, setSubcategorias] = createSignal([]); 
+    const params = useParams(); 
+    const navigate = useNavigate(); 
 
-    // Cargar servicios y hospitales al montar
+    // Cargar servicios al montar
     onMount(async () => {
         try {
             const serviciosData = await obtenerServicios();
-            const hospitalesData = await obtenerHospitales();
-            const hospitalesFiltrados = hospitalesData.filter(h => h.convenioActivo);
 
+            // 🔹 Filtrar solo categorías principales
+            const categoriasPrincipales = serviciosData.filter(servicio => servicio.servicioPadre === null);
+            setCategorias(categoriasPrincipales);
             setServicios(serviciosData);
-            setHospitales(hospitalesFiltrados);
-            setCategorias([...new Set(serviciosData.map(s => s.servicioPadre?.nombre).filter(Boolean))]);
+
+            // Si hay un ID en la URL, filtrar sus subcategorías
+            if (params.id) {
+                const subcategoriasFiltradas = serviciosData.filter(servicio => servicio.servicioPadre?._id === params.id);
+                setSubcategorias(subcategoriasFiltradas);
+            }
         } catch (error) {
             console.error("Error al cargar catálogo:", error);
         }
     });
 
-    // Filtrado dinámico
-    const serviciosFiltrados = () => {
-        return servicios().filter(servicio => 
-            (!filtroHospital() || servicio.hospitalAprobado?._id === filtroHospital()) &&
-            (!filtroCategoria() || servicio.servicioPadre?.nombre === filtroCategoria())
-        );
+    // 🔹 Función para cambiar la URL y cargar subcategorías
+    const verSubcategorias = (categoriaId) => {
+        navigate(`/catalogo/${categoriaId}`, { replace: true });
+        const subcategoriasFiltradas = servicios().filter(servicio => servicio.servicioPadre?._id === categoriaId);
+        setSubcategorias(subcategoriasFiltradas);
+    };
+
+    // 🔹 Función para regresar al catálogo principal
+    const volverAlCatalogo = () => {
+        navigate("/catalogo", { replace: true });
+        setSubcategorias([]);
     };
 
     return (
         <div class="container mt-4">
             <h2 class="text-center mb-4">Catálogo de Servicios</h2>
-            <div class="d-flex justify-content-between mb-4">
-                <select class="form-select me-2" onChange={(e) => setFiltroHospital(e.target.value)}>
-                    <option value="">Todos los Hospitales</option>
-                    {hospitales().map(hospital => (
-                        <option value={hospital._id}>{hospital.nombre}</option>
-                    ))}
-                </select>
-                <select class="form-select" onChange={(e) => setFiltroCategoria(e.target.value)}>
-                    <option value="">Todas las Categorías</option>
-                    {categorias().map(categoria => (
-                        <option value={categoria}>{categoria}</option>
-                    ))}
-                </select>
-            </div>
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {serviciosFiltrados().map(servicio => (
-                    <div class="col" key={servicio._id}>
-                        <div class="card h-100 shadow-sm">
-                            <img src={servicio.imagenUrl || "https://via.placeholder.com/150"} class="card-img-top" alt={servicio.nombre} />
-                            <div class="card-body">
-                                <h5 class="card-title">{servicio.nombre}</h5>
-                                <p class="card-text">{servicio.descripcion}</p>
-                                <p class="text-primary fw-bold">${servicio.precioAseguradora}</p>
-                                <p><strong>Hospital:</strong> {servicio.hospitalAprobado?.nombre || "N/A"}</p>
-                                <p><strong>Categoría:</strong> {servicio.servicioPadre?.nombre || "N/A"}</p>
+
+            {/* 🔹 Mostrar categorías principales si no hay subcategorías */}
+            {subcategorias().length === 0 && (
+                <div>
+                    <h3>Categorías</h3>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {categorias().map(categoria => (
+                            <div class="col" key={categoria._id}>
+                                <div class="card h-100 shadow-sm">
+                                    <img src={categoria.imagenUrl || "https://via.placeholder.com/150"} class="card-img-top" alt={categoria.nombre} />
+                                    <div class="card-body">
+                                        <h5 class="card-title">nombre: {categoria.nombre}</h5>
+                                        <p class="card-text"><strong>descripción:</strong> {categoria.descripcion}</p>
+                                        <p><strong>Precio Aseguradora:</strong> ${categoria.precioAseguradora}</p>
+                                        <p><strong>Hospital:</strong> {categoria.hospitalAprobado?.nombre || "N/A"}</p>
+                                        <button class="btn btn-primary" onClick={() => verSubcategorias(categoria._id)}>
+                                            Ver más
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
+
+            {/* 🔹 Mostrar subcategorías si hay una categoría seleccionada */}
+            {subcategorias().length > 0 && (
+                <div>
+                    <button class="btn btn-secondary mb-3" onClick={volverAlCatalogo}>Volver</button>
+                    <h3>Subcategorías</h3>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {subcategorias().map(subcategoria => (
+                            <div class="col" key={subcategoria._id}>
+                                <div class="card h-100 shadow-sm">
+                                    <img src={subcategoria.imagenUrl || "https://via.placeholder.com/150"} class="card-img-top" alt={subcategoria.nombre} />
+                                    <div class="card-body">
+                                        <h5 class="card-title">nombre: {subcategoria.nombre}</h5>
+                                        <p class="card-text"><strong>descripción:</strong> {subcategoria.descripcion}</p>
+                                        <p><strong>Precio Aseguradora:</strong> ${subcategoria.precioAseguradora}</p>
+                                        <p><strong>Hospital:</strong> {subcategoria.hospitalAprobado?.nombre || "N/A"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+

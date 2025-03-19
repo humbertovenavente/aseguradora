@@ -46,6 +46,7 @@ render(() => (
             <Route path="/subhome1" component={SubhomeView} />
             <Route path="/subhome2" component={Subhome2View} />
             <Route path="/catalogo" component={CatalogoServicios} />
+            <Route path="/catalogo/:id" component={CatalogoServicios} />
             <Route path="/historia" component={HistoriaView} />
             <Route path="/testimonios" component={TestimoniosView} />
             <Route path="/proveedores" component={RedProveedores} />
