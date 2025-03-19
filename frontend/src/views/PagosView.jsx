@@ -1,31 +1,46 @@
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import {
   obtenerPagos,
-  obtenerPagoPorId,
   obtenerPagosPorCliente,
   crearPago,
   actualizarPago,
   eliminarPago,
 } from "../services/pagoService";
+import { obtenerClientes } from "../services/clientesService";
+import { obtenerPolizas } from "../services/polizasService";
 
 export default function PagosView() {
   const [pagos, setPagos] = createSignal([]);
-  const [form, setForm] = createSignal({
-    cliente_id: "",
-    poliza_id: "",
-    monto: 0,
-  });
+  const [clientes, setClientes] = createSignal([]);
+  const [polizas, setPolizas] = createSignal([]);
   const [editId, setEditId] = createSignal(null);
   const [filtroCliente, setFiltroCliente] = createSignal("");
-  
 
-  createEffect(() => {
-    cargarPagos();
+  const [form, setForm] = createSignal({
+    clienteCorreo: "",
+    polizaNombre: "",
+    monto: 0,
+  });
+
+  onMount(async () => {
+    await cargarPagos();
+    await cargarClientes();
+    await cargarPolizas();
   });
 
   const cargarPagos = async () => {
     const datos = await obtenerPagos();
     setPagos(datos);
+  };
+
+  const cargarClientes = async () => {
+    const datos = await obtenerClientes();
+    setClientes(datos);
+  };
+
+  const cargarPolizas = async () => {
+    const datos = await obtenerPolizas();
+    setPolizas(datos);
   };
 
   const handleChange = (e) => {
@@ -37,20 +52,35 @@ export default function PagosView() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editId()) {
-      await actualizarPago(editId(), form());
-      setEditId(null);
-    } else {
-      await crearPago(form());
+    if (!form().clienteCorreo || !form().polizaNombre) {
+      alert("Debe seleccionar un cliente y una póliza antes de crear el pago.");
+      return;
     }
-    setForm({ cliente_id: "", poliza_id: "", monto: 0 });
-    cargarPagos();
+
+    const pagoData = {
+      clienteCorreo: form().clienteCorreo,
+      polizaNombre: form().polizaNombre,
+      monto: form().monto,
+    };
+
+    try {
+      if (editId()) {
+        await actualizarPago(editId(), pagoData);
+        setEditId(null);
+      } else {
+        await crearPago(pagoData);
+      }
+      setForm({ clienteCorreo: "", polizaNombre: "", monto: 0 });
+      cargarPagos();
+    } catch (error) {
+      alert(`Error al procesar el pago: ${error.response?.data?.mensaje || "Verifique los datos ingresados."}`);
+    }
   };
 
   const handleEdit = (pago) => {
     setForm({
-      cliente_id: pago.cliente_id?._id || "",
-      poliza_id: pago.poliza_id?._id || "",
+      clienteCorreo: pago.cliente_id?.usuarioId?.correo || pago.clienteCorreo || "",
+      polizaNombre: pago.poliza_id?.nombre || "",
       monto: pago.monto,
     });
     setEditId(pago._id);
@@ -68,70 +98,46 @@ export default function PagosView() {
     setPagos(datos);
   };
 
-
   return (
     <div class="container py-4">
       <h2 class="text-center mb-4">Gestión de Pagos</h2>
 
       <form onSubmit={handleSubmit} class="card p-4 shadow-sm mb-4">
+        {/* 🔽 Dropdown para seleccionar correo del cliente */}
         <div class="mb-3">
-          <label class="form-label">ID del Cliente</label>
-          <input
-            type="text"
-            name="cliente_id"
-            value={form().cliente_id}
-            onInput={handleChange}
-            class="form-control"
-            required
-          />
+          <label class="form-label">Correo del Cliente</label>
+          <select name="clienteCorreo" value={form().clienteCorreo} onChange={handleChange} class="form-control" required>
+            <option value="">Seleccione un cliente</option>
+            {clientes().map((cliente) => (
+              <option value={cliente.usuarioId.correo}>
+                {cliente.nombre} ({cliente.usuarioId.correo})
+              </option>
+            ))}
+          </select>
         </div>
+
+        {/* 🔽 Dropdown para seleccionar póliza */}
         <div class="mb-3">
-          <label class="form-label">ID de la Póliza</label>
-          <input
-            type="text"
-            name="poliza_id"
-            value={form().poliza_id}
-            onInput={handleChange}
-            class="form-control"
-            required
-          />
+          <label class="form-label">Póliza</label>
+          <select name="polizaNombre" value={form().polizaNombre} onChange={handleChange} class="form-control" required>
+            <option value="">Seleccione una póliza</option>
+            {polizas().map((poliza) => (
+              <option value={poliza.nombre}>
+                {poliza.nombre} ({poliza.tipoCobertura})
+              </option>
+            ))}
+          </select>
         </div>
+
         <div class="mb-3">
           <label class="form-label">Monto</label>
-          <input
-            type="number"
-            name="monto"
-            value={form().monto}
-            onInput={handleChange}
-            class="form-control"
-            required
-          />
+          <input type="number" name="monto" value={form().monto} onInput={handleChange} class="form-control" required />
         </div>
+
         <button type="submit" class="btn btn-primary w-100">
           {editId() ? "Actualizar Pago" : "Crear Pago"}
         </button>
       </form>
-
-      <div class="card p-4 shadow-sm mb-4">
-        <h5>Filtrar Pagos</h5>
-        <div class="row">
-          <div class="col">
-            <input
-              type="text"
-              placeholder="ID del Cliente"
-              value={filtroCliente()}
-              onInput={(e) => setFiltroCliente(e.target.value)}
-              class="form-control"
-            />
-            <button
-              class="btn btn-info mt-2"
-              onClick={filtrarPorCliente}
-            >
-              Filtrar por Cliente
-            </button>
-          </div>
-        </div>
-      </div>
 
       <h3 class="mb-3">Lista de Pagos</h3>
       <div class="table-responsive">
@@ -147,32 +153,20 @@ export default function PagosView() {
             </tr>
           </thead>
           <tbody>
-          {pagos().map((pago) => (
-  <tr key={pago._id}>
-    <td>{pago.cliente_id.nombre || "Desconocido"}</td>
-    <td>{pago.poliza_id?.nombre || "Desconocido"}</td>
-    <td>{pago.monto}</td>
-    <td>{pago.estado_pago}</td>
-    <td>{pago.motivo_rechazo || "-"}</td>
-    <td>
-      <button
-        class="btn btn-warning btn-sm me-2"
-        onClick={() => handleEdit(pago)}
-      >
-        Editar
-      </button>
-      <button
-        class="btn btn-danger btn-sm"
-        onClick={() => handleDelete(pago._id)}
-      >
-        Eliminar
-      </button>
-    </td>
-  </tr>
-))}
-
-</tbody>
-
+            {pagos().map((pago) => (
+              <tr key={pago._id}>
+                <td>{pago.cliente_id?.nombre || "Desconocido"}</td>
+                <td>{pago.poliza_id?.nombre || "Desconocido"}</td>
+                <td>{pago.monto}</td>
+                <td>{pago.monto >= 250 ? "aceptado" : "rechazado"}</td>
+                <td>{pago.monto < 250 ? "Monto inferior al mínimo de cobertura." : "-"}</td>
+                <td>
+                  <button class="btn btn-warning btn-sm me-2" onClick={() => handleEdit(pago)}>Editar</button>
+                  <button class="btn btn-danger btn-sm" onClick={() => handleDelete(pago._id)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
