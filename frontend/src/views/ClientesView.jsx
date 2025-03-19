@@ -199,6 +199,8 @@ const ClientesView = () => {
       <th>Correo</th>
       <th>Contrasena</th>
       <th>Documento</th>
+      <th>Fecha de nacimiento</th>
+      <th>Direccion</th>
       <th>Póliza</th>
       <th>Vencimiento</th>
       <th>Estado Pago</th>
@@ -215,6 +217,8 @@ const ClientesView = () => {
                 <td> {cli.usuarioId?.contrasena || "No disponible"}</td>
 
                 <td>{cli.documento}</td>
+                <td>{cli.fechaNacimiento}</td>
+                <td>{cli.direccion}</td>
                 <td>
                   {cli.polizaNombre}
                   {/* Si usas populate, aquí podrías mostrar polizaId.nombre */}
@@ -364,6 +368,27 @@ const ClientesView = () => {
                       value={clienteActual().documento}
                       onInput={(e) => handleChange("documento", e.target.value)}
                     />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Fecha nacimiento</label>
+                    <input
+                     type="date"
+                      class="form-control"
+                      required
+                      value={clienteActual().fechaNacimiento}
+                      onInput={(e) => handleChange("fechaNacimiento", e.target.value)}
+                    />
+
+                  <div class="mb-3">
+                    <label class="form-label">Direccion</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      required
+                      value={clienteActual().direccion}
+                      onInput={(e) => handleChange("direccion", e.target.value)}
+                    />
+                  </div>
                   </div>
                   <div class="mb-3">
                     <label class="form-label">Número de Afiliación</label>
