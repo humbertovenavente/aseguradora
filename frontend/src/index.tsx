@@ -28,6 +28,8 @@ import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
 import SegurosView from "./views/SegurosView";
 import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
+import FichaTecnicaView from "./views/FichaTecnicaView";
+import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -62,6 +64,9 @@ render(() => (
             <Route path="/coberturas" component={requireRole("admin", CoberturasView)} />
             <Route path="/hospitales" component={requireRole("admin", HospitalesView)} />
             <Route path="/seguros" component={requireRole("admin", SegurosView)} />
+            <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
+            <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
+
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
             <Route path="*" component={NotFound} />

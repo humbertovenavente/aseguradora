@@ -10,14 +10,14 @@ import {obtenerHospitales} from "../services/hospitalService";
 
 export default function ServiciosView() {
     const [servicios, setServicios] = createSignal([]);
-    const [categorias, setCategorias] = createSignal([]); // 🔹 Lista de categorías (servicios principales)
-    const [hospitales, setHospitales] = createSignal([]); // 🔹 Lista de hospitales para el dropdown
+    const [categorias, setCategorias] = createSignal([]); //  Lista de categorías (servicios principales)
+    const [hospitales, setHospitales] = createSignal([]); // Lista de hospitales para el dropdown
     const [formData, setFormData] = createSignal({
         nombre: "",
         descripcion: "",
         precioAseguradora: "",
         hospitalAprobado: "",
-        servicioPadre: null, // 🔹 Inicialmente null (sin categoría)
+        servicioPadre: null, //  Inicialmente null (sin categoría)
         imagenUrl: "" 
     });
     const [editId, setEditId] = createSignal(null);
@@ -30,7 +30,7 @@ export default function ServiciosView() {
             const hospitalesData = await obtenerHospitales();
              const hospitalesFiltrados = hospitalesData.filter(hospital => hospital.convenioActivo === true);
 
-            console.log("📌 Servicios obtenidos:", data); // 👀 Verificar la respuesta
+            console.log(" Servicios obtenidos:", data); //  Verificar la respuesta
             setHospitales(hospitalesFiltrados);
             setServicios(data); // 🔹 Guardar TODOS los servicios en la tabla
             setCategorias(data.filter(servicio => servicio.servicioPadre === null)); // 🔹 Filtrar solo categorías principales
@@ -69,7 +69,7 @@ export default function ServiciosView() {
                 servicioPadre: formData().servicioPadre || null // 🔹 Asegurar que se envía correctamente
             };
 
-            console.log("📌 Enviando datos al backend:", servicioData); // 👀 Debug
+            console.log("Enviando datos al backend:", servicioData); // 👀 Debug
 
             if (editId()) {
                 await actualizarServicio(editId(), servicioData);
@@ -83,7 +83,7 @@ export default function ServiciosView() {
             setError(null);
         } catch (err) {
             setError("Error al guardar el servicio.");
-            console.error("❌ Error en handleSubmit:", err.response?.data || err.message);
+            console.error("Error en handleSubmit:", err.response?.data || err.message);
         }
     };
 

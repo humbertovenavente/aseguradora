@@ -16,6 +16,9 @@ import categoriaRoutes from './routes/categoriaRoutes.js';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
 
+import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
+
+
 dotenv.config();
 
 const app = express();
@@ -34,6 +37,7 @@ app.use('/api/seguros', seguroRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
+app.use('/api/fichatecnica', fichaTecnicaRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

@@ -44,24 +44,24 @@ export default function CatalogoServicios() {
 
     return (
         <div class="container mt-4">
-            <h2 class="text-center mb-4">Catálogo de Servicios</h2>
+            <h2 class="text-center mb-4">Our Services</h2>
 
             {/* 🔹 Mostrar categorías principales si no hay subcategorías */}
             {subcategorias().length === 0 && (
                 <div>
-                    <h3>Categorías</h3>
+                    <h3>Services</h3>
                     <div class="row row-cols-1 row-cols-md-3 g-4">
                         {categorias().map(categoria => (
                             <div class="col" key={categoria._id}>
                                 <div class="card h-100 shadow-sm">
                                     <img src={categoria.imagenUrl || "https://via.placeholder.com/150"} class="card-img-top" alt={categoria.nombre} />
                                     <div class="card-body">
-                                        <h5 class="card-title">nombre: {categoria.nombre}</h5>
-                                        <p class="card-text"><strong>descripción:</strong> {categoria.descripcion}</p>
-                                        <p><strong>Precio Aseguradora:</strong> ${categoria.precioAseguradora}</p>
+                                        <h5 class="card-title">{categoria.nombre}</h5>
+                                        <p class="card-text"><strong></strong> {categoria.descripcion}</p>
+                                        <p><strong>Price:</strong> ${categoria.precioAseguradora}</p>
                                         <p><strong>Hospital:</strong> {categoria.hospitalAprobado?.nombre || "N/A"}</p>
                                         <button class="btn btn-primary" onClick={() => verSubcategorias(categoria._id)}>
-                                            Ver más
+                                            More
                                         </button>
                                     </div>
                                 </div>
