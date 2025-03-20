@@ -12,7 +12,7 @@ import hospitalRoutes from './routes/hospitalRoutes.js';
 import servicioRoutes from './routes/servicioRoutes.js';
 import seguroRoutes from './routes/seguroRoutes.js';
 import categoriaRoutes from './routes/categoriaRoutes.js';
-
+import empleadosRoutes from './routes/empleadosRoutes.js';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
 
@@ -33,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/coberturas', coberturaRoutes);
+app.use('/api/empleados', empleadosRoutes);
 app.use('/api/hospitales', hospitalRoutes);
 app.use('/api/servicios', servicioRoutes);
 app.use('/api/seguros', seguroRoutes);

@@ -31,6 +31,7 @@ import SegurosView from "./views/SegurosView";
 import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
+import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
@@ -50,6 +51,7 @@ render(() => (
             <Route path="/subhome1" component={SubhomeView} />
             <Route path="/subhome2" component={Subhome2View} />
             <Route path="/catalogo" component={CatalogoServicios} />
+            <Route path="/empleados" component={EmpleadosView} />          
             <Route path="/operadoras" component={OperadorasView} />
             <Route path="/catalogo/:id" component={CatalogoServicios} />
             <Route path="/historia" component={HistoriaView} />
