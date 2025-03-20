@@ -1,12 +1,14 @@
 import express from 'express';
 import Servicio from '../models/Servicio.js';
 import Hospital from '../models/Hospital.js';
+import Cobertura from '../models/Cobertura.js';
 
 const router = express.Router();
 
-// ✅ Crear un nuevo servicio (puede ser un servicio principal o subservicio)
+// Crear un nuevo servicio (puede ser un servicio principal o subservicio)
+
 router.post('/', async (req, res) => {
-    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl  } = req.body;
+    const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl } = req.body;
 
     try {
         // Verificar que el hospital exista
@@ -22,7 +24,7 @@ router.post('/', async (req, res) => {
             precioAseguradora,
             hospitalAprobado,
             servicioPadre: servicioPadre || null,
-            imagenUrl // 📌 Se guarda la URL de la imagen
+            imagenUrl
         });
 
         // Si el servicio tiene un padre, actualizarlo para agregar este subservicio
@@ -32,14 +34,18 @@ router.post('/', async (req, res) => {
             });
         }
 
-        res.status(201).json({ mensaje: "Servicio creado exitosamente.", servicio: nuevoServicio });
+        // Agregar este servicio a TODAS las coberturas
+        await Cobertura.updateMany({}, { $push: { servicios: nuevoServicio._id } });
+
+        res.status(201).json({ mensaje: "Servicio creado y agregado a todas las coberturas exitosamente.", servicio: nuevoServicio });
     } catch (error) {
         res.status(500).json({ mensaje: "Error al crear el servicio", error: error.message });
     }
 });
 
-// 📄 Listar todos los servicios principales con sus subservicios y hospital asociado
-// 📄 Listar todos los servicios principales con sus subservicios y hospital asociado
+
+// Listar todos los servicios principales con sus subservicios y hospital asociado
+// Listar todos los servicios principales con sus subservicios y hospital asociado
 router.get('/', async (req, res) => {
     try {
         const servicios = await Servicio.find()
@@ -55,7 +61,7 @@ router.get('/', async (req, res) => {
 });
 
 
-// 🔍 Obtener un servicio por ID con sus subservicios
+//  Obtener un servicio por ID con sus subservicios
 router.get('/:id', async (req, res) => {
     try {
         const servicio = await Servicio.findById(req.params.id)
@@ -72,7 +78,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar un servicio
+// Actualizar un servicio
 router.put('/:id', async (req, res) => {
     const { nombre, descripcion, precioAseguradora, hospitalAprobado, servicioPadre, imagenUrl  } = req.body;
 
@@ -100,7 +106,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar un servicio y actualizar su servicio padre
+// Eliminar un servicio y actualizar su servicio padre
 router.delete('/:id', async (req, res) => {
     try {
         const servicio = await Servicio.findById(req.params.id);
