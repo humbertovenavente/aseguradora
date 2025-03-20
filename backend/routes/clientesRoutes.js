@@ -183,6 +183,10 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+/////////////////ALERTA
+
+
+
 
 // este es solo para cuadno hospoital envie la informacion con los datos
 

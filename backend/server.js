@@ -17,6 +17,7 @@ import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
 
 import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
+import copagoRoutes from './routes/copagoRoutes.js';
 
 import citaRoutes from "./routes/citas.js";
 
@@ -42,6 +43,8 @@ app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
+app.use('/api/copagos', copagoRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

@@ -36,6 +36,7 @@ import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
 import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
+import Copago from "./views/copagoView";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -79,6 +80,7 @@ render(() => (
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
             <Route path="/citas" component={requireRole("admin", Citas)} /> 
+            <Route path="/copago" component={requireRole("admin", Copago)} /> 
 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

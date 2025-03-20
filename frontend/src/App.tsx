@@ -50,10 +50,13 @@ export default function App(props: any) {
                         {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
                         {userRole() === "admin" && <A href="/clientes">Clientes</A>}
                         {userRole() === "admin" && <A href="/historial-servicios">Historial de Servicios</A>}
-                        {userRole() === "admin" && <A href="/empleados">Empleados</A>}    
+                        {userRole() === "admin" && <A href="/empleados">Empleados</A>}
+                            
                         {userRole() === "admin" && <A href="/reportes">Reportes</A>}  
                         {userRole() === "admin" && <A href="/aprobacion">Aprobacion</A>}
                         {userRole() === "admin" && <A href="/pagos">Pagos</A>}
+                        {userRole() === "admin" && <A href="/copago">Copago</A>}
+
                         {userRole() === "admin" && <A href="/coberturas">Coberturas</A>}     
                         {userRole() === "admin" && <A href="/hospitales">Hospitales</A>} 
                         {userRole() === "admin" && <A href="/aprobacion-org">Aprobación Organizaciones</A>}     
