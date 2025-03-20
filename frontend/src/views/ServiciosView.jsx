@@ -6,39 +6,40 @@ import {
     actualizarServicio,
     eliminarServicio
 } from "../services/servicioService";
-import {obtenerHospitales} from "../services/hospitalService";
+import { obtenerHospitales } from "../services/hospitalService";
 
 export default function ServiciosView() {
     const [servicios, setServicios] = createSignal([]);
-    const [categorias, setCategorias] = createSignal([]); //  Lista de categorías (servicios principales)
+    const [categorias, setCategorias] = createSignal([]); // Lista de categorías (servicios principales)
     const [hospitales, setHospitales] = createSignal([]); // Lista de hospitales para el dropdown
     const [formData, setFormData] = createSignal({
         nombre: "",
         descripcion: "",
         precioAseguradora: "",
-        hospitalAprobado: "",
-        servicioPadre: null, //  Inicialmente null (sin categoría)
-        imagenUrl: "" 
+        hospitalesAprobados: [], // ✅ Ahora es un array de hospitales seleccionados
+        servicioPadre: null,
+        imagenUrl: ""
     });
     const [editId, setEditId] = createSignal(null);
     const [error, setError] = createSignal(null);
 
-    // 🔹 Función para cargar TODOS los servicios y las categorías
+    // 🔹 Función para cargar TODOS los servicios y categorías
     const cargarServicios = async () => {
         try {
             const data = await obtenerServicios();
             const hospitalesData = await obtenerHospitales();
-             const hospitalesFiltrados = hospitalesData.filter(hospital => hospital.convenioActivo === true);
+            const hospitalesFiltrados = hospitalesData.filter(hospital => hospital.convenioActivo === true);
 
-            console.log(" Servicios obtenidos:", data); //  Verificar la respuesta
+            console.log("Servicios obtenidos:", data);
             setHospitales(hospitalesFiltrados);
-            setServicios(data); // 🔹 Guardar TODOS los servicios en la tabla
-            setCategorias(data.filter(servicio => servicio.servicioPadre === null)); // 🔹 Filtrar solo categorías principales
+            setServicios(data);
+            setCategorias(data.filter(servicio => servicio.servicioPadre === null)); // Filtrar solo categorías principales
         } catch (err) {
             setError("Error al obtener los servicios.");
             console.error(err);
         }
     };
+
     // 🔹 Cargar los servicios y categorías al montar el componente
     onMount(cargarServicios);
 
@@ -48,15 +49,21 @@ export default function ServiciosView() {
         setFormData({ ...formData(), [name]: value });
     };
 
-    //manejo hospital
+    // 🔹 Manejar selección de hospitales con checkboxes
     const handleHospitalChange = (e) => {
-      setFormData({ ...formData(), hospitalAprobado: e.target.value });
-  };
-  
+        const selectedHospital = e.target.value;
+        const isChecked = e.target.checked;
+
+        const updatedHospitals = isChecked
+            ? [...formData().hospitalesAprobados, selectedHospital]
+            : formData().hospitalesAprobados.filter(id => id !== selectedHospital);
+
+        setFormData({ ...formData(), hospitalesAprobados: updatedHospitals });
+    };
 
     // 🔹 Manejar selección de categoría (servicio padre)
     const handleSelectChange = (e) => {
-        const value = e.target.value === "" ? null : e.target.value; // 🔹 Si es vacío, enviar null
+        const value = e.target.value === "" ? null : e.target.value;
         setFormData({ ...formData(), servicioPadre: value });
     };
 
@@ -64,9 +71,9 @@ export default function ServiciosView() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const servicioData = { 
-                ...formData(), 
-                servicioPadre: formData().servicioPadre || null // 🔹 Asegurar que se envía correctamente
+            const servicioData = {
+                ...formData(),
+                servicioPadre: formData().servicioPadre || null
             };
 
             console.log("Enviando datos al backend:", servicioData); // 👀 Debug
@@ -78,8 +85,8 @@ export default function ServiciosView() {
                 await crearServicio(servicioData);
             }
 
-            await cargarServicios(); // 🔹 Recargar servicios después de crear o actualizar
-            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalAprobado: "", servicioPadre: "" });
+            await cargarServicios();
+            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalesAprobados: [], servicioPadre: "" });
             setError(null);
         } catch (err) {
             setError("Error al guardar el servicio.");
@@ -103,7 +110,7 @@ export default function ServiciosView() {
     const handleDelete = async (id) => {
         try {
             await eliminarServicio(id);
-            await cargarServicios(); // 🔹 Recargar la tabla después de eliminar
+            await cargarServicios();
             setError(null);
         } catch (err) {
             setError("Error al eliminar el servicio.");
@@ -128,25 +135,34 @@ export default function ServiciosView() {
                     <textarea class="form-control" name="descripcion" placeholder="Descripción" value={formData().descripcion} onInput={handleChange} required></textarea>
                 </div>
                 <div class="mb-3">
-    <label class="form-label">URL de la Imagen</label>
-    <input class="form-control" name="imagenUrl" placeholder="URL de la imagen" value={formData().imagenUrl} onInput={handleChange} required />
-</div>
+                    <label class="form-label">URL de la Imagen</label>
+                    <input class="form-control" name="imagenUrl" placeholder="URL de la imagen" value={formData().imagenUrl} onInput={handleChange} required />
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label">Precio de la aseguradora por el servicio</label>
                     <input type="number" class="form-control" name="precioAseguradora" placeholder="Precio" value={formData().precioAseguradora} onInput={handleChange} required />
                 </div>
+
+                {/* Checkboxes para seleccionar hospitales */}
                 <div class="mb-3">
-                    <label class="form-label">Hospital Aprobado</label>
-                    <select class="form-select" name="hospitalAprobado" value={formData().hospitalAprobado} onChange={handleHospitalChange} required>
-    <option value="">Selecciona un hospital</option>
-    {hospitales().map((hospital) => (
-        <option value={hospital._id}>{hospital.nombre}</option>
-    ))}
-</select>
-
-
+                    <label class="form-label">Hospitales Aprobados</label>
+                    <div class="border p-2 rounded" style="max-height: 200px; overflow-y: auto;">
+                        {hospitales().map(hospital => (
+                            <div class="form-check" key={hospital._id}>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    value={hospital._id}
+                                    checked={formData().hospitalesAprobados.includes(hospital._id)}
+                                    onChange={handleHospitalChange}
+                                />
+                                <label class="form-check-label">{hospital.nombre}</label>
+                            </div>
+                        ))}
+                    </div>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">Categoría a la que pertenece</label>
                     <select class="form-select" name="servicioPadre" value={formData().servicioPadre || ""} onChange={handleSelectChange}>
@@ -168,7 +184,7 @@ export default function ServiciosView() {
                         <th>Descripción</th>
                         <th>Imagen</th>
                         <th>Precio</th>
-                        <th>Hospital</th>
+                        <th>Hospitales</th>
                         <th>Categoría</th>
                         <th>Acciones</th>
                     </tr>
@@ -178,15 +194,10 @@ export default function ServiciosView() {
                         <tr>
                             <td>{servicio.nombre}</td>
                             <td>{servicio.descripcion}</td>
-                            <td>
-    {servicio.imagenUrl ? (
-        <img src={servicio.imagenUrl} alt={servicio.nombre} style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
-    ) : "N/A"}
-</td>
-
+                            <td><img src={servicio.imagenUrl} alt={servicio.nombre} style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" /></td>
                             <td>${servicio.precioAseguradora}</td>
-                            <td>{servicio.hospitalAprobado?.nombre || "N/A"}</td>
-                            <td>{servicio.servicioPadre && servicio.servicioPadre.nombre ? servicio.servicioPadre.nombre : "N/A"}</td>
+                            <td>{servicio.hospitalesAprobados.map(hospital => hospital.nombre).join(", ")}</td>
+                            <td>{servicio.servicioPadre?.nombre || "N/A"}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm me-2" onClick={() => handleEdit(servicio._id)}>Editar</button>
                                 <button class="btn btn-danger btn-sm" onClick={() => handleDelete(servicio._id)}>Eliminar</button>
