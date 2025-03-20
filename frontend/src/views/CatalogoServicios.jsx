@@ -59,7 +59,12 @@ export default function CatalogoServicios() {
                                         <h5 class="card-title">{categoria.nombre}</h5>
                                         <p class="card-text"><strong></strong> {categoria.descripcion}</p>
                                         <p><strong>Price:</strong> ${categoria.precioAseguradora}</p>
-                                        <p><strong>Hospital:</strong> {categoria.hospitalAprobado?.nombre || "N/A"}</p>
+                                        <p><strong>Hospitales:</strong> 
+  {categoria.hospitalesAprobados && categoria.hospitalesAprobados.length > 0 
+    ? categoria.hospitalesAprobados.map(hospital => hospital.nombre).join(", ") 
+    : "N/A"}
+</p>
+
                                         <button class="btn btn-primary" onClick={() => verSubcategorias(categoria._id)}>
                                             More
                                         </button>
@@ -85,7 +90,12 @@ export default function CatalogoServicios() {
                                         <h5 class="card-title">nombre: {subcategoria.nombre}</h5>
                                         <p class="card-text"><strong>descripción:</strong> {subcategoria.descripcion}</p>
                                         <p><strong>Precio Aseguradora:</strong> ${subcategoria.precioAseguradora}</p>
-                                        <p><strong>Hospital:</strong> {subcategoria.hospitalAprobado?.nombre || "N/A"}</p>
+                                        <p><strong>Hospitales:</strong> 
+  {subcategoria.hospitalesAprobados && subcategoria.hospitalesAprobados.length > 0 
+    ? subcategoria.hospitalesAprobados.map(hospital => hospital.nombre).join(", ") 
+    : "N/A"}
+</p>
+
                                     </div>
                                 </div>
                             </div>
