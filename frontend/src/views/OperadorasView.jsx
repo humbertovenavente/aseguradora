@@ -3,11 +3,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // Importamos los componentes de cada vista
 import ClientesView from "./ClientesView";
+import Citas from "./Citas";
+import ReportesView from "./ReportesView";
 import PolizasView from "./PolizasView";
 import HospitalesView from "./HospitalesView";
 import FichaTecnicaView from "./FichaTecnicaView";
 import PagosView from "./PagosView";
 import ServiciosView from "./ServiciosView";
+import AprobacionView from "./AprobacionView";
+import AprobacionOrgView from "./AprobacionOrgView";
 
 export default function PortalOperadoras() {
   const [vistaActual, setVistaActual] = createSignal("inicio");
@@ -126,34 +130,6 @@ export default function PortalOperadoras() {
             <button class="btn btn-success me-2">💳 Registrar Pago</button>
             <button class="btn btn-warning">📅 Agendar Cita</button>
           </div>
-
-          {/* Últimos Registros */}
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📌 Últimos Clientes Agregados</h5>
-            <table class="table table-bordered">
-              <thead class="table-dark">
-                <tr>
-                  <th>📛 Nombre</th>
-                  <th>📄 Documento</th>
-                  <th>💰 Estado de Pago</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>Juan Pérez</td><td>12345678</td><td>✅ Pagado</td></tr>
-                <tr><td>María Gómez</td><td>87654321</td><td>❌ No Pagado</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Actividad Reciente */}
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📊 Actividad Reciente</h5>
-            <ul class="list-group">
-              <li class="list-group-item">✔ Se registró un nuevo cliente: Juan Pérez.</li>
-              <li class="list-group-item">❌ Rechazada receta médica de María Gómez.</li>
-              <li class="list-group-item">✅ Autorizado servicio de hospitalización para Pedro Ramírez.</li>
-            </ul>
-          </div>
         </div>
       )}
 
@@ -228,39 +204,21 @@ export default function PortalOperadoras() {
         <div class="w-100">
           <div class="card p-3 mb-4 shadow-sm">
             <h5>📄 Buscar disponibilidad de citas en hospitales </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 agendar citas en hospitales </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 enviar ficha del cliente al hospital si no esta registrado </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 modificar o cancelar citas medicas </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 mostrar citas en un calendario mensual </h5>
+          <Citas/>
           </div>
         </div>
       )}
 
 {vistaActual() === "ARservicios" && (
         <div class="w-100">
+        <div class="card p-3 mb-4 shadow-sm">
+            <h5>📄Aprobación y rechazo de organizaciones </h5>
+        <AprobacionOrgView/>
+        </div>
           <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄verificar si un cliente esta al dia con sus pagos </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 revisar si un servicio esta cubierto en el hospital correspondiente </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 generar un numero de autorizacion para servicios aprobaods </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 registrar aprobaciones y rechazos de servicios medicos y recetas </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 mostrar historial de servicios medicos aprobados y rechazados </h5>
-          </div>
+            <h5>📄Aprobación y rechazo de servicios </h5>
+        <AprobacionView/>
+        </div>
         </div>
       )}
 
@@ -268,18 +226,7 @@ export default function PortalOperadoras() {
         <div class="w-100">
           <div class="card p-3 mb-4 shadow-sm">
             <h5>📄Generar reportes mensuales de servicios prestados </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 Calcular montos a pagar por hospitales y farmacias </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 Exportar reportes en excel y enviar por correo  </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 Consultar estados de facturacione n tiempo real  </h5>
-          </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 Ejecutar manualmente un proceso de corte de mes </h5>
+            <ReportesView/>
           </div>
         </div>
       )}

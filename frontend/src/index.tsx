@@ -18,6 +18,7 @@ import Subhome2View from "./views/Subhome2View";
 import HistoriaView from "./views/HistoriaView";
 import TestimoniosView from "./views/TestimoniosView";
 import RedProveedores from "./views/RedProveedores";
+import AprobacionOrgView from "./views/AprobacionOrgView";
 import FaqView from "./views/FaqView";
 import PagosView from "./views/PagosView";
 import ContactoView from "./views/ContactoView";
@@ -29,6 +30,7 @@ import CoberturasView from "./views/CoberturasView";
 import ReportesView from "./views/ReportesView";
 import SegurosView from "./views/SegurosView";
 import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
+import AprobacionView from "./views/AprobacionView.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
 import EmpleadosView from "./views/EmpleadosView";
@@ -60,6 +62,7 @@ render(() => (
             <Route path="/FAQ" component={FaqView} />
             <Route path="/contacto" component={ContactoView} />
             <Route path="/users" component={Users} />
+            <Route path="/reportes" component={ReportesView} />
             <Route path="/clientes" component={requireRole("admin", ClientesView)} />
             <Route path="/hospitales-afiliados" component={requireRole("admin", HospitalesAView)} />
             <Route path="/servicios-cubiertos" component={requireRole("admin", ServiciosView)} />
@@ -67,8 +70,10 @@ render(() => (
             <Route path="/polizas" component={requireRole("admin", PolizasView)} />
             <Route path="/pagos" component={requireRole("admin", PagosView)} />
             <Route path="/coberturas" component={requireRole("admin", CoberturasView)} />
+            <Route path="/aprobacion-org" component={requireRole("admin", AprobacionOrgView)} />
             <Route path="/hospitales" component={requireRole("admin", HospitalesView)} />
             <Route path="/seguros" component={requireRole("admin", SegurosView)} />
+            <Route path="/aprobacion" component={requireRole("admin", AprobacionView)} />
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
             <Route path="/citas" component={requireRole("admin", Citas)} /> 
