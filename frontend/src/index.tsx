@@ -31,6 +31,7 @@ import SegurosView from "./views/SegurosView";
 import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
+import Citas from "./views/Citas";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -68,6 +69,7 @@ render(() => (
             <Route path="/seguros" component={requireRole("admin", SegurosView)} />
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
+            <Route path="/citas" component={requireRole("admin", Citas)} /> 
 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

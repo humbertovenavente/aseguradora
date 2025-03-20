@@ -18,6 +18,8 @@ import rolesRoutes from "./routes/rolesRoutes.js";
 
 import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
 
+import citaRoutes from "./routes/citas.js";
+
 
 dotenv.config();
 
@@ -38,6 +40,7 @@ app.use('/api/categorias', categoriaRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
+app.use("/api/citas", citaRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

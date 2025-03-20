@@ -55,6 +55,8 @@ export default function App(props: any) {
                         {userRole() === "admin" && <A href="/servicios-cubiertos">Servicios</A>}    
                         {userRole() === "admin" && <A href="/seguros">Seguros</A>}  
                         {userRole() === "admin" && <A href="/fichastecnicas">Ficha Técnica</A>}
+                        {userRole() === "admin" && <A href="/citas">Citas</A>}
+                        
 
                     </div>
                 </div>
