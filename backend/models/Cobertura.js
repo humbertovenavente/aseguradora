@@ -4,8 +4,7 @@ const CoberturaSchema = new mongoose.Schema({
     nombre: { type: String, required: true },
     descripcion: { type: String },
     porcentajeCobertura: { type: Number, required: true, min: 0, max: 100 },
-    isCustom: { type: Boolean, default: false },
-    clienteId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cliente', required: function() { return this.isCustom; } },
+    montoMinimoCobertura: { type: Number, default: 250.0, required: false  },
     servicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }]  // Relación con servicios
 }, { timestamps: true });
 

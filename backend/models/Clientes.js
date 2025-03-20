@@ -12,15 +12,13 @@ import mongoose from 'mongoose';
  * - numeroAutorizacion: si se aprobó, el número que emite el sistema
  */
 const HistorialServicioSchema = new mongoose.Schema({
-  hospital: { type: String, required: true },
-  servicio: { type: String, required: true },
+  hospital: { type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true },
+  servicio: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', required: true },
   fechaServicio: { type: Date, default: Date.now },
   costo: { type: Number, required: true },
   copago: { type: Number, default: 0 },
   comentarios: { type: String },
   resultados: { type: String },
-  estadoAutorizacion: { type: String, default: 'Pendiente' },
-  numeroAutorizacion: { type: String }
 }, { _id: false });
 
 const ClienteSchema = new mongoose.Schema({
@@ -36,9 +34,13 @@ const ClienteSchema = new mongoose.Schema({
   polizaNombre: { type: String, required: true },
   fechaVencimiento: { type: Date },
   estadoPago: { type: Boolean, default: false },
-  montoMinimoCobertura: { type: Number, default: 250.0 },
+ 
 
-  usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true }
+  usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
+
+     // Historial de servicios utilizados
+  historialServicios: [HistorialServicioSchema] 
+
 }, { timestamps: true });
 
 export default mongoose.model("Cliente", ClienteSchema);

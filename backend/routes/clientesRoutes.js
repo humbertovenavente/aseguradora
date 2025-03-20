@@ -2,49 +2,46 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Cliente from '../models/Clientes.js';
 import Usuario from '../models/Usuario.js';
+import Hospital from '../models/Hospital.js';
+import Servicio from '../models/Servicio.js';
 
 const router = express.Router();
 const ROL_CLIENTE_ID = new mongoose.Types.ObjectId("67d652411d30a899ff50a40e");
 
-/**
- *  GET - Obtener todos los clientes con sus correos desde Usuario
- */
 router.get("/", async (req, res) => {
     try {
-      const clientes = await Cliente.find()
-        .populate("usuarioId", "correo contrasena")
-        .select("-__v");
-  
-      // Asegurar que historialServicios siempre sea un array
-      const clientesConHistorial = clientes.map(cliente => ({
-        ...cliente._doc,
-        historialServicios: cliente.historialServicios || []  // Si es undefined, lo convierte en []
-      }));
-  
-      res.status(200).json(clientesConHistorial);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error al obtener los clientes." });
-    }
-  });
-  
+        const clientes = await Cliente.find()
+            .populate("usuarioId", "correo")
+            .populate("historialServicios.hospital", "nombre direccion telefono")
+            .populate("historialServicios.servicio", "nombre descripcion precioAseguradora")
+            .select("-__v");
 
+        res.status(200).json(clientes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al obtener los clientes." });
+    }
+});
 
 /**
- *  GET - Obtener un cliente por su ID
+ *  GET - Obtener un cliente por su ID con historial de servicios
  */
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const cliente = await Cliente.findById(id).populate('usuarioId', 'correo contrasena rol_id fecha_creacion estado');
+        const cliente = await Cliente.findById(id)
+            .populate('usuarioId', 'correo')
+            .populate("historialServicios.hospital", "nombre direccion telefono")
+            .populate("historialServicios.servicio", "nombre descripcion precioAseguradora");
+
         if (!cliente) return res.status(404).json({ message: "Cliente no encontrado." });
+
         res.status(200).json(cliente);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error al obtener el cliente." });
     }
 });
-
 
 /**
  *  POST - Crear un Cliente y Usuario asociado
@@ -183,6 +180,83 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error al eliminar el Cliente y Usuario." });
+    }
+});
+
+
+// este es solo para cuadno hospoital envie la informacion con los datos
+
+/**
+ *  POST - Agregar un historial de servicio a un cliente
+ */
+router.post('/:id/historial', async (req, res) => {
+    try {
+        const { id } = req.params; // ID del cliente
+        const { hospitalId, servicioId, fechaServicio, costo, copago, comentarios, resultados } = req.body;
+
+        // Verificar si el cliente existe
+        const cliente = await Cliente.findById(id);
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado." });
+        }
+
+        // Verificar si el hospital existe
+        const hospital = await Hospital.findById(hospitalId);
+        if (!hospital) {
+            return res.status(404).json({ message: "Hospital no encontrado." });
+        }
+
+        // Verificar si el servicio existe
+        const servicio = await Servicio.findById(servicioId);
+        if (!servicio) {
+            return res.status(404).json({ message: "Servicio no encontrado." });
+        }
+
+        // Crear el nuevo historial de servicio
+        const nuevoHistorial = {
+            hospital: hospital._id,
+            servicio: servicio._id,
+            fechaServicio: fechaServicio || new Date(),
+            costo: costo || servicio.precioAseguradora,
+            copago: copago || 0, // Se puede calcular basado en la cobertura
+            comentarios: comentarios || "",
+            resultados: resultados || ""
+        };
+
+        // Agregar al historial de servicios del cliente
+        cliente.historialServicios.push(nuevoHistorial);
+
+        // Guardar el cliente actualizado
+        await cliente.save();
+
+        res.status(201).json({ message: "Historial de servicio agregado exitosamente.", historial: nuevoHistorial });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al agregar historial de servicio.", error: error.message });
+    }
+});
+
+/**
+ *  GET - Obtener el historial de servicios de un cliente
+ */
+router.get('/:id/historial', async (req, res) => {
+    try {
+        const { id } = req.params; // ID del cliente
+
+        // Buscar el cliente con el historial de servicios
+        const cliente = await Cliente.findById(id)
+            .populate("historialServicios.hospital", "nombre direccion telefono")
+            .populate("historialServicios.servicio", "nombre descripcion precioAseguradora");
+
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado." });
+        }
+
+        res.status(200).json({ historialServicios: cliente.historialServicios });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error al obtener el historial de servicios.", error: error.message });
     }
 });
 

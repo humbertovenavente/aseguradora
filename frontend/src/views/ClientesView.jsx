@@ -1,4 +1,5 @@
 import { createSignal, onMount, Show } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import {
   obtenerClientes,
   crearCliente,
@@ -7,107 +8,25 @@ import {
 } from "../services/clientesService.js";
 import { obtenerPolizas } from "../services/polizasService.js";
 
-
 const ClientesView = () => {
-    // Lista de clientes
     const [clientes, setClientes] = createSignal([]);
-    // Lista de pólizas
     const [polizas, setPolizas] = createSignal([]);
-  
-    // Controla si mostramos el modal
     const [showModal, setShowModal] = createSignal(false);
-    
-    // Indica si estamos creando o editando
     const [isEdit, setIsEdit] = createSignal(false);
+    const navigate = useNavigate();
 
     const [usuarioActual, setUsuarioActual] = createSignal({
       correo: "",
       contrasena: "",
-      rol_id: "67d652411d30a899ff50a40e" // ID de rol cliente
+      rol_id: "67d652411d30a899ff50a40e"
     });
-    
-    
-    // Datos del cliente actual (para crear/editar)
-    // Se elimina tipoPoliza y porcentajeCobertura, y se agrega polizaId
-    const [clienteActual, setClienteActual] = createSignal({
-  nombre: "",
-  apellido: "",
-  documento: "",
-  telefono: "",
-  fechaNacimiento: "",
-  direccion: "",
-  numeroAfiliacion: "",
-  polizaId: "",
-  polizaNombre: "",
-  fechaVencimiento: "",
-  estadoPago: false,
-  montoMinimoCobertura: 250,
-  historialServicios: []
-});
 
-  
-    // Funciones para el historial de servicios (se mantienen igual)
-    const addService = () => {
-      const copia = { ...clienteActual() };
-      copia.historialServicios.push({
-        hospital: "",
-        servicio: "",
-        fechaServicio: new Date().toISOString(),
-        costo: 0,
-        copago: 0,
-        comentarios: "",
-        resultados: "",
-        estadoAutorizacion: "Pendiente",
-        numeroAutorizacion: ""
-      });
-      setClienteActual(copia);
-    };
-    
-    const updateService = (index, field, value) => {
-      const copia = { ...clienteActual() };
-      copia.historialServicios[index][field] = value;
-      setClienteActual(copia);
-    };
-    
-    const removeService = (index) => {
-      const copia = { ...clienteActual() };
-      copia.historialServicios.splice(index, 1);
-      setClienteActual(copia);
-    };
-    
-    // Cargar clientes y pólizas al montar
-    onMount(async () => {
-      await cargarClientes();
-      await cargarPolizas();
-    });
-    const cargarClientes = async () => {
-      try {
-        const data = await obtenerClientes();
-        console.log("📥 Clientes recibidos:", data); // 👈 Esto te dirá si historialServicios existe o no
-        setClientes(data);
-      } catch (error) {
-        console.error("Error al obtener clientes:", error);
-      }
-    };
-    
-  
-    const cargarPolizas = async () => {
-      try {
-        const data = await obtenerPolizas();
-        setPolizas(data);
-      } catch (error) {
-        console.error("Error al obtener pólizas:", error);
-      }
-    };
-  
-    // Abrir modal para crear un cliente nuevo
-    const abrirModalCrear = () => {
-      setIsEdit(false);
-      setClienteActual({
+    const [clienteActual, setClienteActual] = createSignal({
         nombre: "",
         apellido: "",
+        correo: "",
+        contrasena: "",
         documento: "",
-        telefono: "",
         fechaNacimiento: "",
         direccion: "",
         numeroAfiliacion: "",
@@ -115,194 +34,157 @@ const ClientesView = () => {
         polizaNombre: "",
         fechaVencimiento: "",
         estadoPago: false,
-        montoMinimoCobertura: 250,
         historialServicios: []
-      });
-    
-      setUsuarioActual({
-        correo: "",
-        contrasena: "",
-        rol_id: "67d652411d30a899ff50a40e" // Rol Cliente
-      });
-    
-      setShowModal(true);
-    };
-    
-  
-    // Abrir modal para editar
-    const abrirModalEditar = (cliente) => {
-      setIsEdit(true);
-      setClienteActual({ ...cliente });
-    
-      setUsuarioActual({
-        correo: cliente.usuarioId?.correo || "", 
-        contrasena: cliente.usuarioId?.contrasena || "", // No cargamos la contraseña por seguridad
-        rol_id: "67d652411d30a899ff50a40e"
-      });
-    
-      setShowModal(true);
-    };
-    
-  
-    // Guardar (crear o actualizar)
-    const guardarCliente = async (e) => {
-      e.preventDefault();
-      try {
-        const clienteData = { ...clienteActual() };
-        const usuarioData = { ...usuarioActual() };
-    
-        console.log("📤 Enviando datos:", { ...clienteData, ...usuarioData });
-    
-        if (isEdit()) {
-          await actualizarCliente(clienteActual()._id, { ...clienteData, ...usuarioData });
-        } else {
-          await crearCliente({ ...clienteData, ...usuarioData });
-        }
-    
-        setShowModal(false);
+    });
+
+    onMount(async () => {
         await cargarClientes();
-      } catch (error) {
-        console.error(" Error al guardar cliente:", error);
-      }
-    };
-    
-    // Eliminar un cliente
-    const handleEliminar = async (id) => {
-      if (confirm("¿Estás seguro de eliminar este cliente?")) {
+        await cargarPolizas();
+    });
+
+    const cargarClientes = async () => {
         try {
-          await eliminarCliente(id);
-          await cargarClientes();
+            const data = await obtenerClientes();
+            console.log("📥 Clientes recibidos:", data);
+            setClientes(data);
         } catch (error) {
-          console.error("Error al eliminar cliente:", error);
+            console.error("Error al obtener clientes:", error);
         }
-      }
     };
-  
-    // Manejador de cambios de campo para datos básicos
+
+    const cargarPolizas = async () => {
+        try {
+            const data = await obtenerPolizas();
+            setPolizas(data);
+        } catch (error) {
+            console.error("Error al obtener pólizas:", error);
+        }
+    };
+
+    const abrirModalCrear = () => {
+        setIsEdit(false);
+        setClienteActual({
+            nombre: "",
+            apellido: "",
+            correo: "",
+            contrasena: "",
+            documento: "",
+            fechaNacimiento: "",
+            direccion: "",
+            numeroAfiliacion: "",
+            polizaId: "",
+            polizaNombre: "",
+            fechaVencimiento: "",
+            estadoPago: false,
+            historialServicios: []
+        });
+
+        setShowModal(true);
+    };
+
+    const abrirModalEditar = (cliente) => {
+        setIsEdit(true);
+        setClienteActual({ ...cliente });
+
+        setUsuarioActual({
+            correo: cliente.usuarioId?.correo || "", 
+            contrasena: cliente.usuarioId?.contrasena || "",
+            rol_id: "67d652411d30a899ff50a40e"
+        });
+
+        setShowModal(true);
+    };
+
+    const guardarCliente = async (e) => {
+        e.preventDefault();
+        try {
+            const clienteData = { ...clienteActual() };
+            const usuarioData = { ...usuarioActual() };
+
+            console.log("📤 Enviando datos:", { ...clienteData, ...usuarioData });
+
+            if (isEdit()) {
+                await actualizarCliente(clienteActual()._id, { ...clienteData, ...usuarioData });
+            } else {
+                await crearCliente({ ...clienteData, ...usuarioData });
+            }
+
+            setShowModal(false);
+            await cargarClientes();
+        } catch (error) {
+            console.error(" Error al guardar cliente:", error);
+        }
+    };
+
+    const handleEliminar = async (id) => {
+        if (confirm("¿Estás seguro de eliminar este cliente?")) {
+            try {
+                await eliminarCliente(id);
+                await cargarClientes();
+            } catch (error) {
+                console.error("Error al eliminar cliente:", error);
+            }
+        }
+    };
+
     const handleChange = (campo, valor) => {
-      setClienteActual({ ...clienteActual(), [campo]: valor });
+        setClienteActual({ ...clienteActual(), [campo]: valor });
     };
 
-  return (
-    <div class="container mt-4">
-      <h2 class="mb-3">Clientes</h2>
-      <button class="btn btn-primary mb-3" onClick={abrirModalCrear}>
-        Agregar Cliente
-      </button>
+    return (
+        <div class="container mt-4">
+            <h2 class="mb-3">Clientes</h2>
+            <button class="btn btn-primary mb-3" onClick={abrirModalCrear}>
+                Agregar Cliente
+            </button>
 
-      {/* Tabla de clientes */}
-      <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Apellido</th>
-      <th>Correo</th>
-      <th>Contrasena</th>
-      <th>Documento</th>
-      <th>Fecha de nacimiento</th>
-      <th>Direccion</th>
-      <th>Póliza</th>
-      <th>Vencimiento</th>
-      <th>Estado Pago</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {clientes().map((cli) => (
-      <>
-              <tr key={cli._id}>
-                <td>{cli.nombre} </td>
-                <td> {cli.apellido}</td>
-                <td> {cli.usuarioId?.correo || "Sin correo"}</td>
-                <td> {cli.usuarioId?.contrasena || "No disponible"}</td>
+            {/* Tabla de clientes */}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Correo</th>
+                        <th>Documento</th>
+                        <th>Fecha de nacimiento</th>
+                        <th>Póliza</th>
+                        <th>Vencimiento</th>
+                        <th>Estado Pago</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {clientes().map((cli) => (
+                        <tr key={cli._id}>
+                            <td>{cli.nombre}</td>
+                            <td>{cli.apellido}</td>
+                            <td>{cli.usuarioId?.correo || "Sin correo"}</td>
+                            <td>{cli.documento}</td>
+                            <td>{cli.fechaNacimiento}</td>
+                            <td>{cli.polizaNombre}</td>
+                            <td>{cli.fechaVencimiento && new Date(cli.fechaVencimiento).toLocaleDateString()}</td>
+                            <td>{cli.estadoPago ? "Pagado" : "No pagado"}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm me-2" onClick={() => abrirModalEditar(cli)}>
+                                    Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm me-2" onClick={() => handleEliminar(cli._id)}>
+                                    Eliminar
+                                </button>
+                                <button 
+    class="btn btn-info btn-sm" 
+    onClick={() => navigate(`/historial-servicios/${cli._id}`)}
+>
+    Ver Historial
+</button>
 
-                <td>{cli.documento}</td>
-                <td>{cli.fechaNacimiento}</td>
-                <td>{cli.direccion}</td>
-                <td>
-                  {cli.polizaNombre}
-                  {/* Si usas populate, aquí podrías mostrar polizaId.nombre */}
-                </td>
-                <td>
-                  {cli.fechaVencimiento &&
-                    new Date(cli.fechaVencimiento).toLocaleDateString()}
-                </td>
-                <td>{cli.estadoPago ? "Pagado" : "No pagado"}</td>
-                <td>
-                  <button
-                    class="btn btn-warning btn-sm me-2"
-                    onClick={() => abrirModalEditar(cli)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    class="btn btn-danger btn-sm"
-                    onClick={() => handleEliminar(cli._id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-              {cli.estadoPago && cli.historialServicios && cli.historialServicios.length > 0 && (
-                <tr key={`${cli._id}-historial`}>
-                  <td colSpan="6">
-                    <h6>Historial de Servicios</h6>
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Hospital</th>
-                          <th>Servicio</th>
-                          <th>Fecha</th>
-                          <th>Costo</th>
-                          <th>Copago</th>
-                          <th>Comentarios</th>
+                            </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                      {Array.isArray(cli.historialServicios) && cli.historialServicios.length > 0 && (
-  <tr key={`${cli._id}-historial`}>
-    <td colSpan="6">
-      <h6>Historial de Servicios</h6>
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th>Hospital</th>
-            <th>Servicio</th>
-            <th>Fecha</th>
-            <th>Costo</th>
-            <th>Copago</th>
-            <th>Comentarios</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cli.historialServicios.map((servicio, index) => (
-            <tr key={index}>
-              <td>{servicio.hospital}</td>
-              <td>{servicio.servicio}</td>
-              <td>{new Date(servicio.fechaServicio).toLocaleDateString()}</td>
-              <td>{servicio.costo}</td>
-              <td>{servicio.copago}</td>
-              <td>{servicio.comentarios}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </td>
-  </tr>
-)}
+                    ))}
+                </tbody>
+            </table>
 
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              )}
-      </>
-    ))}
-  </tbody>
-</table>
-
-
-      {/* Modal para crear/editar */}
+            {/* Modal para crear/editar */}
       <Show when={showModal()}>
       <div class="modal fade show d-block" tabindex="-1">
           <div class="modal-dialog">
@@ -447,106 +329,9 @@ const ClientesView = () => {
                   </div>
 
                   <hr />
-                  <h5>Historial de Servicios</h5>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-success mb-2"
-                    onClick={addService}
-                  >
-                    Agregar Servicio
-                  </button>
-                  {clienteActual().historialServicios.map((serv, i) => (
-                    <div key={i} class="border rounded p-2 mb-2">
-                      <div class="row g-2 mb-2">
-                        <div class="col">
-                          <label class="form-label">Hospital</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            value={serv.hospital}
-                            onInput={(e) => updateService(i, "hospital", e.target.value)}
-                          />
-                        </div>
-                        <div class="col">
-                          <label class="form-label">Servicio</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            value={serv.servicio}
-                            onInput={(e) => updateService(i, "servicio", e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div class="row g-2 mb-2">
-                        <div class="col">
-                          <label class="form-label">Fecha Servicio</label>
-                          <input
-                            type="date"
-                            class="form-control"
-                            value={serv.fechaServicio.slice(0, 10)}
-                            onInput={(e) => updateService(i, "fechaServicio", e.target.value)}
-                          />
-                        </div>
-                        <div class="col">
-                          <label class="form-label">Costo</label>
-                          <input
-                            type="number"
-                            class="form-control"
-                            value={serv.costo}
-                            onInput={(e) => updateService(i, "costo", +e.target.value)}
-                          />
-                        </div>
-                        <div class="col">
-                          <label class="form-label">Copago</label>
-                          <input
-                            type="number"
-                            class="form-control"
-                            value={serv.copago}
-                            onInput={(e) => updateService(i, "copago", +e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div class="mb-2">
-                        <label class="form-label">Comentarios</label>
-                        <textarea
-                          class="form-control"
-                          value={serv.comentarios}
-                          onInput={(e) => updateService(i, "comentarios", e.target.value)}
-                        />
-                      </div>
-                      <div class="mb-2">
-                        <label class="form-label">Resultados</label>
-                        <textarea
-                          class="form-control"
-                          value={serv.resultados}
-                          onInput={(e) => updateService(i, "resultados", e.target.value)}
-                        />
-                      </div>
-                      <div class="mb-2">
-                        <label class="form-label">Estado Autorización</label>
-                        <select
-                          class="form-select"
-                          value={serv.estadoAutorizacion}
-                          onChange={(e) =>
-                            updateService(i, "estadoAutorizacion", e.target.value)
-                          }
-                        >
-                          <option value="Pendiente">Pendiente</option>
-                          <option value="Aprobado">Aprobado</option>
-                          <option value="Rechazado">Rechazado</option>
-                        </select>
-                      </div>
-                      <div class="d-flex justify-content-end">
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-danger"
-                          onClick={() => removeService(i)}
-                        >
-                          Eliminar Servicio
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                 
+                  
+                
                 </div>
                 <div class="modal-footer">
                   <button
@@ -559,15 +344,14 @@ const ClientesView = () => {
                   <button type="submit" class="btn btn-primary">
                     {isEdit() ? "Actualizar" : "Guardar"}
                   </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-              </form>
-            </div>
-          </div>
+            </Show>
         </div>
-        <div class="modal-backdrop fade show"></div>
-      </Show>
-    </div>
-  );
+    );
 };
 
 export default ClientesView;

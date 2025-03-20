@@ -49,3 +49,10 @@ export const eliminarCliente = async (id) => {
         throw error;
     }
 };
+
+
+// esto solamente es para lo que vamos a utilizar en jalar la informacion 
+export async function obtenerHistorialCliente(clienteId) {
+    const respuesta = await axios.get(`${CLIENTES_API}/${clienteId}/historial`);
+    return respuesta.data.historialServicios; // Solo devuelve el historial
+}

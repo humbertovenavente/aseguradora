@@ -8,6 +8,7 @@ import Home from "./views/HomeView";
 import Users from "./views/UsersView";
 import PolizasView from "./views/PolizasView";
 import ClientesView from "./views/ClientesView";
+import HistorialServiciosView from "./views/HistorialServiciosView.jsx";
 import Signup from "./views/Signup";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
@@ -64,6 +65,7 @@ render(() => (
             <Route path="/users" component={Users} />
             <Route path="/reportes" component={ReportesView} />
             <Route path="/clientes" component={requireRole("admin", ClientesView)} />
+            <Route path="/historial-servicios/:id" component={requireRole("admin", HistorialServiciosView)} />
             <Route path="/hospitales-afiliados" component={requireRole("admin", HospitalesAView)} />
             <Route path="/servicios-cubiertos" component={requireRole("admin", ServiciosView)} />
             <Route path="/reportes" component={requireRole("admin", ReportesView)} />
