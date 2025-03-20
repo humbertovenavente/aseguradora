@@ -9,6 +9,7 @@ const ServicioSchema = new mongoose.Schema({
     servicioPadre: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', default: null },
     // Relación One-to-Many: Un servicio puede tener múltiples subservicios
     subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
+    cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: false }, //coberura
     imagenUrl: { type: String } // Agregado para manejar imágenes
 }, { timestamps: true });
 

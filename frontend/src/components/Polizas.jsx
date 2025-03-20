@@ -64,9 +64,8 @@ export default function Polizas() {
                     <thead className="table-dark">
                         <tr>
                             <th>Nombre</th>
-                            <th>Tipo de Cobertura</th>
                             <th>Cobertura</th>
-                            <th>Seguro</th>
+                            <th>Aseguradora</th>
                             <th>Costo</th>
                             <th>Vigencia</th>
                             <th>Opciones</th>
@@ -76,7 +75,7 @@ export default function Polizas() {
                         {polizas().map(poliza => (
                             <tr key={poliza._id}>
                                 <td>{poliza.nombre}</td>
-                                <td>{poliza.tipoCobertura}</td>
+                               
                                 <td>{poliza.coberturaId ? `${poliza.coberturaId.nombre} - ${poliza.coberturaId.porcentajeCobertura}%` : "Sin cobertura"}</td>
                                 <td>{poliza.id_seguro ? poliza.id_seguro.nombre : "Sin seguro"}</td>
                                 <td>Q{poliza.costo}</td>

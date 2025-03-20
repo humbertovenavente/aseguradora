@@ -23,7 +23,7 @@ export default function Citas() {
         horaInicio: "",
         horaFin: "",
         motivo: "",
-        idAseguradora: null, // opcionales, pero recomendable
+        idAseguradora: null, //
         diagnostico: "",
         resultados: ""
     });
@@ -39,7 +39,7 @@ export default function Citas() {
             const response = await obtenerHospitales();
             setHospitales(response);
         } catch (error) {
-            console.error("❌ Error al obtener hospitales:", error);
+            console.error("Error al obtener hospitales:", error);
         }
     }
 
@@ -48,7 +48,7 @@ export default function Citas() {
             const response = await obtenerServicios();
             setServicios(response);
         } catch (error) {
-            console.error("❌ Error al obtener servicios:", error);
+            console.error(" Error al obtener servicios:", error);
         }
     }
 
@@ -57,7 +57,7 @@ export default function Citas() {
             const response = await obtenerCitas();
             setCitas(response);
         } catch (error) {
-            console.error("❌ Error al obtener citas:", error);
+            console.error(" Error al obtener citas:", error);
         }
     }
 
@@ -92,7 +92,7 @@ export default function Citas() {
             ));
             setMostrarClientes(true);
         } catch (error) {
-            console.error("❌ Error al obtener clientes:", error);
+            console.error(" Error al obtener clientes:", error);
         }
     }
 
@@ -144,9 +144,9 @@ export default function Citas() {
 
     async function guardarCita() {
         try {
-            console.log("✅ Datos que se envían:", cita()); // Para verificar
+            console.log("Datos que se envían:", cita()); // Para verificar
             await agendarCita(cita());
-            alert("✅ Cita agendada con éxito.");
+            alert(" Cita agendada con éxito.");
             setCita({
                 idPaciente: "", nombreCliente: "", documentoCliente: "", idHospital: "",
                 idServicio: "", fecha: "", horaInicio: "", horaFin: "", motivo: "",
@@ -154,8 +154,8 @@ export default function Citas() {
             });
             cargarCitas();
         } catch (error) {
-            console.error("❌ Error al agendar cita:", error);
-            alert("❌ Hubo un error al agendar la cita.");
+            console.error(" Error al agendar cita:", error);
+            alert(" Hubo un error al agendar la cita.");
         }
     }
     

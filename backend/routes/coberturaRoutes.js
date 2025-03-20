@@ -7,15 +7,15 @@ const router = express.Router();
 
 // ✅ Crear una nueva cobertura
 router.post('/', async (req, res) => {
-    const { nombre, descripcion, porcentajeCobertura, isCustom, clienteId } = req.body;
+    const { nombre, descripcion, porcentajeCobertura, servicios } = req.body;
 
     try {
         const nuevaCobertura = await Cobertura.create({
             nombre,
             descripcion,
             porcentajeCobertura,
-            isCustom,
-            clienteId: isCustom ? clienteId : undefined
+            servicios 
+            
         });
         res.status(201).json({ mensaje: "Cobertura creada exitosamente.", cobertura: nuevaCobertura });
     } catch (error) {
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 // 📄 Listar todas las coberturas
 router.get('/', async (req, res) => {
     try {
-        const coberturas = await Cobertura.find();
+        const coberturas = await Cobertura.find().populate('servicios'); 
         res.json(coberturas);
     } catch (error) {
         res.status(500).json({ mensaje: "Error al obtener las coberturas", error: error.message });
@@ -48,12 +48,12 @@ router.get('/:id', async (req, res) => {
 
 // ✏️ Actualizar una cobertura
 router.put('/:id', async (req, res) => {
-    const { nombre, descripcion, porcentajeCobertura, isCustom, clienteId } = req.body;
+    const { nombre, descripcion, porcentajeCobertura, servicios } = req.body;
 
     try {
         const coberturaActualizada = await Cobertura.findByIdAndUpdate(
             req.params.id,
-            { nombre, descripcion, porcentajeCobertura, isCustom, clienteId: isCustom ? clienteId : undefined },
+            { nombre, descripcion, porcentajeCobertura, servicios},
             { new: true }
         );
 

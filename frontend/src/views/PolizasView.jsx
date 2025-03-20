@@ -12,7 +12,7 @@ function PolizasView() {
 
   return (
     <div class="container">
-      <h1 class="fw-bold text-center mt-4">Sistema de Aseguradora</h1>
+      <h1 class="fw-bold text-center mt-4">Gestion de Polizas</h1>
       {polizaEdit() ? (
         <FormularioPoliza poliza={polizaEdit()} actualizarLista={actualizarLista} />
       ) : (

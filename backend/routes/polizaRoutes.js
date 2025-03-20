@@ -5,12 +5,12 @@ const router = express.Router();
 
 // ✅ Crear una nueva póliza
 router.post('/', async (req, res) => {
-    const { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro } = req.body;
+    const { nombre, coberturaId, costo, vigencia, id_seguro } = req.body;
 
     try {
         const nuevaPoliza = await Poliza.create({
             nombre,
-            tipoCobertura,
+           
             coberturaId,
             costo,
             vigencia,
@@ -26,13 +26,25 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const polizas = await Poliza.find()
-            .populate('id_seguro')       // Poblamos los datos del seguro
-            .populate('coberturaId');    // Poblamos los datos de la cobertura
-        res.json(polizas);
+            .populate('id_seguro')
+            .populate('coberturaId');
+        
+        // Filtrar los datos para asegurarse de que no se devuelva tipoCobertura
+        const polizasFiltradas = polizas.map(poliza => ({
+            _id: poliza._id,
+            nombre: poliza.nombre,
+            coberturaId: poliza.coberturaId,
+            costo: poliza.costo,
+            vigencia: poliza.vigencia,
+            id_seguro: poliza.id_seguro
+        }));
+
+        res.json(polizasFiltradas);
     } catch (error) {
         res.status(500).json({ mensaje: "Error al obtener las pólizas", error: error.message });
     }
 });
+
 
 // 🔍 Obtener una póliza por ID
 router.get('/:id', async (req, res) => {

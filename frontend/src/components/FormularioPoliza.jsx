@@ -5,7 +5,7 @@ import { obtenerSeguros } from "../services/seguroService";
 
 export default function FormularioPoliza({ poliza, actualizarLista }) {
   const [nombre, setNombre] = createSignal(poliza ? poliza.nombre : ""); // Nombre de la póliza
-  const [tipoCobertura, setTipoCobertura] = createSignal(poliza ? poliza.tipoCobertura : ""); // Tipo de cobertura
+
   const [coberturaId, setCoberturaId] = createSignal(poliza ? poliza.coberturaId?._id : ""); // ID de la cobertura
   const [id_seguro, setIdSeguro] = createSignal(poliza ? poliza.id_seguro?._id : ""); // ID del seguro
   const [costo, setCosto] = createSignal(poliza ? poliza.costo : ""); // Costo de la póliza
@@ -25,7 +25,7 @@ export default function FormularioPoliza({ poliza, actualizarLista }) {
 
     const nuevaPoliza = {
       nombre: nombre(),
-      tipoCobertura: tipoCobertura(),
+      
       coberturaId: coberturaId(),
       id_seguro: id_seguro(),
       costo: costo(),
@@ -59,16 +59,7 @@ export default function FormularioPoliza({ poliza, actualizarLista }) {
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Tipo de Cobertura</label>
-          <input
-            type="text"
-            className="form-control"
-            value={tipoCobertura()}
-            onInput={(e) => setTipoCobertura(e.target.value)}
-            required
-          />
-        </div>
+       
         <div className="mb-3">
           <label className="form-label">Cobertura</label>
           <select className="form-control" value={coberturaId()} onChange={(e) => setCoberturaId(e.target.value)} required>

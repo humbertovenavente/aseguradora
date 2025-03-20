@@ -8,22 +8,23 @@ import {
   obtenerCoberturas,
   actualizarCobertura,
   eliminarCobertura,
-  obtenerCoberturasPorCliente,
 } from "../services/coberturaService";
+import { obtenerServicios } from "../services/servicioService";  // ✅ Importamos los servicios
 
 export default function CoberturasView() {
   const [coberturas, setCoberturas] = createSignal([]);
+  const [servicios, setServicios] = createSignal([]);  // ✅ Agregamos los servicios disponibles
   const [form, setForm] = createSignal({
     nombre: "",
     descripcion: "",
-    porcentajeCobertura: 70,
-    isCustom: false,
-    clienteId: "",
+    porcentajeCobertura: "",
+    servicios: []  // ✅ Lista de servicios cubiertos
   });
   const [editId, setEditId] = createSignal(null);
 
   createEffect(() => {
     cargarCoberturas();
+    cargarServicios();
   });
 
   const cargarCoberturas = async () => {
@@ -31,12 +32,19 @@ export default function CoberturasView() {
     setCoberturas(datos);
   };
 
+  const cargarServicios = async () => {
+    const datos = await obtenerServicios();
+    setServicios(datos);
+  };
+
   const handleChange = (e) => {
-    const { name, type, value, checked } = e.target;
-    setForm({
-      ...form(),
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setForm({ ...form(), [name]: value });
+  };
+
+  const handleServiceChange = (e) => {
+    const selectedServices = Array.from(e.target.selectedOptions, (option) => option.value);
+    setForm({ ...form(), servicios: selectedServices });
   };
 
   const handleSubmit = async (e) => {
@@ -47,7 +55,7 @@ export default function CoberturasView() {
     } else {
       await crearCobertura(form());
     }
-    setForm({ nombre: "", descripcion: "", porcentajeCobertura: 70, isCustom: false, clienteId: "" });
+    setForm({ nombre: "", descripcion: "", porcentajeCobertura: "", servicios: [] });
     cargarCoberturas();
   };
 
@@ -56,14 +64,13 @@ export default function CoberturasView() {
       nombre: cobertura.nombre,
       descripcion: cobertura.descripcion,
       porcentajeCobertura: cobertura.porcentajeCobertura,
-      isCustom: cobertura.isCustom,
-      clienteId: cobertura.clienteId || "",
+      servicios: cobertura.servicios.map(servicio => servicio._id) || []  // ✅ Agregar los servicios seleccionados
     });
     setEditId(cobertura._id);
   };
 
-  const handleDelete = async (id, isCustom) => {
-    if (isCustom && confirm("¿Estás seguro de eliminar esta cobertura personalizada?")) {
+  const handleDelete = async (id) => {
+    if (confirm("¿Estás seguro de eliminar esta cobertura?")) {
       await eliminarCobertura(id);
       cargarCoberturas();
     }
@@ -108,29 +115,32 @@ export default function CoberturasView() {
             required
           />
         </div>
-        {form().isCustom && (
-          <div class="mb-3">
-            <label class="form-label">ID del Cliente</label>
-            <input
-              type="text"
-              name="clienteId"
-              value={form().clienteId}
-              onInput={handleChange}
-              class="form-control"
-              required
-            />
-          </div>
-        )}
-        <div class="form-check mb-3">
-          <input
-            type="checkbox"
-            name="isCustom"
-            checked={form().isCustom}
-            onChange={handleChange}
-            class="form-check-input"
-          />
-          <label class="form-check-label">¿Es Cobertura Personalizada?</label>
-        </div>
+
+        {/* ✅ Agregar selección de servicios */}
+        <div class="mb-3">
+  <label class="form-label">Servicios Cubiertos</label>
+  <div class="border p-2 rounded" style="max-height: 200px; overflow-y: auto;">
+    {servicios().map(servicio => (
+      <div class="form-check" key={servicio._id}>
+        <input
+          type="checkbox"
+          class="form-check-input"
+          value={servicio._id}
+          checked={form().servicios.includes(servicio._id)}
+          onChange={(e) => {
+            const updatedServicios = e.target.checked
+              ? [...form().servicios, servicio._id]
+              : form().servicios.filter(id => id !== servicio._id);
+            setForm({ ...form(), servicios: updatedServicios });
+          }}
+        />
+        <label class="form-check-label">{servicio.nombre}</label>
+      </div>
+    ))}
+  </div>
+</div>
+
+
         <button type="submit" class="btn btn-primary w-100">
           {editId() ? "Actualizar Cobertura" : "Crear Cobertura"}
         </button>
@@ -144,8 +154,7 @@ export default function CoberturasView() {
               <th>Nombre</th>
               <th>Descripción</th>
               <th>Porcentaje de Cobertura</th>
-              <th>Personalizada</th>
-              <th>ID del Cliente</th>
+              <th>Servicios Cubiertos</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -155,8 +164,11 @@ export default function CoberturasView() {
                 <td>{cobertura.nombre}</td>
                 <td>{cobertura.descripcion}</td>
                 <td>{cobertura.porcentajeCobertura}%</td>
-                <td>{cobertura.isCustom ? "Sí" : "No"}</td>
-                <td>{cobertura.clienteId || "-"}</td>
+                <td>
+  {cobertura.servicios.length > 0
+    ? cobertura.servicios.map(servicio => servicio.nombre).join(", ")
+    : "Sin servicios"}
+</td>
                 <td>
                   <button
                     class="btn btn-warning btn-sm me-2"
@@ -166,7 +178,7 @@ export default function CoberturasView() {
                   </button>
                   <button
                     class="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(cobertura._id, cobertura.isCustom)}
+                    onClick={() => handleDelete(cobertura._id)}
                   >
                     Eliminar
                   </button>
@@ -179,4 +191,3 @@ export default function CoberturasView() {
     </div>
   );
 }
-
