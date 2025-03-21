@@ -39,12 +39,13 @@ import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
 
 
-
+import PaginasView from "./views/PaginasEdt/PaginasView";
 import AdminHistoriaView from "./views/PaginasEdt/AdminHistoriaView";
 import AdminContactoView from "./views/PaginasEdt/AdminContactoView";
 import AdminFaqView from "./views/PaginasEdt/AdminFaqView";
 import AdminRedProveedores from "./views/PaginasEdt/AdminRedProveedores";
 import AdminTestimoniosView from "./views/PaginasEdt/AdminTestimoniosView";
+import AdminHomeView from "./views/PaginasEdt/AdminHomeView";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -94,6 +95,8 @@ render(() => (
             <Route path="/pages-faq" component={requireRole("admin", AdminFaqView)} />
             <Route path="/pages-proveedores" component={requireRole("admin", AdminRedProveedores)} />
             <Route path="/pages-testimonios" component={requireRole("admin", AdminTestimoniosView)} />
+            <Route path="/pages-home" component={requireRole("admin", AdminHomeView)} />
+            <Route path="/pages" component={requireRole("admin", PaginasView)} />
 
 
             <Route path="/signup" component={Signup} />

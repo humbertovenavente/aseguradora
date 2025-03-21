@@ -25,6 +25,7 @@ import testimoniosRoutes from "./routes/PaginasEdt/testimoniosRoutes.js";
 import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
 import copagoRoutes from './routes/copagoRoutes.js';
 import citaRoutes from "./routes/citas.js";
+import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/api/contacto', contactoRoutes);
 app.use('/api/faq', faqRoutes);
 app.use('/api/redProveedores', redProveedoresRoutes);
 app.use('/api/testimonios', testimoniosRoutes);
+app.use("/api/home", homeRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

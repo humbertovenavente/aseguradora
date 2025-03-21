@@ -1,20 +1,39 @@
+import { createSignal, onMount } from "solid-js";
+import { obtenerHome } from "../services/PaginasEdt/homeService.js";
+
 function HomeView() {
+  const [homeData, setHomeData] = createSignal(null);
+
+  onMount(async () => {
+    try {
+      const data = await obtenerHome();
+      setHomeData(data);
+    } catch (error) {
+      console.error("Error al obtener el Home:", error);
+    }
+  });
+
   return (
     <>
-      {/* Estilos locales para el hero y algunos ajustes */}
+      {/* Estilos locales para esta vista */}
       <style>
         {`
+          /* Efecto hover para tarjetas (similar a TestimoniosView) */
+          .card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+          }
+
+          /* Sección Hero */
           .hero-section {
-            background: url("https://gustavomirabalcastro.com/wp-content/uploads/2020/10/Gustavo-Mirabal-Castro-que-es-un-asesor-financiero.jpg")
-              no-repeat center center;
             background-size: cover;
-            height: 90vh;
             position: relative;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
+            height: 90vh; /* Ajusta la altura al gusto */
           }
           .hero-overlay {
             position: absolute;
@@ -45,12 +64,12 @@ function HomeView() {
             font-weight: 600;
           }
 
-          /* Sección de "Encuentra tu tranquilidad" */
+          /* Sección Tranquilidad */
           .tranquilidad-section img {
             border-radius: 1rem;
           }
 
-          /* Sección de tarjetas */
+          /* Sección Why */
           .why-section .card {
             border: none;
             border-radius: 1rem;
@@ -64,153 +83,171 @@ function HomeView() {
             text-align: center;
           }
 
-          /* Sección final - "Hola, soy Lily..." */
+          /* Sección About */
           .about-section img {
             border-radius: 1rem;
           }
         `}
       </style>
 
-      {/* HERO SECTION */}
-      <div class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <h1 class="hero-title">Construyendo relaciones sólidas contigo</h1>
-          <p class="hero-subtitle">
-            Protege tu futuro y el de los tuyos con nuestras soluciones de seguros a tu medida.
-          </p>
-          <div>
-            <button
-              class="btn btn-warning hero-btn"
-              style="background-color: #FF9933; border: none;"
-            >
-              Cotiza tu Seguro
-            </button>
-            <button class="btn btn-outline-light hero-btn">
-              Conoce Más
-            </button>
-          </div>
-        </div>
-      </div>
+      <div >
 
-      {/* SECCIÓN 1: Encuentra tu tranquilidad */}
-      <div class="container my-5 tranquilidad-section">
-        <div class="row align-items-center">
-          <div class="col-md-6 mb-4 mb-md-0">
-            <img
-              src="https://blog.socasesores.com/wp-content/uploads/2022/01/aseguradoras-de-vida.webp"
-              alt="Seguro de vida"
-              class="img-fluid"
-            />
-          </div>
-          <div class="col-md-6">
-            <h2 class="mb-4">Encuentra tu Tranquilidad</h2>
-            <p class="lead">
-              Transforma tu vida con un seguro que cubra tus necesidades: 
-              protege tu salud, tu hogar y a tu familia con el respaldo que mereces.
-            </p>
-            <p>
-              Nuestra misión es brindarte la confianza de saber que, pase lo que pase,
-              contarás con un equipo de expertos dispuestos a apoyarte. Elige el plan
-              que mejor se adapte a tu estilo de vida y disfruta de la tranquilidad
-              que te mereces.
-            </p>
-            <button
-              class="btn btn-primary"
-              style="border-radius: 50px; padding: 0.5rem 1.5rem;"
-            >
-              Contáctanos
-            </button>
-          </div>
-        </div>
-      </div>
+        {/* Verificamos si homeData() ya está cargado */}
+        {homeData() ? (
+          (() => {
+            // Extraemos las secciones de homeData
+            const { hero, tranquilidad, whySection, about } = homeData();
 
-      {/* SECCIÓN 2: We are all about our "Why" (3 tarjetas) */}
-      <div class="container my-5 why-section">
-        <h2 class="text-center mb-5">Nos Importa tu “Porqué”</h2>
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img
-                src="https://www.lineadirectaaseguradora.com/documents/652707/655984/creemos-en-las-personas.jpg/7a4d11c7-4f81-5980-a8bf-9ff619353253?t=1646067774069"
-                class="card-img-top"
-                alt="Seguros de Auto"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Seguros de Auto</h5>
-                <p class="card-text">
-                  Conduce con confianza: protege tu vehículo ante cualquier eventualidad y recorre tus caminos con seguridad.
-                </p>
-                <button class="btn btn-outline-primary">Ver Planes</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img
-                src="https://www.lineadirectaaseguradora.com/documents/652707/655984/creemos-en-las-personas.jpg/7a4d11c7-4f81-5980-a8bf-9ff619353253?t=1646067774069"
-                class="card-img-top"
-                alt="Equipo de Asesores"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Conoce al Equipo</h5>
-                <p class="card-text">
-                  Nuestros asesores expertos te acompañan en cada paso, brindándote orientación personalizada y soluciones a tu medida.
-                </p>
-                <button class="btn btn-outline-primary">Ver Equipo</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img
-                src="https://www.lineadirectaaseguradora.com/documents/652707/655984/creemos-en-las-personas.jpg/7a4d11c7-4f81-5980-a8bf-9ff619353253?t=1646067774069"
-                class="card-img-top"
-                alt="Agenda tu Cita"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Agenda tu Cita</h5>
-                <p class="card-text">
-                  Programa una reunión para evaluar tus necesidades y encontrar la póliza perfecta para ti y tu familia.
-                </p>
-                <button class="btn btn-outline-primary">Agendar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            // Imagen de fondo para el hero
+            const heroBg =
+              hero.backgroundImage ||
+              "https://gustavomirabalcastro.com/wp-content/uploads/2020/10/Gustavo-Mirabal-Castro-que-es-un-asesor-financiero.jpg";
 
-      {/* SECCIÓN 3: "Hola, soy Lily..." (o persona experta en seguros) */}
-      <div class="container my-5 about-section">
-        <div class="row align-items-center">
-          <div class="col-md-6 mb-4 mb-md-0">
-            <img
-              src="https://img.freepik.com/foto-gratis/hermosa-mujer-hablando-telefono_23-2148369518.jpg?size=626&ext=jpg"
-              alt="Agente de Seguros"
-              class="img-fluid"
-            />
-          </div>
-          <div class="col-md-6">
-            <h2 class="mb-4">Hola, soy Lily</h2>
-            <p class="lead">
-              Apasionada por la protección y el bienestar de las personas,
-              me dedico a asesorarte para que encuentres el seguro que mejor
-              se adapte a tu vida y a la de los tuyos.
-            </p>
-            <p>
-              Con más de 10 años de experiencia en el sector, mi misión es
-              brindar tranquilidad y confianza a cada uno de mis clientes.
-              Juntos, construiremos un plan de protección sólido para que
-              puedas enfocarte en lo que realmente importa: disfrutar tu día a día.
-            </p>
-            <button
-              class="btn btn-success"
-              style="border-radius: 50px; padding: 0.5rem 1.5rem;"
-            >
-              Conoce mi Historia
-            </button>
-          </div>
-        </div>
+            return (
+              <>
+                {/* HERO SECTION */}
+                <div
+                  class="hero-section"
+                  style={{
+                    background: `url("${heroBg}") no-repeat center center`,
+                    backgroundSize: "cover",
+                  }}
+                >
+                  <div class="hero-overlay"></div>
+                  <div class="hero-content">
+                    <h1 class="hero-title">
+                      {hero.title || "Bienvenido a Mi Aseguradora"}
+                    </h1>
+                    <p class="hero-subtitle">
+                      {hero.subtitle ||
+                        "Protege tu futuro y el de los tuyos con nuestras soluciones de seguros a tu medida."}
+                    </p>
+                    <div>
+                      <button class="btn btn-warning hero-btn">
+                        {hero.cta_1?.text || "Conócenos"}
+                      </button>
+                      <button class="btn btn-outline-light hero-btn">
+                        {hero.cta_2?.text || "Cotiza Ahora"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECCIÓN: Tranquilidad */}
+                <div class="tranquilidad-section my-5">
+                  <div class="row align-items-center">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                      <img
+                        src={
+                          tranquilidad.imageUrl ||
+                          "https://example.com/tranquilidad.jpg"
+                        }
+                        alt="Tranquilidad"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <h2>
+                        {tranquilidad.title || "Encuentra tu Tranquilidad"}
+                      </h2>
+                      <p class="lead">
+                        {tranquilidad.leadText || "Protege a tu familia"}
+                      </p>
+                      <p>
+                        {tranquilidad.description ||
+                          "Con nuestros planes de seguro, tendrás la paz que mereces."}
+                      </p>
+                      <button class="btn btn-primary">
+                        {tranquilidad.buttonText || "Conoce más"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SECCIÓN: Why */}
+                <div class="why-section my-5">
+                  <h2 class="text-center mb-5">
+                    {whySection.sectionTitle || "¿Por qué elegirnos?"}
+                  </h2>
+                  <div class="row g-4">
+                    {whySection.cards && whySection.cards.length > 0 ? (
+                      whySection.cards.map((card, index) => (
+                        <div class="col-md-4" key={index}>
+                          <div class="card h-100">
+                            <img
+                              src={
+                                card.imageUrl ||
+                                "https://example.com/card-default.jpg"
+                              }
+                              class="card-img-top"
+                              alt={card.cardTitle}
+                            />
+                            <div class="card-body">
+                              <h5 class="card-title">
+                                {card.cardTitle || "Título de Tarjeta"}
+                              </h5>
+                              <p class="card-text">
+                                {card.cardText ||
+                                  "Planes que cubren tus necesidades."}
+                              </p>
+                              <button class="btn btn-outline-primary">
+                                {card.buttonText || "Ver más"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div class="col-md-4">
+                        <div class="card h-100">
+                          <img
+                            src="https://example.com/card-default.jpg"
+                            class="card-img-top"
+                            alt="Default Card"
+                          />
+                          <div class="card-body">
+                            <h5 class="card-title">Seguros de Auto</h5>
+                            <p class="card-text">Conduce con confianza...</p>
+                            <button class="btn btn-outline-primary">
+                              Ver Planes
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* SECCIÓN: About */}
+                <div class="about-section my-5">
+                  <div class="row align-items-center">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                      <img
+                        src={about.imageUrl || "https://example.com/about.jpg"}
+                        alt="Sobre Nosotros"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <h2>
+                        {about.title || "Sobre Nuestra Aseguradora"}
+                      </h2>
+                      <p class="lead">
+                        {about.text ||
+                          "Con años de experiencia, ofrecemos soluciones integrales para proteger a tu familia y patrimonio."}
+                      </p>
+                      <button class="btn btn-success">
+                        {about.buttonText || "Conócenos"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            );
+          })()
+        ) : (
+          <div class="text-center">Cargando Home...</div>
+        )}
       </div>
     </>
   );
