@@ -38,6 +38,14 @@ import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
 
+
+
+import AdminHistoriaView from "./views/PaginasEdt/AdminHistoriaView";
+import AdminContactoView from "./views/PaginasEdt/AdminContactoView";
+import AdminFaqView from "./views/PaginasEdt/AdminFaqView";
+import AdminRedProveedores from "./views/PaginasEdt/AdminRedProveedores";
+import AdminTestimoniosView from "./views/PaginasEdt/AdminTestimoniosView";
+
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
 // Restaurar sesión al iniciar la app
@@ -81,6 +89,12 @@ render(() => (
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
             <Route path="/citas" component={requireRole("admin", Citas)} /> 
             <Route path="/copago" component={requireRole("admin", Copago)} /> 
+            <Route path="/pages-historia" component={requireRole("admin", AdminHistoriaView)} />
+            <Route path="/pages-contacto" component={requireRole("admin", AdminContactoView)} />
+            <Route path="/pages-faq" component={requireRole("admin", AdminFaqView)} />
+            <Route path="/pages-proveedores" component={requireRole("admin", AdminRedProveedores)} />
+            <Route path="/pages-testimonios" component={requireRole("admin", AdminTestimoniosView)} />
+
 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

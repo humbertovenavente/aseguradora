@@ -15,6 +15,12 @@ import categoriaRoutes from './routes/categoriaRoutes.js';
 import empleadosRoutes from './routes/empleadosRoutes.js';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
+//paginas editables
+import historiaRoutes from "./routes/PaginasEdt/historiaRoutes.js";
+import contactoRoutes from "./routes/PaginasEdt/contactoRoutes.js";
+import faqRoutes from "./routes/PaginasEdt/faqRoutes.js";
+import redProveedoresRoutes from "./routes/PaginasEdt/redProveedoresRoutes.js";
+import testimoniosRoutes from "./routes/PaginasEdt/testimoniosRoutes.js";
 
 import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
 import copagoRoutes from './routes/copagoRoutes.js';
@@ -45,8 +51,17 @@ app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
 app.use('/api/copagos', copagoRoutes);
+<<<<<<< HEAD
 app.use('/api/', copagoRoutes);
 
+=======
+//paginas editables
+app.use('/api/historia', historiaRoutes);
+app.use('/api/contacto', contactoRoutes);
+app.use('/api/faq', faqRoutes);
+app.use('/api/redProveedores', redProveedoresRoutes);
+app.use('/api/testimonios', testimoniosRoutes);
+>>>>>>> 9e9bdf5af91bd4a5420cae58959f85e01fc46ca4
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
