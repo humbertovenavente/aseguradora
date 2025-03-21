@@ -51,8 +51,25 @@ export const eliminarCliente = async (id) => {
 };
 
 
+/**
+ * PUT - Recalcular Copago de un Cliente
+ */
+export const recalcularCopagoCliente = async (clienteId) => {
+    try {
+        console.log(`🔄 Recalculando copago para el cliente ID: ${clienteId}`);
+        const response = await axios.put(`${CLIENTES_API}/${clienteId}/recalcular-copago`);
+        console.log("✅ Copagos recalculados correctamente.");
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error al recalcular copago:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
 // esto solamente es para lo que vamos a utilizar en jalar la informacion 
 export async function obtenerHistorialCliente(clienteId) {
     const respuesta = await axios.get(`${CLIENTES_API}/${clienteId}/historial`);
     return respuesta.data.historialServicios; // Solo devuelve el historial
+
 }
