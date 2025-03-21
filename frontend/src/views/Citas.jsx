@@ -285,40 +285,41 @@ export default function Citas() {
 
             {/* Columna derecha: Citas Procesadas */}
             <div class="col-md-8">
-                <h4 class="mb-3">Citas Procesadas</h4>
-                {citas().length === 0 ? (
-                    <p>No hay citas registradas.</p>
-                ) : (
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Paciente</th>
-                                    <th>Documento</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
-                                    <th>Hospital</th>
-                                    <th>Servicio</th>
-                                    <th>Motivo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {citas().map(cita => (
-                                    <tr key={cita._id}>
-                                        <td>{cita.nombreCliente}</td>
-                                        <td>{cita.documentoCliente}</td>
-                                        <td>{cita.fecha}</td>
-                                        <td>{cita.horaInicio} - {cita.horaFin}</td>
-                                        <td>{hospitales().find(h => h._id === cita.idHospital)?.nombre || 'N/A'}</td>
-                                        <td>{servicios().find(s => s._id === cita.idServicio)?.nombre || 'N/A'}</td>
-                                        <td>{cita.motivo}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+    <h4 class="mb-3">Citas Procesadas</h4>
+    {citas().length === 0 ? (
+        <p>No hay citas registradas.</p>
+    ) : (
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Documento</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Hospital</th>
+                        <th>Servicio</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {citas().map(cita => (
+                        <tr key={cita._id}>
+                            <td>{cita.idPaciente?.nombre} {cita.idPaciente?.apellido || ""}</td>
+                            <td>{cita.idPaciente?.documento || "N/A"}</td>
+                            <td>{new Date(cita.fecha).toISOString().split("T")[0]}</td>
+                            <td>{cita.horaInicio} - {cita.horaFin}</td>
+                            <td>{cita.idHospital?.nombre || "N/A"}</td>
+                            <td>{cita.idServicio?.nombre || "N/A"}</td>
+                            <td>{cita.motivo}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    )}
+</div>
+
         </div>
     </div>
 );
