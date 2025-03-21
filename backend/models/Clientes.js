@@ -39,18 +39,18 @@ const ClienteSchema = new mongoose.Schema({
  */
 ClienteSchema.pre('save', async function (next) {
     try {
-        console.log("🟢 Ejecutando middleware de cálculo de copago...");
+        console.log(" Ejecutando middleware de cálculo de copago...");
 
         const poliza = await Poliza.findById(this.polizaId).populate("coberturaId");
 
         if (!poliza || !poliza.coberturaId) {
-            console.log(`⚠️ Póliza o cobertura no encontrada para el cliente.`);
+            console.log(`Póliza o cobertura no encontrada para el cliente.`);
             return next();
         }
 
         const porcentajeCobertura = poliza.coberturaId.porcentajeCobertura || 0;
 
-        console.log(`✅ Cobertura encontrada: ${porcentajeCobertura}%`);
+        console.log(`Cobertura encontrada: ${porcentajeCobertura}%`);
 
         for (let i = 0; i < this.historialServicios.length; i++) {
             const servicioId = this.historialServicios[i].servicio;
@@ -60,14 +60,14 @@ ClienteSchema.pre('save', async function (next) {
 
             const precioAseguradora = servicio.precioAseguradora || 0; // Obtener precio actualizado
 
-            // 📌 Mantener el costo del hospital y calcular el copago basado en `precioAseguradora`
+            // Mantener el costo del hospital y calcular el copago basado en `precioAseguradora`
             const copagoCalculado = (precioAseguradora * (1 - (porcentajeCobertura / 100))).toFixed(2);
             this.historialServicios[i].copago = parseFloat(copagoCalculado);
         }
 
         next();
     } catch (error) {
-        console.error("❌ Error en el cálculo del copago:", error);
+        console.error("Error en el cálculo del copago:", error);
         next(error);
     }
 });

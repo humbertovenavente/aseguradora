@@ -3,7 +3,7 @@ import Poliza from '../models/Poliza.js';
 
 const router = express.Router();
 
-// ✅ Crear una nueva póliza
+// Crear una nueva póliza
 router.post('/', async (req, res) => {
     const { nombre, coberturaId, costo, vigencia, id_seguro } = req.body;
 
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📄 Listar todas las pólizas con datos de cobertura y seguro asociados
+//  Listar todas las pólizas con datos de cobertura y seguro asociados
 router.get('/', async (req, res) => {
     try {
         const polizas = await Poliza.find()
@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
 });
 
 
-// 🔍 Obtener una póliza por ID
+//  Obtener una póliza por ID
 router.get('/:id', async (req, res) => {
     try {
         const poliza = await Poliza.findById(req.params.id)
@@ -62,7 +62,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar una póliza
+//  Actualizar una póliza
 router.put('/:id', async (req, res) => {
     const { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro } = req.body;
 
@@ -83,7 +83,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar una póliza
+//  Eliminar una póliza
 router.delete('/:id', async (req, res) => {
     try {
         const polizaEliminada = await Poliza.findByIdAndDelete(req.params.id);

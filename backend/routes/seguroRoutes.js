@@ -3,7 +3,7 @@ import Seguro from '../models/Seguro.js';
 
 const router = express.Router();
 
-// ✅ Crear un nuevo seguro
+//  Crear un nuevo seguro
 router.post('/', async (req, res) => {
     const { nombre, tipoCobertura, coberturaId, costo, vigencia, id_seguro } = req.body;
 
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 });
 
 
-// 📄 Listar todos los seguros
+//  Listar todos los seguros
 router.get('/', async (req, res) => {
     try {
         const seguros = await Seguro.find();
@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 🔍 Obtener un seguro por ID
+// Obtener un seguro por ID
 router.get('/:id', async (req, res) => {
     try {
         const seguro = await Seguro.findById(req.params.id);
@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar un seguro
+//  Actualizar un seguro
 router.put('/:id', async (req, res) => {
     const { nombre, codigo, direccion, telefono, correo } = req.body;
 
@@ -71,7 +71,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar un seguro
+// Eliminar un seguro
 router.delete('/:id', async (req, res) => {
     try {
         const seguroEliminado = await Seguro.findByIdAndDelete(req.params.id);

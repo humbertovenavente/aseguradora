@@ -23,7 +23,7 @@ import redProveedoresRoutes from "./routes/PaginasEdt/redProveedoresRoutes.js";
 import testimoniosRoutes from "./routes/PaginasEdt/testimoniosRoutes.js";
 
 import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
-import copagoRoutes from './routes/copagoRoutes.js';
+
 import citaRoutes from "./routes/citas.js";
 import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
 
@@ -47,7 +47,7 @@ app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
-app.use('/api/copagos', copagoRoutes);
+
 
 //  Rutas de páginas editables claramente definidas
 app.use('/api/historia', historiaRoutes);
@@ -61,8 +61,8 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
-    .then(() => console.log('✅ Conectado a MongoDB'))
-    .catch(err => console.error('❌ Error conectando a MongoDB:', err));
+    .then(() => console.log('Conectado a MongoDB'))
+    .catch(err => console.error(' Error conectando a MongoDB:', err));
 
 app.get('/', (req, res) => {
     res.send('🚀 API funcionando correctamente');

@@ -8,13 +8,13 @@ import Hospital from '../models/Hospital.js';
 const router = express.Router();
 
 /**
- * ✅ Registrar pago y calcular copago dinámicamente
+ *  Registrar pago y calcular copago dinámicamente
  */
 router.post('/', async (req, res) => {
     const { clienteCorreo, polizaNombre, servicioId, hospitalId, monto } = req.body;
 
     try {
-        // 🔍 Buscar cliente por correo del usuario asociado
+        //  Buscar cliente por correo del usuario asociado
         let cliente = await Cliente.findOne({})
             .populate({ path: "usuarioId", select: "correo" })
             .exec();
@@ -26,32 +26,32 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ mensaje: "Cliente no encontrado. Verifique el correo." });
         }
 
-        // 🔍 Buscar la póliza del cliente por nombre
+        //  Buscar la póliza del cliente por nombre
         const poliza = await Poliza.findOne({ nombre: polizaNombre }).populate("coberturaId");
 
         if (!poliza) {
             return res.status(400).json({ mensaje: "Póliza no válida o no encontrada." });
         }
 
-        // 🔍 Buscar el servicio a facturar
+        //  Buscar el servicio a facturar
         const servicio = await Servicio.findById(servicioId);
         if (!servicio) {
             return res.status(400).json({ mensaje: "Servicio no encontrado." });
         }
 
-        // 🔍 Buscar el hospital
+        //  Buscar el hospital
         const hospital = await Hospital.findById(hospitalId);
         if (!hospital) {
             return res.status(400).json({ mensaje: "Hospital no encontrado." });
         }
 
-        // 🔍 Obtener el porcentaje de cobertura de la póliza
+        //  Obtener el porcentaje de cobertura de la póliza
         const porcentajeCobertura = poliza.coberturaId.porcentajeCobertura;
 
-        // 🔹 Calcular copago basado en la cobertura
+        //  Calcular copago basado en la cobertura
         const copagoCalculado = servicio.precioAseguradora * (1 - porcentajeCobertura / 100);
 
-        // 🔍 Validar monto mínimo requerido
+        //  Validar monto mínimo requerido
         if (monto < cliente.montoMinimoCobertura) {
             const pagoRechazado = await Pago.create({
                 cliente_id: cliente._id,
@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ mensaje: "Pago rechazado por monto inferior al mínimo requerido.", pago: pagoRechazado });
         }
 
-        // ✅ Registrar el pago aceptado
+        //  Registrar el pago aceptado
         const pagoAceptado = await Pago.create({
             cliente_id: cliente._id,
             poliza_id: poliza._id,
@@ -74,7 +74,7 @@ router.post('/', async (req, res) => {
             estado_pago: 'aceptado'
         });
 
-        // ✅ Guardar en historialServicios del cliente
+        // Guardar en historialServicios del cliente
         cliente.historialServicios.push({
             hospital: hospital._id,
             servicio: servicio._id,

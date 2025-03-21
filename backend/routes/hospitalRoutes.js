@@ -5,7 +5,7 @@ import Servicio from '../models/Servicio.js';
 
 const router = express.Router();
 
-// ✅ Crear un nuevo hospital
+//  Crear un nuevo hospital
 router.post('/', async (req, res) => {
     const { nombre, direccion, telefono, serviciosAprobados, convenioActivo } = req.body;
 
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📄 Listar todos los hospitales
+// Listar todos los hospitales
 router.get('/', async (req, res) => {
     try {
         const hospitales = await Hospital.find().populate('serviciosAprobados');
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 🔍 Obtener un hospital por ID
+//  Obtener un hospital por ID
 router.get('/:id', async (req, res) => {
     try {
         const hospital = await Hospital.findById(req.params.id).populate('serviciosAprobados');
@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar un hospital
+//  Actualizar un hospital
 router.put('/:id', async (req, res) => {
     const { nombre, direccion, telefono, serviciosAprobados, convenioActivo } = req.body;
 
@@ -67,7 +67,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar un hospital
+//  Eliminar un hospital
 router.delete('/:id', async (req, res) => {
     try {
         const hospitalEliminado = await Hospital.findByIdAndDelete(req.params.id);

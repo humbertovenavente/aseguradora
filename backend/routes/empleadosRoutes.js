@@ -36,13 +36,13 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Puesto, sucursal y fecha de ingreso son obligatorios." });
     }
 
-    // ✅ Verificar si ya existe un usuario con el mismo correo
+    // Verificar si ya existe un usuario con el mismo correo
     const usuarioExistente = await Usuario.findOne({ correo });
     if (usuarioExistente) {
       return res.status(400).json({ message: `El correo "${correo}" ya está en uso.` });
     }
 
-    // ✅ Crear el usuario
+    //  Crear el usuario
     const nuevoUsuario = new Usuario({
       correo,
       contrasena,
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
     const usuarioGuardado = await nuevoUsuario.save();
     console.log("✅ Usuario guardado correctamente:", usuarioGuardado);
 
-    // ✅ Crear el empleado
+    //  Crear el empleado
     const nuevoEmpleado = new Empleado({
       nombre,
       apellido,
@@ -76,7 +76,7 @@ router.post("/", async (req, res) => {
     });
 
     const empleadoGuardado = await nuevoEmpleado.save();
-    console.log("✅ Empleado guardado correctamente:", empleadoGuardado);
+    console.log(" Empleado guardado correctamente:", empleadoGuardado);
 
     return res.status(201).json({
       message: "Empleado y Usuario creados exitosamente.",
@@ -84,9 +84,9 @@ router.post("/", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Error en el servidor:", error);
+    console.error(" Error en el servidor:", error);
 
-    // ✅ Capturamos errores de validación de Mongoose
+    // Capturamos errores de validación de Mongoose
     if (error.name === "ValidationError") {
       return res.status(400).json({
         message: "Error de validación.",
@@ -107,7 +107,7 @@ router.get("/", async (req, res) => {
 
    res.status(200).json(empleados);
  } catch (error) {
-   console.error("❌ Error al obtener empleados:", error);
+   console.error("Error al obtener empleados:", error);
    res.status(500).json({ message: "Error al obtener los empleados." });
  }
 });
@@ -125,7 +125,7 @@ router.get("/:id", async (req, res) => {
    if (!empleado) return res.status(404).json({ message: "Empleado no encontrado." });
    res.status(200).json(empleado);
  } catch (error) {
-   console.error("❌ Error al obtener el empleado:", error);
+   console.error("Error al obtener el empleado:", error);
    res.status(500).json({ message: "Error al obtener el empleado." });
  }
 });
@@ -176,7 +176,7 @@ router.put("/:id", async (req, res) => {
 
    res.status(200).json({ message: "Empleado y Usuario actualizados correctamente.", empleado });
  } catch (error) {
-   console.error("❌ Error al actualizar el empleado:", error);
+   console.error(" Error al actualizar el empleado:", error);
    res.status(500).json({ message: "Error al actualizar el Empleado y Usuario." });
  }
 });
@@ -200,7 +200,7 @@ router.delete("/:id", async (req, res) => {
 
    res.status(200).json({ message: "Empleado y Usuario eliminados correctamente." });
  } catch (error) {
-   console.error("❌ Error al eliminar el empleado:", error);
+   console.error(" Error al eliminar el empleado:", error);
    res.status(500).json({ message: "Error al eliminar el Empleado y Usuario." });
  }
 });

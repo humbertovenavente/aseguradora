@@ -17,12 +17,12 @@ export const obtenerEmpleados = async () => {
 // Crear un nuevo empleado
 export const crearEmpleado = async (empleado) => {
   try {
-    console.log("📤 Enviando empleado:", empleado);
+    console.log("Enviando empleado:", empleado);
     const response = await axios.post(EMPLEADOS_API, empleado);
-    console.log("✅ Empleado creado correctamente.");
+    console.log(" Empleado creado correctamente.");
     return response.data;
   } catch (error) {
-    console.error("❌ Error al crear el empleado:", error.response?.data || error.message);
+    console.error(" Error al crear el empleado:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -33,7 +33,7 @@ export const actualizarEmpleado = async (id, empleado) => {
     const response = await axios.put(`${EMPLEADOS_API}/${id}`, empleado);
     return response.data;
   } catch (error) {
-    console.error(`❌ Error al actualizar el empleado con ID ${id}:`, error.response?.data || error.message);
+    console.error(` Error al actualizar el empleado con ID ${id}:`, error.response?.data || error.message);
     throw error;
   }
 };
@@ -44,7 +44,7 @@ export const eliminarEmpleado = async (id) => {
     const response = await axios.delete(`${EMPLEADOS_API}/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`❌ Error al eliminar el empleado con ID ${id}:`, error.response?.data || error.message);
+    console.error(` Error al eliminar el empleado con ID ${id}:`, error.response?.data || error.message);
     throw error;
   }
 };

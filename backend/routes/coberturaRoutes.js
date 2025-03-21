@@ -5,7 +5,7 @@ import Cobertura from '../models/Cobertura.js';
 
 const router = express.Router();
 
-// ✅ Crear una nueva cobertura
+// Crear una nueva cobertura
 router.post('/', async (req, res) => {
     const { nombre, descripcion, porcentajeCobertura, servicios } = req.body;
 
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📄 Listar todas las coberturas
+//  Listar todas las coberturas
 router.get('/', async (req, res) => {
     try {
         const coberturas = await Cobertura.find().populate('servicios'); 
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 🔍 Obtener una cobertura por ID
+//  Obtener una cobertura por ID
 router.get('/:id', async (req, res) => {
     try {
         const cobertura = await Cobertura.findById(req.params.id);
@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar una cobertura
+//  Actualizar una cobertura
 router.put('/:id', async (req, res) => {
     const { nombre, descripcion, porcentajeCobertura, servicios } = req.body;
 
@@ -67,7 +67,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar una cobertura
+//  Eliminar una cobertura
 router.delete('/:id', async (req, res) => {
     try {
         const coberturaEliminada = await Cobertura.findByIdAndDelete(req.params.id);

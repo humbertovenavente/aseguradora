@@ -46,24 +46,35 @@ export default function App(props: any) {
                     </div>
                     <div class="offcanvas-body">
                         {isLoggedIn() && <A href="/users">Users</A>}
-                        {userRole() === "admin" && <A href="/operadoras">Operadoras</A>}
-                        {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
+                       
+                        
                         {userRole() === "admin" && <A href="/clientes">Clientes</A>}
-                        {userRole() === "admin" && <A href="/historial-servicios">Historial de Servicios</A>}
+                        {userRole() === "admin" && <A href="/seguros">Informacion de Aseguradora</A>} 
+                       {/* {userRole() === "admin" && <A href="/historial-servicios">Historial de Servicios</A>} */}
                         {userRole() === "admin" && <A href="/empleados">Empleados</A>}
-                            
+                        {userRole() === "admin" && <A href="/fichastecnicas">Ficha Técnica</A>}
+
+                        {userRole() === "admin" && <A href="/servicios-cubiertos">Servicios</A>} 
+                        {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
+                        {userRole() === "admin" && <A href="/coberturas">Coberturas</A>} 
+
+                        {userRole() === "admin" && <A href="/citas">Citas</A>}
+                        {userRole() === "admin" && <A href="/operadoras">Operadoras</A>}
+                        
+
+
                         {userRole() === "admin" && <A href="/reportes">Reportes</A>}  
                         {userRole() === "admin" && <A href="/aprobacion">Aprobacion</A>}
                         {userRole() === "admin" && <A href="/pagos">Pagos</A>}
-                        {userRole() === "admin" && <A href="/copago">xxxxx</A>}
+                       { /*{userRole() === "admin" && <A href="/copago">xxxxx</A>} */}
 
-                        {userRole() === "admin" && <A href="/coberturas">Coberturas</A>}     
+                           
                         {userRole() === "admin" && <A href="/hospitales">Hospitales</A>} 
                         {userRole() === "admin" && <A href="/aprobacion-org">Aprobación Organizaciones</A>}     
-                        {userRole() === "admin" && <A href="/servicios-cubiertos">Servicios</A>}    
-                        {userRole() === "admin" && <A href="/seguros">Seguros</A>}  
-                        {userRole() === "admin" && <A href="/fichastecnicas">Ficha Técnica</A>}
-                        {userRole() === "admin" && <A href="/citas">Citas</A>}
+                           
+                         
+                        
+                     
                         
                         {userRole() === "admin" && <A href="/pages">Paginas editables</A>}
                         

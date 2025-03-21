@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/servicios";
 
-// ✅ Crear un nuevo servicio
+//  Crear un nuevo servicio
 export const crearServicio = async (servicio) => {
   try {
     const response = await axios.post(API_URL, servicio);
@@ -13,7 +13,7 @@ export const crearServicio = async (servicio) => {
   }
 };
 
-// 📄 Obtener todos los servicios con hospitales y subservicios relacionados
+//  Obtener todos los servicios con hospitales y subservicios relacionados
 export const obtenerServicios = async () => {
   try {
     const response = await axios.get(`${API_URL}?populate=hospitalAprobado,subservicios`);
@@ -24,7 +24,7 @@ export const obtenerServicios = async () => {
   }
 };
 
-// 🔍 Obtener un servicio por ID con su hospital y subservicios
+// Obtener un servicio por ID con su hospital y subservicios
 export const obtenerServicioPorId = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/${encodeURIComponent(id)}?populate=hospitalAprobado,subservicios`);
@@ -35,7 +35,7 @@ export const obtenerServicioPorId = async (id) => {
   }
 };
 
-// ✏️ Actualizar un servicio
+//  Actualizar un servicio
 export const actualizarServicio = async (id, servicio) => {
   try {
     const response = await axios.put(`${API_URL}/${encodeURIComponent(id)}`, servicio);
@@ -46,7 +46,7 @@ export const actualizarServicio = async (id, servicio) => {
   }
 };
 
-// ❌ Eliminar un servicio
+// Eliminar un servicio
 export const eliminarServicio = async (id) => {
   try {
     const response = await axios.delete(`${API_URL}/${encodeURIComponent(id)}`);

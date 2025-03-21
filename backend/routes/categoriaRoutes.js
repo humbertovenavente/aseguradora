@@ -3,7 +3,7 @@ import Categoria from '../models/Categoria.js';
 
 const router = express.Router();
 
-// ✅ Crear una nueva categoría o subcategoría
+// Crear una nueva categoría o subcategoría
 router.post('/', async (req, res) => {
     const { nombre, parent } = req.body;
     try {
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📄 Listar todas las categorías (y subcategorías)
+// Listar todas las categorías (y subcategorías)
 router.get('/', async (req, res) => {
     try {
         const categorias = await Categoria.find();
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 🔍 Obtener una categoría por ID
+//  Obtener una categoría por ID
 router.get('/:id', async (req, res) => {
     try {
         const categoria = await Categoria.findById(req.params.id);
@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// ✏️ Actualizar una categoría o subcategoría
+//  Actualizar una categoría o subcategoría
 router.put('/:id', async (req, res) => {
     const { nombre, parent } = req.body;
     try {
@@ -77,7 +77,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// ❌ Eliminar una categoría o subcategoría
+// Eliminar una categoría o subcategoría
 router.delete('/:id', async (req, res) => {
     try {
         const categoriaEliminada = await Categoria.findByIdAndDelete(req.params.id);

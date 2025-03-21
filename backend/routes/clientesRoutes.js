@@ -33,21 +33,23 @@ router.get("/", async (req, res) => {
 
 router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
     try {
-        const { clienteId, historialId } = req.params;
+        const { clienteId, historialId } = req.params; //obtiene los id
 
-        console.log("🧾 Historial ID recibido:", historialId);
-
+        console.log("Historial ID recibido:", historialId);
+        //busca los cliente en la base de datos
         const cliente = await Cliente.findById(clienteId);
         if (!cliente) {
             return res.status(404).json({ message: "Cliente no encontrado." });
         }
 
-        console.log("🧾 Historial existentes en cliente:");
+        console.log(" Historial existentes en cliente:");
+        //mestra en consola los ids del historial existente
         cliente.historialServicios.forEach(h => {
             console.log("   ->", h._id?.toString());
         });
 
-        // ✅ Comparación utilizando ObjectId.equals
+        // Comparación utilizando ObjectId.equals
+        // busca el historial que coicida con el historiaId
         const historial = cliente.historialServicios.find(h =>
             mongoose.Types.ObjectId(h._id).equals(historialId)
         );
@@ -56,6 +58,7 @@ router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
             return res.status(404).json({ message: "Servicio en historial no encontrado." });
         }
 
+        //actualiza el estado de copago
         historial.estadoCopago = 'pagado';
         await cliente.save();
 
@@ -64,7 +67,7 @@ router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
             historialActualizado: historial,
         });
     } catch (error) {
-        console.error("❌ Error al pagar copago:", error);
+        console.error(" Error al pagar copago:", error);
         res.status(500).json({ message: "Error al pagar el copago.", error: error.message });
     }
 });
@@ -102,7 +105,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post('/', async (req, res) => {
     try {
-        console.log("🔹 Datos recibidos:", req.body); // LOG PARA DEPURACIÓN
+        console.log(" Datos recibidos:", req.body); // LOG PARA DEPURACIÓN
 
         const { nombre, apellido, documento, telefono, fechaNacimiento, direccion, numeroAfiliacion, polizaId, polizaNombre, fechaVencimiento, correo, contrasena } = req.body;
         
@@ -114,10 +117,10 @@ router.post('/', async (req, res) => {
         const clienteExistente = await Cliente.findOne({ documento });
         if (clienteExistente) {
             return res.status(400).json({ message: `El documento "${documento}" ya está en uso.` });
-        }
+        }//el correo debe ser unico sino tira error 
 
         // Verificar si ya existe un usuario con el mismo correo
-        const usuarioExistente = await Usuario.findOne({ correo });
+        const usuarioExistente = await Usuario.findOne({ correo }); //Evita que se registre dos veces el mismo cliente
         if (usuarioExistente) {
             return res.status(400).json({ message: `El correo "${correo}" ya está en uso.` });
         }
@@ -144,7 +147,7 @@ router.post('/', async (req, res) => {
             polizaNombre,
             fechaVencimiento,
             estadoPago: false,
-            usuarioId: usuarioGuardado._id
+            usuarioId: usuarioGuardado._id // se asocia cliente con el usuario recien creado, dspues se guarda en la base de datos
         });
 
         const clienteGuardado = await nuevoCliente.save();
@@ -382,7 +385,7 @@ router.put('/:id/recalcular-copago', async (req, res) => {
         res.status(200).json({ message: "Copagos actualizados correctamente.", historialServicios: cliente.historialServicios });
 
     } catch (error) {
-        console.error("❌ Error al recalcular copagos:", error);
+        console.error(" Error al recalcular copagos:", error);
         res.status(500).json({ message: "Error al recalcular copagos.", error: error.message });
     }
 });

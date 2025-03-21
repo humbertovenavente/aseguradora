@@ -1,7 +1,7 @@
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-// ✅ Obtener todas las fichas técnicas
+// Obtener todas las fichas técnicas
 export const getFichasTecnicas = async () => {
     try {
         const response = await axios.get(`${API_BASE_URL}/fichatecnica`);
@@ -12,7 +12,7 @@ export const getFichasTecnicas = async () => {
     }
 };
 
-// ✅ Obtener ficha técnica por ID
+//  Obtener ficha técnica por ID
 export const getFichaTecnicaById = async (id) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/fichatecnica/${id}`);
@@ -23,7 +23,7 @@ export const getFichaTecnicaById = async (id) => {
     }
 };
 
-// ✅ Crear nueva ficha técnica (Asegúrate de que esta función exista)
+//  Crear nueva ficha técnica (Asegúrate de que esta función exista)
 export const crearFichaTecnica = async (ficha) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/fichatecnica`, ficha);
@@ -34,7 +34,7 @@ export const crearFichaTecnica = async (ficha) => {
     }
 };
 
-// ✅ Actualizar ficha técnica
+// Actualizar ficha técnica
 export const updateFichaTecnica = async (id, fichaData) => {
     try {
         return await axios.put(`${API_BASE_URL}/fichatecnica/${id}`, fichaData);
@@ -44,7 +44,7 @@ export const updateFichaTecnica = async (id, fichaData) => {
     }
 };
 
-// ✅ Eliminar ficha técnica
+// Eliminar ficha técnica
 export const deleteFichaTecnica = async (id) => {
     try {
         return await axios.delete(`${API_BASE_URL}/fichatecnica/${id}`);
