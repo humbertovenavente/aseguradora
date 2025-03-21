@@ -38,7 +38,7 @@ const ClienteSchema = new mongoose.Schema({
  */
 ClienteSchema.pre('save', async function (next) {
     try {
-        console.log("Ejecutando middleware de cálculo de copago...");
+        console.log("🟢 Ejecutando middleware de cálculo de copago...");
 
         const poliza = await Poliza.findById(this.polizaId).populate("coberturaId");
 
@@ -53,16 +53,14 @@ ClienteSchema.pre('save', async function (next) {
 
         for (let i = 0; i < this.historialServicios.length; i++) {
             const servicioId = this.historialServicios[i].servicio;
-            const servicio = await Servicio.findById(servicioId);
+            const servicio = await Servicio.findById(servicioId); // Asegurar que obtiene el último dato
 
             if (!servicio) continue;
 
-            const precioAseguradora = servicio.precioAseguradora || 0;
+            const precioAseguradora = servicio.precioAseguradora || 0; // Obtener precio actualizado
 
-            //  NO modifica el `costo` ingresado por el hospital
-            // Se usa el `precioAseguradora` (de la  coleccion Servicio) solo para el cálculo del copago
+            // 📌 Mantener el costo del hospital y calcular el copago basado en `precioAseguradora`
             const copagoCalculado = (precioAseguradora * (1 - (porcentajeCobertura / 100))).toFixed(2);
-
             this.historialServicios[i].copago = parseFloat(copagoCalculado);
         }
 
@@ -72,6 +70,7 @@ ClienteSchema.pre('save', async function (next) {
         next(error);
     }
 });
+
 
 
 

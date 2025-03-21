@@ -4,6 +4,7 @@ import Cliente from '../models/Clientes.js';
 import Usuario from '../models/Usuario.js';
 import Hospital from '../models/Hospital.js';
 import Servicio from '../models/Servicio.js';
+import Poliza from '../models/Poliza.js';
 
 const router = express.Router();
 const ROL_CLIENTE_ID = new mongoose.Types.ObjectId("67d652411d30a899ff50a40e");
@@ -286,5 +287,52 @@ router.delete('/:id/historial', async (req, res) => {
         res.status(500).json({ message: "Error al eliminar el historial de servicios.", error: error.message });
     }
 });
+
+//recalcula copagos
+/**
+ *  PUT - Recalcular Copago de un Cliente
+ */
+router.put('/:id/recalcular-copago', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Buscar al cliente
+        const cliente = await Cliente.findById(id).populate("polizaId");
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado." });
+        }
+
+        // Obtener la póliza y la cobertura
+        const poliza = await Poliza.findById(cliente.polizaId).populate("coberturaId");
+        if (!poliza || !poliza.coberturaId) {
+            return res.status(404).json({ message: "Cobertura no encontrada para la póliza del cliente." });
+        }
+
+        const porcentajeCobertura = poliza.coberturaId.porcentajeCobertura || 0;
+
+        // Recorrer historial de servicios y actualizar copagos
+        for (let i = 0; i < cliente.historialServicios.length; i++) {
+            const servicio = await Servicio.findById(cliente.historialServicios[i].servicio);
+
+            if (!servicio) {
+                console.log(`⚠️ No se encontró el servicio con ID: ${cliente.historialServicios[i].servicio}`);
+                continue;
+            }
+
+            // Recalcular copago basado en el precioAseguradora del servicio
+            const nuevoCopago = (servicio.precioAseguradora * (1 - (porcentajeCobertura / 100))).toFixed(2);
+            cliente.historialServicios[i].copago = parseFloat(nuevoCopago);
+        }
+
+        await cliente.save();
+
+        res.status(200).json({ message: "Copagos actualizados correctamente.", historialServicios: cliente.historialServicios });
+
+    } catch (error) {
+        console.error("❌ Error al recalcular copagos:", error);
+        res.status(500).json({ message: "Error al recalcular copagos.", error: error.message });
+    }
+});
+
 
 export default router;

@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import { useParams, useNavigate } from "@solidjs/router";
-import { obtenerClientes, obtenerHistorialCliente } from "../services/clientesService.js";
+import { obtenerClientes, obtenerHistorialCliente, recalcularCopagoCliente } from "../services/clientesService.js";
 
 export default function HistorialServiciosView() {
     const params = useParams();
@@ -20,6 +20,19 @@ export default function HistorialServiciosView() {
         setHistorialServicios(historial);
     });
 
+    // Función para recalcular copagos
+    const manejarRecalculoCopago = async () => {
+        try {
+            await recalcularCopagoCliente(params.id);
+            alert("Copagos actualizados correctamente.");
+            // Volver a cargar historial de servicios actualizado
+            const historialActualizado = await obtenerHistorialCliente(params.id);
+            setHistorialServicios(historialActualizado);
+        } catch (error) {
+            console.error(" Error al recalcular copagos:", error);
+        }
+    };
+
     return (
         <div class="container mt-4">
             <button class="btn btn-secondary mb-3" onClick={() => navigate("/clientes")}>
@@ -27,6 +40,10 @@ export default function HistorialServiciosView() {
             </button>
 
             <h2>Historial de Servicios</h2>
+
+            <button class="btn btn-primary mb-3" onClick={manejarRecalculoCopago}>
+             Recalcular Copagos
+            </button>
 
             {cliente() ? (
                 <>
