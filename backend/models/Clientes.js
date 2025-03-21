@@ -9,9 +9,10 @@ const HistorialServicioSchema = new mongoose.Schema({
   fechaServicio: { type: Date, default: Date.now },
   costo: { type: Number, required: true },
   copago: { type: Number, default: 0 },  // Se calculará automáticamente
+  estadoCopago: { type: String, enum: ['pendiente', 'pagado'], default: 'pendiente' },
   comentarios: { type: String },
   resultados: { type: String },
-}, { _id: false });
+}, { _id: true }); // Le decimos a Mongoose que genere un _id por cada historial
 
 const ClienteSchema = new mongoose.Schema({
   nombre: { type: String, required: true },

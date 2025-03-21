@@ -4,6 +4,7 @@ import { obtenerCopagos, pagarCopago } from "../services/copagoService.js";
 export default function CopagoView() {
     const [copagos, setCopagos] = createSignal([]);
 
+    // 🔍 Cargar todos los copagos al montar el componente
     onMount(async () => {
         try {
             const data = await obtenerCopagos();
@@ -13,10 +14,13 @@ export default function CopagoView() {
         }
     });
 
+    // ✅ Manejar el pago del copago
     const manejarPago = async (id) => {
         try {
             await pagarCopago(id);
             alert("Pago realizado con éxito.");
+
+            // 🔹 Actualizar UI: Marcar copago como pagado
             setCopagos(copagos().map(c => c._id === id ? { ...c, estado: "pagado" } : c));
         } catch (error) {
             console.error("Error al procesar el pago:", error);
@@ -25,10 +29,10 @@ export default function CopagoView() {
 
     return (
         <div class="container mt-4">
-            <h2>Portal de Pagos</h2>
+            <h2 class="text-center mb-4">Portal de Pagos</h2>
             <table class="table table-striped">
                 <thead>
-                    <tr>
+                    <tr class="table-primary">
                         <th>Cliente</th>
                         <th>Hospital</th>
                         <th>Póliza</th>

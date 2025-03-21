@@ -1,15 +1,10 @@
 import express from 'express';
 import Copago from '../models/Copago.js';
-import Cliente from '../models/Clientes.js';
-import Hospital from '../models/Hospital.js';
-import Servicio from '../models/Servicio.js';
-import Poliza from '../models/Poliza.js';
-import Cobertura from '../models/Cobertura.js';
 
 const router = express.Router();
 
 /**
- *  GET - Obtener todos los copagos
+ *  🔍 GET - Obtener todos los copagos con datos completos
  */
 router.get('/', async (req, res) => {
     try {
@@ -27,55 +22,25 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/generar', async (req, res) => {
+/**
+ * ✅ Confirmar pago del copago
+ */
+router.put('/pagar/:id', async (req, res) => {
     try {
-      const { clienteId, servicioId, hospitalId } = req.body;
-  
-      if (!clienteId || !servicioId || !hospitalId) {
-        return res.status(400).json({ message: "Faltan datos obligatorios (clienteId, servicioId, hospitalId)." });
-      }
-  
-      const cliente = await Cliente.findById(clienteId);
-      if (!cliente) return res.status(404).json({ message: 'Cliente no encontrado.' });
-  
-      const poliza = await Poliza.findById(cliente.polizaId).populate('coberturaId');
-      if (!poliza) return res.status(404).json({ message: 'Póliza no encontrada.' });
-  
-      const cobertura = poliza.coberturaId;
-      if (!cobertura) return res.status(404).json({ message: 'Cobertura no encontrada.' });
-  
-      const servicio = await Servicio.findById(servicioId);
-      if (!servicio) return res.status(404).json({ message: 'Servicio no encontrado.' });
-  
-      const hospital = await Hospital.findById(hospitalId);
-      if (!hospital) return res.status(404).json({ message: 'Hospital no encontrado.' });
-  
-      // Validar que el servicio está cubierto
-      const cubierto = cobertura.servicios.some(s => s.toString() === servicio._id.toString());
-      if (!cubierto) return res.status(400).json({ message: 'El servicio no está cubierto por la póliza.' });
-  
-      const porcentaje = cobertura.porcentajeCobertura;
-      const copagoCalculado = servicio.precioAseguradora * (1 - porcentaje / 100);
-  
-      const nuevoCopago = new Copago({
-        cliente: cliente._id,
-        hospital: hospital._id,
-        servicio: servicio._id,
-        poliza: poliza._id,
-        cobertura: cobertura._id,
-        porcentajeCobertura: porcentaje,
-        costoRealServicio: servicio.precioAseguradora,
-        montoCopago: copagoCalculado,
-        estado: 'pendiente',
-      });
-  
-      await nuevoCopago.save();
-  
-      return res.status(201).json({ message: 'Copago generado.', copago: nuevoCopago });
+        const copago = await Copago.findByIdAndUpdate(
+            req.params.id,
+            { estado: "pagado" },
+            { new: true }
+        );
+
+        if (!copago) {
+            return res.status(404).json({ message: "Copago no encontrado." });
+        }
+
+        res.json({ message: "Copago pagado correctamente.", copago });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Error al generar el copago.', error: error.message });
+        res.status(500).json({ message: "Error al procesar el pago.", error: error.message });
     }
-  });
-  
-  export default router;
+});
+
+export default router;

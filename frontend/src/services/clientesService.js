@@ -66,6 +66,17 @@ export const recalcularCopagoCliente = async (clienteId) => {
     }
 };
 
+export const pagarCopagoCliente = async (clienteId, historialId) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/clientes/${clienteId}/historial/${historialId}/pagar`);
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error al pagar copago:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
 
 // esto solamente es para lo que vamos a utilizar en jalar la informacion 
 export async function obtenerHistorialCliente(clienteId) {

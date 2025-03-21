@@ -22,6 +22,7 @@ import copagoRoutes from './routes/copagoRoutes.js';
 import citaRoutes from "./routes/citas.js";
 
 
+
 dotenv.config();
 
 const app = express();
@@ -44,6 +45,7 @@ app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
 app.use('/api/copagos', copagoRoutes);
+app.use('/api/', copagoRoutes);
 
 
 const PORT = process.env.PORT || 5000;

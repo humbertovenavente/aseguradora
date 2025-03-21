@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import { useParams, useNavigate } from "@solidjs/router";
-import { obtenerClientes, obtenerHistorialCliente, recalcularCopagoCliente } from "../services/clientesService.js";
+import { obtenerClientes, obtenerHistorialCliente, recalcularCopagoCliente, pagarCopagoCliente } from "../services/clientesService.js";
 
 export default function HistorialServiciosView() {
     const params = useParams();
@@ -20,16 +20,32 @@ export default function HistorialServiciosView() {
         setHistorialServicios(historial);
     });
 
-    // Función para recalcular copagos
+    // ✅ Función para pagar copago
+    const manejarPago = async (historialId) => {
+    const confirmacion = window.confirm("¿Seguro que deseas saldar la cuenta?");
+    if (confirmacion) {
+        try {
+            await pagarCopagoCliente(params.id, historialId); // ✅ clienteId + historialId
+            alert("Pago realizado con éxito.");
+
+            const historialActualizado = await obtenerHistorialCliente(params.id);
+            setHistorialServicios(historialActualizado);
+        } catch (error) {
+            console.error("Error al procesar el pago:", error);
+        }
+    }
+};
+
+
+    // ✅ Función para recalcular copagos
     const manejarRecalculoCopago = async () => {
         try {
             await recalcularCopagoCliente(params.id);
             alert("Copagos actualizados correctamente.");
-            // Volver a cargar historial de servicios actualizado
             const historialActualizado = await obtenerHistorialCliente(params.id);
             setHistorialServicios(historialActualizado);
         } catch (error) {
-            console.error(" Error al recalcular copagos:", error);
+            console.error("Error al recalcular copagos:", error);
         }
     };
 
@@ -42,7 +58,7 @@ export default function HistorialServiciosView() {
             <h2>Historial de Servicios</h2>
 
             <button class="btn btn-primary mb-3" onClick={manejarRecalculoCopago}>
-             Recalcular Copagos
+                Recalcular Copagos
             </button>
 
             {cliente() ? (
@@ -61,8 +77,8 @@ export default function HistorialServiciosView() {
                                     <th>Costo (Hospital)</th>
                                     <th>Costo (Aseguradora)</th>
                                     <th>Copago</th>
-                                    <th>Comentarios</th>
-                                    <th>Resultados</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,8 +90,24 @@ export default function HistorialServiciosView() {
                                         <td>${servicio.costo}</td>
                                         <td>${servicio.servicio?.precioAseguradora || "N/A"}</td>
                                         <td>${servicio.copago}</td>
-                                        <td>{servicio.comentarios}</td>
-                                        <td>{servicio.resultados}</td>
+                                        <td>
+                                            {servicio.estado === "pagado" ? (
+                                                <span class="text-success">Pagado</span>
+                                            ) : (
+                                                <span class="text-danger">Pendiente</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {servicio.estado !== "pagado" && (
+                                               <button
+                                               class="btn btn-success btn-sm"
+                                               onClick={() => manejarPago(servicio._id)} // ✅ Aquí se usa el _id del historial
+                                           >
+                                               Pagar
+                                           </button>
+                                           
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
