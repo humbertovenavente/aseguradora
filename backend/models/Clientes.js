@@ -1,22 +1,14 @@
 import mongoose from 'mongoose';
+import Cobertura from './Cobertura.js'; // Importar Cobertura para calcular el copago
+import Servicio from './Servicio.js';
+import Poliza from './Poliza.js';
 
-/**
- * Subdocumento que registra cada servicio usado por el cliente:
- * - hospital: nombre o código del hospital
- * - servicio: tipo o nombre del servicio (ej. consulta, laboratorio)
- * - fechaServicio: fecha en que se prestó
- * - costo: costo total del servicio
- * - copago: monto pagado por el cliente (según cobertura)
- * - comentarios, resultados: info adicional
- * - estadoAutorizacion: Aprobado, Rechazado, Pendiente, etc.
- * - numeroAutorizacion: si se aprobó, el número que emite el sistema
- */
 const HistorialServicioSchema = new mongoose.Schema({
   hospital: { type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true },
   servicio: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', required: true },
   fechaServicio: { type: Date, default: Date.now },
   costo: { type: Number, required: true },
-  copago: { type: Number, default: 0 },
+  copago: { type: Number, default: 0 },  // Se calculará automáticamente
   comentarios: { type: String },
   resultados: { type: String },
 }, { _id: false });
@@ -34,13 +26,55 @@ const ClienteSchema = new mongoose.Schema({
   polizaNombre: { type: String, required: true },
   fechaVencimiento: { type: Date },
   estadoPago: { type: Boolean, default: false },
- 
 
   usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
 
-     // Historial de servicios utilizados
-  historialServicios: [HistorialServicioSchema] 
+  historialServicios: [HistorialServicioSchema]
 
 }, { timestamps: true });
+
+/**
+ * este es el TRIGGER PARA CALCULAR AUTOMATICAMENTE EL COPAGO PMiddleware `pre-save` para calcular el copago automáticamente
+ */
+ClienteSchema.pre('save', async function (next) {
+    try {
+        console.log("Ejecutando middleware de cálculo de copago...");
+
+        const poliza = await Poliza.findById(this.polizaId).populate("coberturaId");
+
+        if (!poliza || !poliza.coberturaId) {
+            console.log(`⚠️ Póliza o cobertura no encontrada para el cliente.`);
+            return next();
+        }
+
+        const porcentajeCobertura = poliza.coberturaId.porcentajeCobertura || 0;
+
+        console.log(`✅ Cobertura encontrada: ${porcentajeCobertura}%`);
+
+        for (let i = 0; i < this.historialServicios.length; i++) {
+            const servicioId = this.historialServicios[i].servicio;
+            const servicio = await Servicio.findById(servicioId);
+
+            if (!servicio) continue;
+
+            const precioAseguradora = servicio.precioAseguradora || 0;
+
+            //  NO modifica el `costo` ingresado por el hospital
+            // Se usa el `precioAseguradora` (de la  coleccion Servicio) solo para el cálculo del copago
+            const copagoCalculado = (precioAseguradora * (1 - (porcentajeCobertura / 100))).toFixed(2);
+
+            this.historialServicios[i].copago = parseFloat(copagoCalculado);
+        }
+
+        next();
+    } catch (error) {
+        console.error("❌ Error en el cálculo del copago:", error);
+        next(error);
+    }
+});
+
+
+
+
 
 export default mongoose.model("Cliente", ClienteSchema);

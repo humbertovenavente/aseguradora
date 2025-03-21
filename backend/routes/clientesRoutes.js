@@ -264,5 +264,27 @@ router.get('/:id/historial', async (req, res) => {
     }
 });
 
+router.delete('/:id/historial', async (req, res) => {
+    try {
+        const { id } = req.params; // ID del cliente
+
+        // Buscar al cliente
+        const cliente = await Cliente.findById(id);
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado." });
+        }
+
+        // Vaciar el historial de servicios
+        cliente.historialServicios = [];
+
+        // Guardar el cliente actualizado
+        await cliente.save();
+
+        res.status(200).json({ message: "Historial de servicios eliminado correctamente." });
+    } catch (error) {
+        console.error(" Error al eliminar el historial de servicios:", error);
+        res.status(500).json({ message: "Error al eliminar el historial de servicios.", error: error.message });
+    }
+});
 
 export default router;

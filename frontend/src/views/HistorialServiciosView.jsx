@@ -41,7 +41,8 @@ export default function HistorialServiciosView() {
                                     <th>Hospital</th>
                                     <th>Servicio</th>
                                     <th>Fecha</th>
-                                    <th>Costo</th>
+                                    <th>Costo (Hospital)</th>
+                                    <th>Costo (Aseguradora)</th>
                                     <th>Copago</th>
                                     <th>Comentarios</th>
                                     <th>Resultados</th>
@@ -54,6 +55,7 @@ export default function HistorialServiciosView() {
                                         <td>{servicio.servicio?.nombre || "Desconocido"}</td>
                                         <td>{new Date(servicio.fechaServicio).toLocaleDateString()}</td>
                                         <td>${servicio.costo}</td>
+                                        <td>${servicio.servicio?.precioAseguradora || "N/A"}</td>
                                         <td>${servicio.copago}</td>
                                         <td>{servicio.comentarios}</td>
                                         <td>{servicio.resultados}</td>
