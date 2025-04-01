@@ -70,6 +70,7 @@ router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
         console.error(" Error al pagar copago:", error);
         res.status(500).json({ message: "Error al pagar el copago.", error: error.message });
     }
+
 });
 
 
@@ -240,6 +241,66 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// POST - Crear cliente desde usuario ya existente
+router.post('/crear-desde-usuario/:usuarioId', async (req, res) => {
+    try {
+        const { usuarioId } = req.params;
+
+        const {
+            nombre = "Cliente",
+            apellido = "Nuevo",
+            documento,
+            telefono = "",
+            direccion = "Dirección por defecto",
+            numeroAfiliacion
+        } = req.body;
+
+        // Validar usuario existente
+        const usuario = await Usuario.findById(usuarioId);
+        if (!usuario) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        // Validar documento único
+        if (!documento) {
+            return res.status(400).json({ message: "Documento es obligatorio." });
+        }
+
+        const existeDocumento = await Cliente.findOne({ documento });
+        if (existeDocumento) {
+            return res.status(400).json({ message: "Documento ya en uso." });
+        }
+
+        // Buscar una póliza válida para asignar automáticamente
+        const polizaDefault = await Poliza.findOne();
+        if (!polizaDefault) {
+            return res.status(400).json({ message: "No hay pólizas disponibles para asignar." });
+        }
+
+        const nuevoCliente = new Cliente({
+            nombre,
+            apellido,
+            documento,
+            telefono,
+            direccion,
+            numeroAfiliacion,
+            polizaId: polizaDefault._id,
+            polizaNombre: polizaDefault.nombre,
+            fechaVencimiento: polizaDefault.vigencia,
+            usuarioId: usuario._id,
+            estadoPago: false
+        });
+
+        await nuevoCliente.save();
+
+        return res.status(201).json({ message: "Cliente creado desde usuario", cliente: nuevoCliente });
+    } catch (error) {
+        console.error("Error al crear cliente desde usuario:", error);
+        return res.status(500).json({ message: "Error interno al crear cliente desde usuario", error: error.message });
+    }
+});
+
+
 /////////////////ALERTA
 
 
@@ -371,7 +432,7 @@ router.put('/:id/recalcular-copago', async (req, res) => {
             const servicio = await Servicio.findById(cliente.historialServicios[i].servicio);
 
             if (!servicio) {
-                console.log(`⚠️ No se encontró el servicio con ID: ${cliente.historialServicios[i].servicio}`);
+                console.log(`No se encontró el servicio con ID: ${cliente.historialServicios[i].servicio}`);
                 continue;
             }
 

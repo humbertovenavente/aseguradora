@@ -37,9 +37,11 @@ const ClienteSchema = new mongoose.Schema({
 /**
  * este es el TRIGGER PARA CALCULAR AUTOMATICAMENTE EL COPAGO PMiddleware `pre-save` para calcular el copago automáticamente
  */
-ClienteSchema.pre('save', async function (next) {
+ClienteSchema.pre('save', async function (next) { // pre vave es un modelo automatico que se ejecuta antes de guardar un documento de cliente
     try {
         console.log(" Ejecutando middleware de cálculo de copago...");
+
+        // se define async que ejecutara antes de save
 
         const poliza = await Poliza.findById(this.polizaId).populate("coberturaId");
 
@@ -48,15 +50,22 @@ ClienteSchema.pre('save', async function (next) {
             return next();
         }
 
+        // se optiene la poliza y se usa populate para traer tambien la cobertura asociada
+
         const porcentajeCobertura = poliza.coberturaId.porcentajeCobertura || 0;
 
         console.log(`Cobertura encontrada: ${porcentajeCobertura}%`);
+
+        // se obtiene el porcentaje de la cobertura de la poliza
 
         for (let i = 0; i < this.historialServicios.length; i++) {
             const servicioId = this.historialServicios[i].servicio;
             const servicio = await Servicio.findById(servicioId); // Asegurar que obtiene el último dato
 
             if (!servicio) continue;
+
+            // se recorre todos los servicios del historial y busca el precio actualizado del servicio
+
 
             const precioAseguradora = servicio.precioAseguradora || 0; // Obtener precio actualizado
 
@@ -66,6 +75,8 @@ ClienteSchema.pre('save', async function (next) {
         }
 
         next();
+
+        //continua el flujo de gaurdado, si no se llama esto, el proceso de queda colgado
     } catch (error) {
         console.error("Error en el cálculo del copago:", error);
         next(error);

@@ -12,6 +12,18 @@ export const getUsuarios = async () => {
     }
 };
 
+export const getUsuariosClientesCompletos = async () => {
+    try {
+        const res = await axios.get(`${API_BASE_URL}/usuarios/clientes-completos`);
+        return res.data;
+    } catch (error) {
+        console.error("Error al obtener usuarios clientes completos:", error);
+        return [];
+    }
+};
+
+
+
 // Asignar rol y activar usuario
 export const asignarRol = async (id, rol_id) => {
     try {

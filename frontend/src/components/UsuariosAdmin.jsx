@@ -2,6 +2,9 @@ import { createSignal, createEffect } from "solid-js";
 import { getUsuarios, asignarRol, desactivarUsuario } from "../services/usuariosService";
 import { getRoles } from "../services/rolesService"; 
 import { sendEmail } from "../utils/email";
+import { crearClienteDesdeUsuario } from "../services/clientesService";
+import API_BASE_URL from "../config";  
+
 
 const UsuariosAdmin = () => {
     const [usuarios, setUsuarios] = createSignal([]);
@@ -30,24 +33,40 @@ const UsuariosAdmin = () => {
         if (selectedUser() && selectedRole()) {
             try {
                 await asignarRol(selectedUser(), selectedRole());
+    
                 const user = usuarios().find(u => u._id === selectedUser());
-                
-                if (user) {
-                    const emailResponse = await sendEmail(user.correo, "activated");
-                    if (!emailResponse.success) {
-                        alert("Error al hacer proceso.");
-                    } else {
-                        alert("Rol asignado y usuario activado. Se envió un correo de activación.");
+    
+                if (user && selectedRole() === "67d652411d30a899ff50a40e") {
+                    const response = await fetch(`${API_BASE_URL}/clientes`);
+                    const todosLosClientes = await response.json();
+                    const yaExiste = todosLosClientes.find(c => c.usuarioId?._id === user._id);
+    
+                    if (!yaExiste) {
+                        await crearClienteDesdeUsuario(user._id, {
+                            documento: "DOC" + Date.now(),
+                            numeroAfiliacion: "AFI" + Date.now(),
+                            direccion: "Dirección por defecto"
+                        });
                     }
                 }
     
-                fetchUsuarios(); // Recargar lista
+                const emailResponse = await sendEmail(user.correo, "activated");
+                if (!emailResponse.success) {
+                    alert("Rol asignado pero hubo un problema al enviar el correo.");
+                } else {
+                    alert("Rol asignado y cliente creado correctamente.");
+                }
+    
+                fetchUsuarios();
                 closeModal();
             } catch (error) {
-                alert("Error al asignar el rol y activar el usuario.");
+                console.error("Error al asignar rol o crear cliente:", error);
+                alert("Error al asignar el rol o crear cliente.");
             }
         }
     };
+    
+   
     
 
     // Abrir el modal con el usuario seleccionado

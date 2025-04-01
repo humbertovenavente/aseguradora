@@ -56,12 +56,12 @@ export const eliminarCliente = async (id) => {
  */
 export const recalcularCopagoCliente = async (clienteId) => {
     try {
-        console.log(`🔄 Recalculando copago para el cliente ID: ${clienteId}`);
+        console.log(` Recalculando copago para el cliente ID: ${clienteId}`);
         const response = await axios.put(`${CLIENTES_API}/${clienteId}/recalcular-copago`);
-        console.log("✅ Copagos recalculados correctamente.");
+        console.log(" Copagos recalculados correctamente.");
         return response.data;
     } catch (error) {
-        console.error("❌ Error al recalcular copago:", error.response?.data || error.message);
+        console.error(" Error al recalcular copago:", error.response?.data || error.message);
         throw error;
     }
 };
@@ -71,7 +71,17 @@ export const pagarCopagoCliente = async (clienteId, historialId) => {
         const response = await axios.put(`${API_BASE_URL}/clientes/${clienteId}/historial/${historialId}/pagar`);
         return response.data;
     } catch (error) {
-        console.error("❌ Error al pagar copago:", error.response?.data || error.message);
+        console.error(" Error al pagar copago:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const crearClienteDesdeUsuario = async (usuarioId, cliente) => {
+    try {
+        const res = await axios.post(`${API_BASE_URL}/clientes/crear-desde-usuario/${usuarioId}`, cliente);
+        return res.data;
+    } catch (error) {
+        console.error("Error al crear cliente desde usuario:", error.response?.data || error.message);
         throw error;
     }
 };

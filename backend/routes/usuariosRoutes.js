@@ -1,6 +1,7 @@
 import express from "express";
 import Usuario from "../models/Usuario.js";
 import Rol from "../models/Rol.js";
+import Cliente from '../models/Clientes.js'; 
 
 const router = express.Router();
 
@@ -62,6 +63,31 @@ router.get("/roles", async (req, res) => {
         res.json(roles);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+// GET - Obtener solo los usuarios con rol de CLIENTE
+router.get('/clientes-completos', async (req, res) => {
+    try {
+        const ROL_CLIENTE_ID = "67d652411d30a899ff50a40e";
+
+        const usuarios = await Usuario.find({ rol_id: ROL_CLIENTE_ID });
+
+        const resultado = await Promise.all(
+            usuarios.map(async (usuario) => {
+                const cliente = await Cliente.findOne({ usuarioId: usuario._id });
+                return {
+                    usuario,
+                    clienteExistente: !!cliente,
+                    clienteData: cliente || null
+                };
+            })
+        );
+
+        res.json(resultado);
+    } catch (error) {
+        console.error("Error al obtener usuarios cliente:", error);
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 });
 

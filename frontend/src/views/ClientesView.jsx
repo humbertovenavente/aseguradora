@@ -1,11 +1,11 @@
 import { createSignal, onMount, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import {
-  obtenerClientes,
   crearCliente,
   actualizarCliente,
   eliminarCliente
 } from "../services/clientesService.js";
+import { getUsuariosClientesCompletos } from "../services/usuariosService.js";
 import { obtenerPolizas } from "../services/polizasService.js";
 
 const ClientesView = () => {
@@ -43,14 +43,22 @@ const ClientesView = () => {
     });
 
     const cargarClientes = async () => {
-        try {
-            const data = await obtenerClientes();
-            console.log("📥 Clientes recibidos:", data);
-            setClientes(data);
-        } catch (error) {
-            console.error("Error al obtener clientes:", error);
-        }
-    };
+      try {
+          const data = await getUsuariosClientesCompletos();
+          const soloClientes = data
+              .filter(item => item.clienteExistente && item.clienteData)
+              .map(item => ({
+                  ...item.clienteData,
+                  usuarioId: item.usuario // Agrega el correo para mostrarlo
+              }));
+  
+          console.log("📥 Clientes filtrados:", soloClientes);
+          setClientes(soloClientes);
+      } catch (error) {
+          console.error("Error al obtener clientes filtrados:", error);
+      }
+  };
+  
 
     const cargarPolizas = async () => {
         try {
