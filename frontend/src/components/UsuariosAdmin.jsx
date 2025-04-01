@@ -3,6 +3,7 @@ import { getUsuarios, asignarRol, desactivarUsuario } from "../services/usuarios
 import { getRoles } from "../services/rolesService"; 
 import { sendEmail } from "../utils/email";
 import { crearClienteDesdeUsuario } from "../services/clientesService";
+import { crearEmpleadoDesdeUsuario } from "../services/empleadoService";
 import API_BASE_URL from "../config";  
 
 
@@ -31,41 +32,63 @@ const UsuariosAdmin = () => {
     // Manejar la asignación de rol y activación de usuario
     const handleAsignarRol = async () => {
         if (selectedUser() && selectedRole()) {
-            try {
-                await asignarRol(selectedUser(), selectedRole());
-    
-                const user = usuarios().find(u => u._id === selectedUser());
-    
-                if (user && selectedRole() === "67d652411d30a899ff50a40e") {
-                    const response = await fetch(`${API_BASE_URL}/clientes`);
-                    const todosLosClientes = await response.json();
-                    const yaExiste = todosLosClientes.find(c => c.usuarioId?._id === user._id);
-    
-                    if (!yaExiste) {
-                        await crearClienteDesdeUsuario(user._id, {
-                            documento: "DOC" + Date.now(),
-                            numeroAfiliacion: "AFI" + Date.now(),
-                            direccion: "Dirección por defecto"
-                        });
-                    }
-                }
-    
-                const emailResponse = await sendEmail(user.correo, "activated");
-                if (!emailResponse.success) {
-                    alert("Rol asignado pero hubo un problema al enviar el correo.");
-                } else {
-                    alert("Rol asignado y cliente creado correctamente.");
-                }
-    
-                fetchUsuarios();
-                closeModal();
-            } catch (error) {
-                console.error("Error al asignar rol o crear cliente:", error);
-                alert("Error al asignar el rol o crear cliente.");
+          try {
+            await asignarRol(selectedUser(), selectedRole());
+      
+            const user = usuarios().find(u => u._id === selectedUser());
+      
+            // Rol Cliente
+            if (user && selectedRole() === "67d652411d30a899ff50a40e") {
+              const responseClientes = await fetch(`${API_BASE_URL}/clientes`);
+              const todosLosClientes = await responseClientes.json();
+              const yaExisteCliente = todosLosClientes.find(c => c.usuarioId?._id === user._id);
+      
+              if (!yaExisteCliente) {
+                await crearClienteDesdeUsuario(user._id, {
+                  documento: "DOC" + Date.now(),
+                  numeroAfiliacion: "AFI" + Date.now(),
+                  direccion: "Dirección por defecto"
+                });
+              }
             }
+      
+            // Rol Empleado
+            if (user && selectedRole() === "67d652351d30a899ff50a40c") {
+              const responseEmpleados = await fetch(`${API_BASE_URL}/empleados`);
+              const empleados = await responseEmpleados.json();
+              const yaExisteEmpleado = empleados.find(e => e.usuarioId?._id === user._id);
+      
+              if (!yaExisteEmpleado) {
+                await crearEmpleadoDesdeUsuario(user._id, {
+                  nombre: "Nuevo",
+                  apellido: "Nuevo",
+                  documento: "DOC" + Date.now(),
+                  telefono: "Sin teléfono",
+                  direccion: "Dirección por defecto",
+                  fechaNacimiento: new Date("2000-01-01"),
+                  puesto: "Empleado general",
+                  sucursal: "Sucursal principal"
+                });
+              }
+            }
+      
+            // Envío de email al usuario activado
+            const emailResponse = await sendEmail(user.correo, "activated");
+            if (!emailResponse.success) {
+              alert("Rol asignado, pero hubo un problema al enviar el correo.");
+            } else {
+              alert("Rol asignado correctamente.");
+            }
+      
+            fetchUsuarios();
+            closeModal();
+          } catch (error) {
+            console.error("Error al asignar rol o crear usuario:", error);
+            alert("Error al asignar el rol o crear usuario.");
+          }
         }
-    };
-    
+      };
+      
    
     
 

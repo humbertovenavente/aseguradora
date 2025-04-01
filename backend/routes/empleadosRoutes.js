@@ -205,5 +205,65 @@ router.delete("/:id", async (req, res) => {
  }
 });
 
+// POST - Crear empleado desde usuario existente
+router.post('/crear-desde-usuario/:usuarioId', async (req, res) => {
+  try {
+    const { usuarioId } = req.params;
+
+    const {
+      nombre = "Empleado",
+      apellido = "Nuevo",
+      documento,
+      telefono,
+      direccion,
+      fechaNacimiento,
+      puesto,
+      sucursal,
+      fechaIngreso = new Date(),
+      estado = "activo"
+    } = req.body;
+
+    const usuario = await Usuario.findById(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    if (!documento || !telefono || !direccion || !fechaNacimiento || !puesto || !sucursal) {
+      return res.status(400).json({ message: "Faltan campos obligatorios." });
+    }
+
+    const documentoExistente = await Empleado.findOne({ documento });
+    if (documentoExistente) {
+      return res.status(400).json({ message: "Documento ya está registrado." });
+    }
+
+    const nuevoEmpleado = new Empleado({
+      nombre,
+      apellido,
+      documento,
+      telefono,
+      direccion,
+      fechaNacimiento,
+      detallesTrabajo: {
+        puesto,
+        sucursal,
+        fechaIngreso,
+        estado
+      },
+      auditoria: {
+        createdBy: usuario._id,
+        updatedBy: usuario._id
+      },
+      usuarioId: usuario._id
+    });
+
+    await nuevoEmpleado.save();
+
+    res.status(201).json({ message: "Empleado creado exitosamente.", empleado: nuevoEmpleado });
+  } catch (error) {
+    console.error("Error al crear empleado desde usuario:", error);
+    res.status(500).json({ message: "Error al crear empleado desde usuario.", error: error.message });
+  }
+});
 
 export default router;

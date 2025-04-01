@@ -48,3 +48,15 @@ export const eliminarEmpleado = async (id) => {
     throw error;
   }
 };
+
+// Crear empleado desde usuario existente
+export const crearEmpleadoDesdeUsuario = async (usuarioId, empleado) => {
+  try {
+    const res = await axios.post(`${API_BASE_URL}/empleados/crear-desde-usuario/${usuarioId}`, empleado);
+    return res.data;
+  } catch (error) {
+    console.error("Error al crear empleado desde usuario:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
