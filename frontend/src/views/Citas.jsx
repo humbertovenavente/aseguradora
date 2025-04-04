@@ -143,6 +143,16 @@ export default function Citas() {
         setCita({ ...cita(), horaInicio, horaFin: nuevaHoraFin });
     }
 
+    function obtenerCitasDeHoy() {
+        const hoy = new Date().toISOString().split("T")[0];
+        return citas().filter(c => {
+            const fechaCita = new Date(c.fecha).toISOString().split("T")[0];
+            return fechaCita === hoy;
+        });
+    }
+    
+    
+
     async function guardarCita() {
         try {
             console.log("📝 Datos enviados:", cita());
@@ -293,8 +303,43 @@ export default function Citas() {
                     ) : (
                         <div class="table-responsive">
                            <CalendarioCitas citas={citas()} key={citas().length} />
+                           <hr class="my-4" />
+<h4 class="mb-3">Historial de Citas de Hoy</h4>
+
+{obtenerCitasDeHoy().length === 0 ? (
+    <p>No hay citas para hoy.</p>
+) : (
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Paciente</th>
+                    <th>Documento</th>
+                    <th>Servicio</th>
+                    <th>Hospital</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {obtenerCitasDeHoy().map(c => (
+                    <tr key={c._id}>
+                        <td>{c.idPaciente?.nombre} {c.idPaciente?.apellido || ""}</td>
+                        <td>{c.idPaciente?.documento || "N/A"}</td>
+                        <td>{c.idServicio?.nombre || "N/A"}</td>
+                        <td>{c.idHospital?.nombre || "N/A"}</td>
+                        <td>{c.horaInicio} - {c.horaFin}</td>
+                        <td>{c.estado}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+)}
+
 
                         </div>
+
                     )}
                 </div>
             </div>
