@@ -26,6 +26,7 @@ import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
 
 import citaRoutes from "./routes/citas.js";
 import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
+import clientePoliza from "./routes/clientePoliza.js";
 
 dotenv.config();
 
@@ -47,6 +48,8 @@ app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
+app.use('/api/polizas-clientes', clientePoliza);
+
 
 
 //  Rutas de páginas editables claramente definidas
