@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
     "@solidjs/router": "^0.15.3",
     "body-parser": "^1.20.3",
     "bootstrap": "^5.3.3",

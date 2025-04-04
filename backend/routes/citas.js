@@ -12,7 +12,18 @@ const router = express.Router();
 // ** Crear una nueva cita (sin doctor asignado inicialmente)**
 router.post("/", async (req, res) => {
     try {
-        const { fecha, idPaciente, motivo, idHospital, idServicio, horaInicio, horaFin, idAseguradora, diagnostico, resultados } = req.body;
+        const {
+            fecha,
+            idPaciente,
+            motivo,
+            idHospital,
+            idServicio,
+            horaInicio,
+            horaFin,
+            idAseguradora,
+            diagnostico,
+            resultados
+        } = req.body;
 
         // Validar si existen los datos referenciados
         const pacienteExiste = await Cliente.findById(idPaciente);
@@ -24,10 +35,23 @@ router.post("/", async (req, res) => {
             return res.status(404).json({ mensaje: "Paciente, hospital o servicio no encontrados." });
         }
 
+        // ✅ Verificar si ya existe una cita para esa fecha y hora
+        const citaExistente = await Cita.findOne({
+            fecha: new Date(fecha),
+            horaInicio,
+            idHospital,
+            idServicio
+        });
+
+        if (citaExistente) {
+            return res.status(409).json({ mensaje: "Ya existe una cita agendada en esa fecha y hora." });
+        }
+
+        // Crear nueva cita
         const nuevaCita = new Cita({
             fecha,
             idPaciente,
-            idDoctor: null, // No se asigna hasta que la aseguradora lo determine
+            idDoctor: null,
             motivo,
             idHospital,
             idServicio,
@@ -44,6 +68,7 @@ router.post("/", async (req, res) => {
         res.status(500).json({ mensaje: "Error al crear la cita.", error });
     }
 });
+
 
 // **Obtener todas las citas**
 router.get("/", async (req, res) => {

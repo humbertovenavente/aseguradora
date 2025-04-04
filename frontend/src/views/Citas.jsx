@@ -3,6 +3,7 @@ import { obtenerClientes } from "../services/clientesService";
 import { obtenerHospitales } from "../services/hospitalService";
 import { obtenerServicios } from "../services/servicioService";
 import { obtenerCitas, agendarCita } from "../services/citaService";
+import CalendarioCitas from "../components/CalendarioCitas";
 
 export default function Citas() {
     const [clientes, setClientes] = createSignal([]);
@@ -23,7 +24,7 @@ export default function Citas() {
         horaInicio: "",
         horaFin: "",
         motivo: "",
-        idAseguradora: null, //
+        idAseguradora: null,
         diagnostico: "",
         resultados: ""
     });
@@ -48,7 +49,7 @@ export default function Citas() {
             const response = await obtenerServicios();
             setServicios(response);
         } catch (error) {
-            console.error(" Error al obtener servicios:", error);
+            console.error("Error al obtener servicios:", error);
         }
     }
 
@@ -57,18 +58,18 @@ export default function Citas() {
             const response = await obtenerCitas();
             setCitas(response);
         } catch (error) {
-            console.error(" Error al obtener citas:", error);
+            console.error("Error al obtener citas:", error);
         }
     }
 
     function seleccionarServicioPadre(servicioId) {
         const servicioSeleccionado = servicios().find(s => s._id === servicioId);
-    
+
         if (!servicioSeleccionado) {
             setSubServicios([]);
             return;
         }
-    
+
         if (Array.isArray(servicioSeleccionado.subservicios) && servicioSeleccionado.subservicios.length > 0) {
             setSubServicios(servicioSeleccionado.subservicios);
             setCita({ ...cita(), idServicio: "" });
@@ -77,13 +78,13 @@ export default function Citas() {
             setCita({ ...cita(), idServicio: servicioId });
         }
     }
-    
 
     async function buscarClientes() {
         if (filtroCliente().length < 3) {
             setMostrarClientes(false);
             return;
         }
+
         try {
             const response = await obtenerClientes();
             setClientes(response.filter(c =>
@@ -92,7 +93,7 @@ export default function Citas() {
             ));
             setMostrarClientes(true);
         } catch (error) {
-            console.error(" Error al obtener clientes:", error);
+            console.error("Error al obtener clientes:", error);
         }
     }
 
@@ -144,9 +145,9 @@ export default function Citas() {
 
     async function guardarCita() {
         try {
-            console.log("Datos que se envían:", cita()); // Para verificar
+            console.log("📝 Datos enviados:", cita());
             await agendarCita(cita());
-            alert(" Cita agendada con éxito.");
+            alert("✅ Cita agendada con éxito.");
             setCita({
                 idPaciente: "", nombreCliente: "", documentoCliente: "", idHospital: "",
                 idServicio: "", fecha: "", horaInicio: "", horaFin: "", motivo: "",
@@ -154,174 +155,149 @@ export default function Citas() {
             });
             cargarCitas();
         } catch (error) {
-            console.error(" Error al agendar cita:", error);
-            alert(" Hubo un error al agendar la cita.");
+            console.error("❌ Error al agendar cita:", error);
+            alert("Hubo un error al agendar la cita.");
         }
     }
-    
 
     return (
-    <div class="container mt-4">
-        <h2 class="text-center">Gestión de Citas</h2>
+        <div class="container mt-4">
+            <h2 class="text-center">Gestión de Citas</h2>
 
-        <div class="row">
-            {/* Columna izquierda: Formulario */}
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label">Buscar Cliente</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Ingrese nombre o documento"
-                        value={filtroCliente()}
-                        onInput={(e) => {
-                            setFiltroCliente(e.target.value);
-                            buscarClientes();
-                        }}
-                    />
-                    {mostrarClientes() && (
-                        <ul class="list-group mt-2">
-                            {clientes().map(cliente => (
-                                <li
-                                    key={cliente._id}
-                                    class="list-group-item list-group-item-action"
-                                    onClick={() => seleccionarCliente(cliente)}
-                                >
-                                    {cliente.nombre} - {cliente.documento}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+            <div class="row">
+                {/* Formulario */}
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Buscar Cliente</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Ingrese nombre o documento"
+                            value={filtroCliente()}
+                            onInput={(e) => {
+                                setFiltroCliente(e.target.value);
+                                buscarClientes();
+                            }}
+                        />
+                        {mostrarClientes() && (
+                            <ul class="list-group mt-2">
+                                {clientes().map(cliente => (
+                                    <li
+                                        key={cliente._id}
+                                        class="list-group-item list-group-item-action"
+                                        onClick={() => seleccionarCliente(cliente)}
+                                    >
+                                        {cliente.nombre} - {cliente.documento}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <form onSubmit={(e) => { e.preventDefault(); guardarCita(); }}>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Paciente</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                value={`${cita().nombreCliente || "-"} - ${cita().documentoCliente || "-"}`}
+                                readOnly
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hospital</label>
+                            <select
+                                class="form-select"
+                                onChange={(e) => setCita({ ...cita(), idHospital: e.target.value })}
+                            >
+                                <option value="">Seleccione un hospital</option>
+                                {hospitales().map(hospital => (
+                                    <option key={hospital._id} value={hospital._id}>
+                                        {hospital.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Servicio</label>
+                            <select
+                                class="form-select"
+                                onChange={(e) => seleccionarServicioPadre(e.target.value)}
+                            >
+                                <option value="">Seleccione un servicio</option>
+                                {servicios().map(servicio => (
+                                    <option key={servicio._id} value={servicio._id}>
+                                        {servicio.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fecha</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                value={cita().fecha}
+                                onInput={(e) => setCita({ ...cita(), fecha: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hora Inicio</label>
+                            <select
+                                class="form-select"
+                                value={cita().horaInicio}
+                                onChange={(e) => actualizarHoraFin(e.target.value)}
+                            >
+                                <option value="">Seleccione una hora</option>
+                                {generarHorasDisponibles().map(hora => (
+                                    <option key={hora} value={hora}>
+                                        {hora}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hora Fin</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                value={cita().horaFin}
+                                readOnly
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Motivo</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                onInput={(e) => setCita({ ...cita(), motivo: e.target.value })}
+                            />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Agendar Cita</button>
+                    </form>
                 </div>
 
-                <form onSubmit={(e) => { e.preventDefault(); guardarCita(); }}>
-                    <div class="mb-3">
-                        <label class="form-label">Nombre del Paciente</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            value={`${cita().nombreCliente} - ${cita().documentoCliente}`}
-                            readOnly
-                        />
-                    </div>
+                {/* Calendario */}
+                <div class="col-md-8">
+                    <h4 class="mb-3">Citas Procesadas</h4>
+                    {citas().length === 0 ? (
+                        <p>No hay citas registradas.</p>
+                    ) : (
+                        <div class="table-responsive">
+                           <CalendarioCitas citas={citas()} key={citas().length} />
 
-                    <div class="mb-3">
-                        <label class="form-label">Hospital</label>
-                        <select
-                            class="form-select"
-                            onChange={(e) => setCita({ ...cita(), idHospital: e.target.value })}
-                        >
-                            <option value="">Seleccione un hospital</option>
-                            {hospitales().map(hospital => (
-                                <option key={hospital._id} value={hospital._id}>
-                                    {hospital.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Servicio</label>
-                        <select
-                            class="form-select"
-                            onChange={(e) => seleccionarServicioPadre(e.target.value)}
-                        >
-                            <option value="">Seleccione un servicio</option>
-                            {servicios().map(servicio => (
-                                <option key={servicio._id} value={servicio._id}>
-                                    {servicio.nombre}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Fecha</label>
-                        <input
-                            type="date"
-                            class="form-control"
-                            value={cita().fecha}
-                            onInput={(e) => setCita({ ...cita(), fecha: e.target.value })}
-                            required
-                        />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Hora Inicio</label>
-                        <select
-                            class="form-select"
-                            onChange={(e) => actualizarHoraFin(e.target.value)}
-                        >
-                            {generarHorasDisponibles().map(hora => (
-                                <option key={hora} value={hora}>
-                                    {hora}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Hora Fin</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            value={cita().horaFin}
-                            readOnly
-                        />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Motivo</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            onInput={(e) => setCita({ ...cita(), motivo: e.target.value })}
-                        />
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Agendar Cita</button>
-                </form>
+                        </div>
+                    )}
+                </div>
             </div>
-
-            {/* Columna derecha: Citas Procesadas */}
-            <div class="col-md-8">
-    <h4 class="mb-3">Citas Procesadas</h4>
-    {citas().length === 0 ? (
-        <p>No hay citas registradas.</p>
-    ) : (
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Paciente</th>
-                        <th>Documento</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Hospital</th>
-                        <th>Servicio</th>
-                        <th>Motivo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {citas().map(cita => (
-                        <tr key={cita._id}>
-                            <td>{cita.idPaciente?.nombre} {cita.idPaciente?.apellido || ""}</td>
-                            <td>{cita.idPaciente?.documento || "N/A"}</td>
-                            <td>{new Date(cita.fecha).toISOString().split("T")[0]}</td>
-                            <td>{cita.horaInicio} - {cita.horaFin}</td>
-                            <td>{cita.idHospital?.nombre || "N/A"}</td>
-                            <td>{cita.idServicio?.nombre || "N/A"}</td>
-                            <td>{cita.motivo}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
         </div>
-    )}
-</div>
-
-        </div>
-    </div>
-);
-
+    );
 }
