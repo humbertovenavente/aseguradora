@@ -1,281 +1,206 @@
-// ReportesView.jsx
-import { createSignal, onMount } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
+import {
+  generarReporteHospital,
+  obtenerReportesPorMes,
+  eliminarReporte
+} from "../services/reportesService";
+import { format } from "date-fns";
+import emailjs from "@emailjs/browser";
 
-const hospitalesDataFicticia = [
-  {
-    id: 1,
-    nombreHospital: "Hospital Central",
-    mes: 3,
-    anio: 2025,
-    servicios: [
-      {
-        servicio: "Consulta General",
-        costoSeguro: 500,
-        costoRealHospital: 700,
-        polizaCubierta: "90%",
-        comentarios: "Cliente estable",
-      },
-      {
-        servicio: "Rayos X",
-        costoSeguro: 800,
-        costoRealHospital: 1000,
-        polizaCubierta: "90%",
-        comentarios: "Se necesitó radiografía de pierna",
-      },
-    ],
-    totalPagar: 1300,
-  },
-  {
-    id: 2,
-    nombreHospital: "Hospital Regional",
-    mes: 3,
-    anio: 2025,
-    servicios: [
-      {
-        servicio: "Cirugía Menor",
-        costoSeguro: 3000,
-        costoRealHospital: 4000,
-        polizaCubierta: "70%",
-        comentarios: "Apendicitis",
-      },
-    ],
-    totalPagar: 3000,
-  },
-  {
-    id: 3,
-    nombreHospital: "Hospital del Norte",
-    mes: 2,
-    anio: 2025,
-    servicios: [
-      {
-        servicio: "Consulta Pediatría",
-        costoSeguro: 400,
-        costoRealHospital: 600,
-        polizaCubierta: "90%",
-        comentarios: "Revisión de rutina",
-      },
-    ],
-    totalPagar: 400,
-  },
-];
+export default function ReportesMensualesView() {
+  const hoy = new Date();
+  const mesActual = format(hoy, "yyyy-MM");
+  const [mes, setMes] = createSignal(mesActual);
+  const [reportes, setReportes] = createSignal([]);
+  const [cargando, setCargando] = createSignal(false);
+  const [correoDestino, setCorreoDestino] = createSignal("");
+  const [enviandoCorreo, setEnviandoCorreo] = createSignal(false);
+  const [modalVisible, setModalVisible] = createSignal(false);
+  const [reporteSeleccionado, setReporteSeleccionado] = createSignal(null);
 
-const farmaciasDataFicticia = [
-  {
-    id: 1,
-    nombreFarmacia: "Farmacia Central",
-    mes: 3,
-    anio: 2025,
-    medicinas: [
-      {
-        nombre: "Antibiótico X",
-        costoSeguro: 100,
-        costoRealFarmacia: 150,
-        polizaCubierta: "90%",
-        comentarios: "Tratamiento de infección leve",
-      },
-      {
-        nombre: "Analgésico Y",
-        costoSeguro: 50,
-        costoRealFarmacia: 70,
-        polizaCubierta: "90%",
-        comentarios: "Para dolor postoperatorio",
-      },
-    ],
-    totalPagar: 150,
-  },
-  {
-    id: 2,
-    nombreFarmacia: "Farmacia Salud",
-    mes: 3,
-    anio: 2025,
-    medicinas: [
-      {
-        nombre: "Vitamina C",
-        costoSeguro: 80,
-        costoRealFarmacia: 100,
-        polizaCubierta: "70%",
-        comentarios: "Refuerzo de defensas",
-      },
-    ],
-    totalPagar: 80,
-  },
-  {
-    id: 3,
-    nombreFarmacia: "Farmacia del Norte",
-    mes: 2,
-    anio: 2025,
-    medicinas: [
-      {
-        nombre: "Antialérgico Z",
-        costoSeguro: 60,
-        costoRealFarmacia: 80,
-        polizaCubierta: "70%",
-        comentarios: "Alergia estacional",
-      },
-    ],
-    totalPagar: 60,
-  },
-];
-
-function ReportesView() {
-  // Se inicializan con valores por defecto para mostrar el reporte inmediatamente
-  const [mesSeleccionado, setMesSeleccionado] = createSignal("3");
-  const [anioSeleccionado, setAnioSeleccionado] = createSignal("2025");
-
-  // Señales para los reportes filtrados
-  const [hospitalesFiltrados, setHospitalesFiltrados] = createSignal([]);
-  const [farmaciasFiltradas, setFarmaciasFiltradas] = createSignal([]);
-  const [totalGlobal, setTotalGlobal] = createSignal(0);
-
-  // Función para filtrar los datos según mes y año
-  const handleGenerarReporte = (e) => {
-    e?.preventDefault();
-    const mesNum = Number(mesSeleccionado());
-    const anioNum = Number(anioSeleccionado());
-
-    const hospFiltrados = hospitalesDataFicticia.filter(
-      (h) => h.mes === mesNum && h.anio === anioNum
-    );
-    const farmaFiltradas = farmaciasDataFicticia.filter(
-      (f) => f.mes === mesNum && f.anio === anioNum
-    );
-
-    const totalHosp = hospFiltrados.reduce((acc, h) => acc + h.totalPagar, 0);
-    const totalFarm = farmaFiltradas.reduce((acc, f) => acc + f.totalPagar, 0);
-
-    setHospitalesFiltrados(hospFiltrados);
-    setFarmaciasFiltradas(farmaFiltradas);
-    setTotalGlobal(totalHosp + totalFarm);
-  };
-
-  // Ejecutar al montar el componente para que se muestre el reporte de inmediato
-  onMount(() => {
-    handleGenerarReporte();
+  createEffect(() => {
+    cargarReportes();
   });
 
-  const handleEnviarCorreo = () => {
-    alert("Reporte enviado a cada hospital y farmacia (simulado).");
-    console.log("Hospitales:", hospitalesFiltrados());
-    console.log("Farmacias:", farmaciasFiltradas());
-    console.log("Total global:", totalGlobal());
+  const cargarReportes = async () => {
+    try {
+      setCargando(true);
+      const data = await obtenerReportesPorMes("hospital", mes());
+      const ordenados = data.sort((a, b) => new Date(b.fechaGeneracion) - new Date(a.fechaGeneracion));
+      setReportes(ordenados);
+    } catch (err) {
+      console.error("Error al obtener reportes:", err);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const manejarGenerar = async () => {
+    const confirmar = confirm("¿Deseas generar el reporte del mes actual?");
+    if (!confirmar) return;
+
+    try {
+      setCargando(true);
+      await generarReporteHospital(mes());
+      alert("Reporte generado correctamente.");
+      await cargarReportes();
+    } catch (err) {
+      alert("Error al generar reporte.");
+      console.error(err);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const manejarEliminar = async (id) => {
+    const confirmar = confirm("¿Estás seguro que deseas eliminar este reporte?");
+    if (!confirmar) return;
+
+    try {
+      await eliminarReporte(id);
+      alert("Reporte eliminado correctamente.");
+      await cargarReportes();
+    } catch (err) {
+      alert("Error al eliminar reporte.");
+      console.error(err);
+    }
+  };
+
+  const manejarAbrirModal = (reporte) => {
+    setReporteSeleccionado(reporte);
+    setCorreoDestino("");
+    setModalVisible(true);
+  };
+
+  const enviarCorreo = async () => {
+    if (!correoDestino() || !reporteSeleccionado()) {
+      alert("Por favor, ingresa un correo válido.");
+      return;
+    }
+
+    setEnviandoCorreo(true);
+
+    const nombreArchivo = reporteSeleccionado().archivoExcelUrl.split("/").pop();
+
+    const templateParams = {
+        file_name: `reportes/${nombreArchivo}`,
+        period: mes(),
+        to_email: correoDestino(),
+        attachment: reporteSeleccionado().archivoExcelBase64
+      };
+      
+
+    try {
+      await emailjs.send(
+        "service_tst77nt",
+        "template_tmm6do4",
+        templateParams,
+        "YnI0y5QCdPsyVachN"
+      );
+      alert("Correo enviado correctamente con el archivo adjunto.");
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error al enviar correo:", error);
+      alert("Hubo un error al enviar el correo.");
+    } finally {
+      setEnviandoCorreo(false);
+    }
+  };
+
+  const formatearFecha = (fechaISO) => {
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleString();
+  };
+
+  const serviciosUnicos = (servicios) => {
+    const set = new Set();
+    servicios.forEach(s => set.add(s.servicioNombre));
+    return Array.from(set).join(", ");
   };
 
   return (
     <div class="container mt-4">
-      <h1 class="mb-4">Reportes Mensuales del Seguro</h1>
+      <h2>Reportes Mensuales de Hospitales</h2>
 
-      {/* Formulario de selección (puede actualizarse para filtrar otro mes/año) */}
-      <form onSubmit={handleGenerarReporte} class="mb-4">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Mes (1-12):</label>
-            <input
-              type="number"
-              min="1"
-              max="12"
-              class="form-control"
-              value={mesSeleccionado()}
-              onInput={(e) => setMesSeleccionado(e.currentTarget.value)}
-              required
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Año:</label>
-            <input
-              type="number"
-              min="2020"
-              class="form-control"
-              value={anioSeleccionado()}
-              onInput={(e) => setAnioSeleccionado(e.currentTarget.value)}
-              required
-            />
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Actualizar Reporte</button>
-      </form>
+      <div class="mb-3">
+        <label for="mes">Mes:</label>
+        <input
+          type="month"
+          id="mes"
+          class="form-control"
+          value={mes()}
+          onInput={(e) => setMes(e.target.value)}
+        />
+      </div>
 
-      {/* Mostrar reporte detallado */}
-      {hospitalesFiltrados().length === 0 && farmaciasFiltradas().length === 0 ? (
-        <p>No hay datos para el mes y año seleccionados.</p>
+      <button class="btn btn-primary mb-3" onClick={manejarGenerar}>
+        Generar Reporte Manual
+      </button>
+
+      {cargando() ? (
+        <p>Cargando reportes...</p>
+      ) : reportes().length === 0 ? (
+        <p>No hay reportes generados para este mes.</p>
       ) : (
         <>
-          <h2>Detalle de Servicios por Hospital</h2>
-          {hospitalesFiltrados().map((hospital) => (
-            <div class="card mb-4" key={hospital.id}>
-              <div class="card-header">
-                <strong>{hospital.nombreHospital}</strong> - Total a Pagar: Q{hospital.totalPagar}
-              </div>
+          <p><strong>Mostrando {reportes().length} reporte(s)</strong></p>
+          {reportes().map((reporte) => (
+            <div class="card mb-3" key={reporte._id}>
               <div class="card-body">
-                <table class="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>Servicio</th>
-                      <th>Costo Seguro</th>
-                      <th>Costo Real</th>
-                      <th>Póliza Cubierta</th>
-                      <th>Comentarios</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {hospital.servicios.map((serv, idx) => (
-                      <tr key={idx}>
-                        <td>{serv.servicio}</td>
-                        <td>Q{serv.costoSeguro}</td>
-                        <td>Q{serv.costoRealHospital}</td>
-                        <td>{serv.polizaCubierta}</td>
-                        <td>{serv.comentarios}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <h5 class="card-title">{reporte.nombreEntidad}</h5>
+                <p><strong>Total del mes:</strong> ${reporte.totalMes}</p>
+                <p><strong>Servicios:</strong> {serviciosUnicos(reporte.servicios)}</p>
+                <p><strong>Generado el:</strong> {formatearFecha(reporte.fechaGeneracion)}</p>
+                <a
+                  class="btn btn-success me-2"
+                  href={`http://localhost:5000/${reporte.archivoExcelUrl}`}
+                  download
+                >
+                  Descargar Excel
+                </a>
+                <button class="btn btn-danger me-2" onClick={() => manejarEliminar(reporte._id)}>
+                  Eliminar
+                </button>
+                <button class="btn btn-secondary" onClick={() => manejarAbrirModal(reporte)}>
+                  Enviar correo
+                </button>
               </div>
             </div>
           ))}
-
-          <h2>Detalle de Medicinas por Farmacia</h2>
-          {farmaciasFiltradas().map((farmacia) => (
-            <div class="card mb-4" key={farmacia.id}>
-              <div class="card-header">
-                <strong>{farmacia.nombreFarmacia}</strong> - Total a Pagar: Q{farmacia.totalPagar}
-              </div>
-              <div class="card-body">
-                <table class="table table-sm">
-                  <thead>
-                    <tr>
-                      <th>Medicina</th>
-                      <th>Costo Seguro</th>
-                      <th>Costo Real</th>
-                      <th>Póliza Cubierta</th>
-                      <th>Comentarios</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {farmacia.medicinas.map((med, idx) => (
-                      <tr key={idx}>
-                        <td>{med.nombre}</td>
-                        <td>Q{med.costoSeguro}</td>
-                        <td>Q{med.costoRealFarmacia}</td>
-                        <td>{med.polizaCubierta}</td>
-                        <td>{med.comentarios}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
-
-          <div class="alert alert-info">
-            <h4>Total Global a Pagar: Q{totalGlobal()}</h4>
-          </div>
-
-          <button onClick={handleEnviarCorreo} class="btn btn-secondary">
-            Enviar Reporte por Correo
-          </button>
         </>
+      )}
+
+      {/* Modal de correo */}
+      {modalVisible() && (
+        <div class="modal d-block" style="background-color: rgba(0,0,0,0.5)">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Enviar Reporte por Correo</h5>
+                <button type="button" class="btn-close" onClick={() => setModalVisible(false)}></button>
+              </div>
+              <div class="modal-body">
+                <label>Correo destinatario:</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="ejemplo@correo.com"
+                  value={correoDestino()}
+                  onInput={(e) => setCorreoDestino(e.target.value)}
+                />
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" onClick={() => setModalVisible(false)}>
+                  Cancelar
+                </button>
+                <button class="btn btn-primary" onClick={enviarCorreo} disabled={enviandoCorreo()}>
+                  {enviandoCorreo() ? "Enviando..." : "Enviar"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
 }
-
-export default ReportesView;

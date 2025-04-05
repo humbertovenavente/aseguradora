@@ -29,6 +29,8 @@ import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
 import clientePoliza from "./routes/clientePoliza.js";
 
 import dashboardTrabajador from './routes/dashboardTrabajador.js';
+import reporteRouter from './routes/reporte.js';
+
 
 dotenv.config();
 
@@ -51,6 +53,9 @@ app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
 app.use('/api/polizas-clientes', clientePoliza);
 app.use('/api/dashboard-trabajador', dashboardTrabajador);
+app.use('/api/reporte', reporteRouter);
+app.use('/reportes', express.static('reportes'));
+
 
 
 
