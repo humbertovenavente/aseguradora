@@ -75,11 +75,17 @@ router.get('/hospital/:mes/generar', async (req, res) => {
       sheet.addRow([]);
       sheet.addRow(['', '', 'Total del mes', data.total]);
 
-      const fileName = `reporte_hospital_${mes}_${data.nombre.replace(/\s+/g, '_')}.xlsx`;
-      const filePath = path.join(__dirname, 'reportes', fileName);
-      const fileUrl = path.posix.join('reportes', fileName);
-      await workbook.xlsx.writeFile(filePath);
+      // ✅ Crear carpeta reportes si no existe
+      const reportesDir = path.join(__dirname, '../reportes');
+      if (!fs.existsSync(reportesDir)) {
+        fs.mkdirSync(reportesDir, { recursive: true });
+      }
 
+      const fileName = `reporte_hospital_${mes}_${data.nombre.replace(/\s+/g, '_')}.xlsx`;
+      const filePath = path.join(reportesDir, fileName);
+      const fileUrl = path.posix.join('reportes', fileName);
+
+      await workbook.xlsx.writeFile(filePath);
       const buffer = await workbook.xlsx.writeBuffer();
       const archivoExcelBase64 = buffer.toString('base64');
 

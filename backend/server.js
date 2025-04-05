@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -32,6 +33,8 @@ import dashboardTrabajador from './routes/dashboardTrabajador.js';
 import reporteRouter from './routes/reporte.js';
 
 
+
+
 dotenv.config();
 
 const app = express();
@@ -54,8 +57,11 @@ app.use("/api/citas", citaRoutes);
 app.use('/api/polizas-clientes', clientePoliza);
 app.use('/api/dashboard-trabajador', dashboardTrabajador);
 app.use('/api/reporte', reporteRouter);
-app.use('/reportes', express.static('reportes'));
+// ✅ Servir archivos Excel de la carpeta /reportes
+app.use('/reportes', express.static(path.join(process.cwd(), 'reportes')));
 
+// ✅ Rutas
+app.use('/api/reporte', reporteRouter);
 
 
 
