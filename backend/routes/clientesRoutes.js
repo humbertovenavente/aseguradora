@@ -24,56 +24,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-/**
- * PUT - Marcar como pagado un servicio del historial
- */
-/**
- * PUT - Marcar como pagado un servicio del historial
- */
-
-router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
-    try {
-        const { clienteId, historialId } = req.params; //obtiene los id
-
-        console.log("Historial ID recibido:", historialId);
-        //busca los cliente en la base de datos
-        const cliente = await Cliente.findById(clienteId);
-        if (!cliente) {
-            return res.status(404).json({ message: "Cliente no encontrado." });
-        }
-
-        console.log(" Historial existentes en cliente:");
-        //mestra en consola los ids del historial existente
-        cliente.historialServicios.forEach(h => {
-            console.log("   ->", h._id?.toString());
-        });
-
-        // Comparación utilizando ObjectId.equals
-        // busca el historial que coicida con el historiaId
-        const historial = cliente.historialServicios.find(h =>
-            mongoose.Types.ObjectId(h._id).equals(historialId)
-        );
-
-        if (!historial) {
-            return res.status(404).json({ message: "Servicio en historial no encontrado." });
-        }
-
-        //actualiza el estado de copago
-        historial.estadoCopago = 'pagado';
-        await cliente.save();
-
-        res.status(200).json({
-            message: "Copago pagado correctamente.",
-            historialActualizado: historial,
-        });
-    } catch (error) {
-        console.error(" Error al pagar copago:", error);
-        res.status(500).json({ message: "Error al pagar el copago.", error: error.message });
-    }
-
-});
-
-
   
 
 
@@ -448,6 +398,48 @@ router.put('/:id/recalcular-copago', async (req, res) => {
     } catch (error) {
         console.error(" Error al recalcular copagos:", error);
         res.status(500).json({ message: "Error al recalcular copagos.", error: error.message });
+    }
+});
+
+// PUT - Marcar como pagado un servicio del historial
+router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
+    try {
+        console.log("➡️ Entrando a la ruta de pago de copago");
+        const { clienteId, historialId } = req.params;
+
+        const cliente = await Cliente.findById(clienteId);
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado." });
+        }
+
+        console.log("✅ Cliente encontrado");
+        console.log("📋 IDs de historial existentes:");
+        cliente.historialServicios.forEach(h => {
+            console.log("   -", h._id.toString());
+        });
+
+        // ✅ CORRECCIÓN AQUÍ
+        const historial = cliente.historialServicios.find(h =>
+            new mongoose.Types.ObjectId(h._id).equals(historialId)
+        );
+
+        console.log("📌 Resultado de búsqueda del historial:", historial);
+
+        if (!historial) {
+            return res.status(404).json({ message: "Historial no encontrado." });
+        }
+
+        historial.estadoCopago = "pagado";
+        await cliente.save();
+
+        return res.status(200).json({
+            message: "Copago pagado correctamente.",
+            historialActualizado: historial
+        });
+
+    } catch (error) {
+        console.error("❌ Error interno:", error);
+        return res.status(500).json({ message: "Error al procesar el copago.", error: error.message });
     }
 });
 
