@@ -14,6 +14,8 @@ import AprobacionView from "./AprobacionView";
 import AprobacionOrgView from "./AprobacionOrgView";
 import FarmaciasView from "./FarmaciasView";
 import CopagoView from "./copagoView";
+import DashboardTrabajadorView from "../components/DashboardTrabajadorView";
+
 
 export default function PortalOperadoras() {
   const [vistaActual, setVistaActual] = createSignal("inicio");
@@ -75,6 +77,15 @@ export default function PortalOperadoras() {
             🛒 Ventas
           </button>
         </li>
+        <li class="nav-item">
+  <button
+    class={`nav-link ${vistaActual() === "dashboard" ? "active" : ""}`}
+    onClick={() => setVistaActual("dashboard")}
+  >
+    🧑‍💼 Dashboard Cliente
+  </button>
+</li>
+
 
       </ul>
 
@@ -177,6 +188,13 @@ export default function PortalOperadoras() {
         </div>
         </div>
       )}
+{vistaActual() === "dashboard" && (
+  <div class="w-100">
+    <div class="card p-3 mb-4 shadow-sm">
+      <DashboardTrabajadorView />
+    </div>
+  </div>
+)}
 
 
     </div>

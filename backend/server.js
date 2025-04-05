@@ -28,12 +28,13 @@ import citaRoutes from "./routes/citas.js";
 import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
 import clientePoliza from "./routes/clientePoliza.js";
 
+import dashboardTrabajador from './routes/dashboardTrabajador.js';
+
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 app.use('/api/polizas', polizaRoutes); 
 app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clientesRoutes);
@@ -49,6 +50,7 @@ app.use("/api/roles", rolesRoutes);
 app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
 app.use('/api/polizas-clientes', clientePoliza);
+app.use('/api/dashboard-trabajador', dashboardTrabajador);
 
 
 
