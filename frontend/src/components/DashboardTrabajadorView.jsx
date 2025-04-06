@@ -10,7 +10,7 @@ export default function DashboardTrabajadorView() {
 
   return (
     <div>
-      <h5>🧑‍💼 Dashboard del Cliente (para trabajador)</h5>
+      <h5>🧑‍💼 Dashboard del Cliente</h5>
 
       <div class="mb-3">
         <label>🔍 Ingresar ID del cliente:</label>

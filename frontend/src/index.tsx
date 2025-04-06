@@ -34,6 +34,9 @@ import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
 import AprobacionView from "./views/AprobacionView.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
+
+import FichasTM from "./views/FichasTM";
+import FichasDetalleTM from "./views/FichasDetalleTM";
 import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
@@ -88,6 +91,9 @@ render(() => (
             <Route path="/aprobacion" component={requireRole("admin", AprobacionView)} />
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
+            
+            <Route path="/operadoras/fichastm" component={requireRole("admin", FichasTM)} />
+            <Route path="/operadoras/fichastm/:id" component={requireRole("admin", FichasDetalleTM)} />
             <Route path="/citas" component={requireRole("admin", Citas)} /> 
             <Route path="/copago" component={requireRole("admin", Copago)} /> 
             <Route path="/pages-historia" component={requireRole("admin", AdminHistoriaView)} />

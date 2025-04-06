@@ -5,11 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import ClientesView from "./ClientesView";
 import Citas from "./Citas";
 import ReportesView from "./ReportesView";
-import PolizasView from "./PolizasView";
-import HospitalesView from "./HospitalesView";
-import FichaTecnicaView from "./FichaTecnicaView";
+import PolizasTM from "./PolizasTM";
+import HospitalesTM from "./HospitalesTM";
+import FichasTM from "./FichasTM";
 import PagosView from "./PagosView";
-import ServiciosView from "./ServiciosView";
+import ServiciosTM from "./ServiciosTM";
 import AprobacionView from "./AprobacionView";
 import AprobacionOrgView from "./AprobacionOrgView";
 import FarmaciasView from "./FarmaciasView";
@@ -30,7 +30,7 @@ export default function PortalOperadoras() {
           <button class={`nav-link ${vistaActual() === "clientes" ? "active" : ""}`} 
             style={{ backgroundColor: vistaActual() === "clientes" ? "#0099DD" : "" }} 
             onClick={() => setVistaActual("clientes")}>
-            📋 Clientes
+            👥 Clientes
           </button>
         </li>
         <li class="nav-item">
@@ -45,12 +45,6 @@ export default function PortalOperadoras() {
             style={{ backgroundColor: vistaActual() === "hospitales" ? "#0099DD" : "" }} 
             onClick={() => setVistaActual("hospitales")}>
             🏥 Hospitales
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class={`nav-link ${vistaActual() === "farmacias" ? "active" : ""}`} 
-            onClick={() => setVistaActual("farmacias")}>
-            💊 Farmacias
           </button>
         </li>
         <li class="nav-item">
@@ -72,9 +66,9 @@ export default function PortalOperadoras() {
           </button>
         </li>
         <li class="nav-item">
-          <button class={`nav-link ${vistaActual() === "Ventas" ? "active" : ""}`} 
-            onClick={() => setVistaActual("Ventas")}>
-            🛒 Ventas
+          <button class={`nav-link ${vistaActual() === "Fichas" ? "active" : ""}`} 
+            onClick={() => setVistaActual("Fichas")}>
+            🛠️ Fichas técnicas
           </button>
         </li>
         <li class="nav-item">
@@ -83,6 +77,14 @@ export default function PortalOperadoras() {
     onClick={() => setVistaActual("dashboard")}
   >
     🧑‍💼 Dashboard Cliente
+  </button>
+</li>
+<li class="nav-item">
+  <button
+    class={`nav-link ${vistaActual() === "servicios" ? "active" : ""}`}
+    onClick={() => setVistaActual("servicios")}
+  >
+    🩺 servicios
   </button>
 </li>
 
@@ -97,20 +99,6 @@ export default function PortalOperadoras() {
             <ClientesView />
           </div>
 
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>📄 Ficha Técnica</h5>
-            <FichaTecnicaView />
-          </div>
-
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>💳 Pagos de Clientes</h5>
-            <PagosView />
-          </div>
-
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>🔍 Servicios Utilizados</h5>
-            <ServiciosView />
-          </div>
         </div>
       )}
 
@@ -118,7 +106,7 @@ export default function PortalOperadoras() {
         <div class="w-100">
           <div class="card p-3 mb-4 shadow-sm">
             <h5>📄 Administración de Pólizas</h5>
-            <PolizasView />
+            <PolizasTM />
           </div>
         </div>
       )}
@@ -127,25 +115,11 @@ export default function PortalOperadoras() {
         <div class="w-100">
           <div class="card p-3 mb-4 shadow-sm">
             <h5>🏥 Información de Hospitales</h5>
-            <HospitalesView />
+            <HospitalesTM />
           </div>
-          <div class="card p-3 mb-4 shadow-sm">
-            <h5>🔍 Servicios Utilizados</h5>
-            <ServiciosView />
-          </div>
-          <div class="card p-3 mb-4 shadow-sm"> 
-        <h5>faltan citas</h5>
-        </div>
         </div>
       )}
 
-{vistaActual() === "farmacias" && (
-        <div class="w-100">
-          <div class="card p-3 mb-4 shadow-sm">
-        <FarmaciasView/>
-          </div>
-        </div>
-      )}
 
 {vistaActual() === "citas" && (
         <div class="w-100">
@@ -178,16 +152,14 @@ export default function PortalOperadoras() {
         </div>
       )}
 
-{vistaActual() === "Ventas" && (
-        <div class="w-100">
+{vistaActual() === "Fichas" && (
+  <div class="w-100">
           <div class="card p-3 mb-4 shadow-sm">
-<PagosView/>
-        </div>
-        <div class="card p-3 mb-4 shadow-sm">
-<CopagoView/>
-        </div>
-        </div>
-      )}
+            <h5>📄 Ficha Técnica</h5>
+            <FichasTM />
+          </div>
+  </div>
+)}
 {vistaActual() === "dashboard" && (
   <div class="w-100">
     <div class="card p-3 mb-4 shadow-sm">
@@ -195,7 +167,14 @@ export default function PortalOperadoras() {
     </div>
   </div>
 )}
-
+{vistaActual() === "servicios" && (
+  <div class="w-100">
+          <div class="card p-3 mb-4 shadow-sm">
+            <h5>🔍 Servicios Utilizados</h5>
+            <ServiciosTM />
+          </div>
+  </div>
+)}
 
     </div>
   );
