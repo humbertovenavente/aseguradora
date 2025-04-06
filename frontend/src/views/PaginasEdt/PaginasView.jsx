@@ -13,6 +13,7 @@ function PaginasView() {
     { path: "/pages-proveedores", label: "Red de Proveedores" },
     { path: "/pages-testimonios", label: "Testimonios" },
     { path: "/pages-home", label: "Home" },
+    { path: "/pages-navbar", label: "Navbar" },
   ];
 
   return (

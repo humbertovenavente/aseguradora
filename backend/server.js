@@ -31,6 +31,7 @@ import clientePoliza from "./routes/clientePoliza.js";
 
 import dashboardTrabajador from './routes/dashboardTrabajador.js';
 import reporteRouter from './routes/reporte.js';
+import menuRoutes from './routes/menuRoutes.js';
 
 
 
@@ -72,6 +73,10 @@ app.use('/api/faq', faqRoutes);
 app.use('/api/redProveedores', redProveedoresRoutes);
 app.use('/api/testimonios', testimoniosRoutes);
 app.use("/api/home", homeRoutes);
+//menu
+app.use('/api/menu', menuRoutes);
+
+
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;

@@ -49,6 +49,7 @@ import AdminFaqView from "./views/PaginasEdt/AdminFaqView";
 import AdminRedProveedores from "./views/PaginasEdt/AdminRedProveedores";
 import AdminTestimoniosView from "./views/PaginasEdt/AdminTestimoniosView";
 import AdminHomeView from "./views/PaginasEdt/AdminHomeView";
+import NavbarView from "./views/PaginasEdt/NavbarView";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -102,6 +103,7 @@ render(() => (
             <Route path="/pages-proveedores" component={requireRole("admin", AdminRedProveedores)} />
             <Route path="/pages-testimonios" component={requireRole("admin", AdminTestimoniosView)} />
             <Route path="/pages-home" component={requireRole("admin", AdminHomeView)} />
+            <Route path="/pages-navbar" component={requireRole("admin", NavbarView)} />
             <Route path="/pages" component={requireRole("admin", PaginasView)} />
 
 
