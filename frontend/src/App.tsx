@@ -2,58 +2,41 @@ import { A, useNavigate } from "@solidjs/router";
 import { isLoggedIn, userRole, logout } from "./stores/authStore";
 import { createResource, For, Show } from "solid-js";
 import { obtenerMenuPorTipo } from "./services/menuService";
+import { obtenerFooter } from "./services/footerService"; // 👈 nuevo import
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./navbar.css";
 
-// 🧠 Definición de tipos para menú
-type MenuItem = {
-  titulo: string;
-  icono: string;
-  ruta: string;
-};
-
-type Menu = {
-  tipo: string;
-  items: MenuItem[];
-};
+// Tipos
+type MenuItem = { titulo: string; icono: string; ruta: string };
+type Menu = { tipo: string; items: MenuItem[] };
+type FooterData = { contenido: string }; // 👈 tipo de footer
 
 export default function App(props: any) {
   const navigate = useNavigate();
-
-  // ✅ Usamos el tipo Menu en el recurso
   const [menuPrincipal] = createResource<string, Menu>(() => "principal", obtenerMenuPorTipo);
+  const [footer] = createResource<FooterData>(obtenerFooter); // 👈 definición del recurso
 
   const hasMenuOptions = () => isLoggedIn() || userRole() === "admin";
 
   return (
     <>
-      {/* NAVBAR PRINCIPAL */}
+      {/* NAVBAR */}
       <nav class="main-nav">
         {hasMenuOptions() && (
-          <button class="btn menu-btn" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
-            ☰
-          </button>
+          <button class="btn menu-btn" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">☰</button>
         )}
 
-<Show when={menuPrincipal.loading}>
-  <span>Cargando menú...</span>
-</Show>
+        {/* Menú principal dinámico */}
+        <Show when={menuPrincipal.loading}><span>Cargando menú...</span></Show>
+        <Show when={menuPrincipal()?.items}>
+          <For each={menuPrincipal()?.items ?? []}>
+            {(item) => <A href={item.ruta}>{item.icono} {item.titulo}</A>}
+          </For>
+        </Show>
 
-
-<Show when={menuPrincipal()?.items}>
-  <For each={menuPrincipal()?.items ?? []}>
-    {(item) => (
-      <A href={item.ruta}>{item.icono} {item.titulo}</A>
-    )}
-  </For>
-</Show>
-
-
-
-
-        {/* Botón de logout o login */}
+        {/* Botón de login/logout */}
         {isLoggedIn() ? (
           <button class="btn btn-danger ms-auto" onClick={() => logout(navigate)}>Logout</button>
         ) : (
@@ -61,7 +44,7 @@ export default function App(props: any) {
         )}
       </nav>
 
-      {/* MENÚ HAMBURGUESA (OFFCANVAS) */}
+      {/* SIDEBAR */}
       {hasMenuOptions() && (
         <div class="offcanvas offcanvas-start sidebar-menu" tabindex="-1" id="sidebarMenu">
           <div class="offcanvas-header">
@@ -88,14 +71,14 @@ export default function App(props: any) {
         </div>
       )}
 
-      {/* CONTENIDO PRINCIPAL */}
+      {/* CONTENIDO */}
       <main>
         {props.children}
       </main>
 
-      {/* FOOTER */}
+      {/* FOOTER dinámico */}
       <footer class="main-footer">
-        <p>© 2025 Mi Empresa. Todos los derechos reservados.</p>
+        <span>{footer()?.contenido || "Cargando..."}</span>
       </footer>
     </>
   );

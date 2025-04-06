@@ -14,6 +14,7 @@ function PaginasView() {
     { path: "/pages-testimonios", label: "Testimonios" },
     { path: "/pages-home", label: "Home" },
     { path: "/pages-navbar", label: "Navbar" },
+    { path: "/pages-footer", label: "Footer" },
   ];
 
   return (

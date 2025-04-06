@@ -32,8 +32,7 @@ import clientePoliza from "./routes/clientePoliza.js";
 import dashboardTrabajador from './routes/dashboardTrabajador.js';
 import reporteRouter from './routes/reporte.js';
 import menuRoutes from './routes/menuRoutes.js';
-
-
+import footerRoutes from './routes/footerRoutes.js';
 
 
 dotenv.config();
@@ -75,7 +74,7 @@ app.use('/api/testimonios', testimoniosRoutes);
 app.use("/api/home", homeRoutes);
 //menu
 app.use('/api/menu', menuRoutes);
-
+app.use("/api/footer", footerRoutes);
 
 
 const PORT = process.env.PORT || 5000;
