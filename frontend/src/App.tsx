@@ -45,6 +45,7 @@ export default function App(props: any) {
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                     </div>
                     <div class="offcanvas-body">
+                    {userRole() === "admin" && <A href="/operadoras">🛎️ OPERADORAS</A>}
                         {isLoggedIn() && <A href="/users">Users</A>}
                        
                         
@@ -59,7 +60,6 @@ export default function App(props: any) {
                         {userRole() === "admin" && <A href="/coberturas">Coberturas</A>} 
 
                         {userRole() === "admin" && <A href="/citas">Citas</A>}
-                        {userRole() === "admin" && <A href="/operadoras">Operadoras</A>}
                         
 
 
