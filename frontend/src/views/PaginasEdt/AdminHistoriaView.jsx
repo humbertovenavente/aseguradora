@@ -43,7 +43,7 @@ function AdminHistoria() {
     const propuesta = {
       titulo: titulo(),
       imagenUrl: imagenUrl(),
-      parrafos: parrafos()
+      parrafos: parrafos(),
     };
 
     try {

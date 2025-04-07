@@ -97,11 +97,77 @@ function AdminTestimoniosView() {
     <div class="container my-5">
       <h2 class="mb-4">Editar Testimonios</h2>
       <form onSubmit={handleSubmit}>
-        {/* Aquí permanece todo igual: tarjetas de edición de cada sección */}
-        {/* ... todo tu código tal como lo tenías ... */}
-        <button type="submit" class="btn btn-primary">
-          Enviar Propuesta de Testimonios
-        </button>
+        <h4>🛠 Servicio</h4>
+        <div class="mb-3">
+          <label>Título de la Sección</label>
+          <input class="form-control" value={servicio().sectionTitle} onInput={(e) => handleServicioChange("sectionTitle", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>Título del Servicio</label>
+          <input class="form-control" value={servicio().serviceTitle} onInput={(e) => handleServicioChange("serviceTitle", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>Tagline</label>
+          <input class="form-control" value={servicio().tagline} onInput={(e) => handleServicioChange("tagline", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>URL de la Imagen del Servicio</label>
+          <input class="form-control" value={servicio().serviceImage} onInput={(e) => handleServicioChange("serviceImage", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>URL de Aprende Más</label>
+          <input class="form-control" value={servicio().learnMoreUrl} onInput={(e) => handleServicioChange("learnMoreUrl", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>URL de Cotizar</label>
+          <input class="form-control" value={servicio().requestQuoteUrl} onInput={(e) => handleServicioChange("requestQuoteUrl", e.currentTarget.value)} />
+        </div>
+
+        <h4 class="mt-4">💬 Testimonios</h4>
+        {reviews().map((review, index) => (
+          <div class="mb-4 border p-3 rounded" key={index}>
+            <div class="mb-2">
+              <label>Título del Testimonio</label>
+              <input class="form-control" value={review.reviewTitle} onInput={(e) => handleReviewChange(index, "reviewTitle", e.currentTarget.value)} />
+            </div>
+            <div class="mb-2">
+              <label>Texto</label>
+              <textarea class="form-control" rows="2" value={review.reviewText} onInput={(e) => handleReviewChange(index, "reviewText", e.currentTarget.value)} />
+            </div>
+            <button type="button" class="btn btn-danger" onClick={() => removeReview(index)}>Eliminar</button>
+          </div>
+        ))}
+        <button type="button" class="btn btn-secondary mb-3" onClick={addReview}>Agregar Testimonio</button>
+
+        <h4 class="mt-4">📬 Newsletter</h4>
+        <div class="mb-3">
+          <label>Título</label>
+          <input class="form-control" value={newsletter().heading} onInput={(e) => handleNewsletterChange("heading", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>Descripción</label>
+          <textarea class="form-control" value={newsletter().description} onInput={(e) => handleNewsletterChange("description", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>Texto del Botón</label>
+          <input class="form-control" value={newsletter().buttonText} onInput={(e) => handleNewsletterChange("buttonText", e.currentTarget.value)} />
+        </div>
+
+        <h4 class="mt-4">ℹ️ About</h4>
+        <div class="mb-3">
+          <label>Título</label>
+          <input class="form-control" value={about().title} onInput={(e) => handleAboutChange("title", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>Texto</label>
+          <textarea class="form-control" value={about().text} onInput={(e) => handleAboutChange("text", e.currentTarget.value)} />
+        </div>
+        <div class="mb-3">
+          <label>URL de la Imagen</label>
+          <input class="form-control" value={about().imageUrl} onInput={(e) => handleAboutChange("imageUrl", e.currentTarget.value)} />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar Propuesta de Testimonios</button>
       </form>
     </div>
   );

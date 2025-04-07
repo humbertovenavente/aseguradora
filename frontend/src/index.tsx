@@ -52,6 +52,7 @@ import AdminHomeView from "./views/PaginasEdt/AdminHomeView";
 import NavbarView from "./views/PaginasEdt/NavbarView";
 import FooterEdit from "./views/PaginasEdt/FooterEdit";
 import ModeracionView from "./views/PaginasEdt/ModeracionView";
+import DraftEditorView from "./views/PaginasEdt/DraftEditorView";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -109,7 +110,7 @@ render(() => (
             <Route path="/pages-footer" component={requireRole("admin", FooterEdit)} />
             <Route path="/pages" component={requireRole("admin", PaginasView)} />
             <Route path="/moderacion" component={requireRole("admin", ModeracionView)} />
-
+            <Route path="/drafts/:id" component={DraftEditorView} />
 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

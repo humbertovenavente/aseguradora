@@ -152,23 +152,26 @@ router.put("/aprobar/:id", async (req, res) => {
   }
 });
 
-// Rechazar una propuesta con comentario
-router.put("/rechazar/:id", async (req, res) => {
-  const { comentarioRechazo } = req.body;
-  try {
-    const rechazada = await Moderacion.findByIdAndUpdate(
-      req.params.id,
-      { estado: "rechazado", comentarioRechazo },
-      { new: true }
-    );
-    res.json(rechazada);
-  } catch (err) {
-    res.status(500).json({
-      error: "Error al rechazar propuesta",
-      message: err.message,
-    });
-  }
-});
+
+      // Link visible desde otros dispositivos (usá tu IP local)
+      router.put("/rechazar/:id", async (req, res) => {
+        const { comentarioRechazo } = req.body;
+        try {
+          const rechazada = await Moderacion.findByIdAndUpdate(
+            req.params.id,
+            { estado: "rechazado", comentarioRechazo },
+            { new: true }
+          );
+          res.json(rechazada);
+        } catch (err) {
+          res.status(500).json({
+            error: "Error al rechazar propuesta",
+            message: err.message,
+          });
+        }
+      });
+      
+  
 
 // Obtener propuestas por estado
 router.get("/estado/:estado", async (req, res) => {
@@ -184,5 +187,38 @@ router.get("/estado/:estado", async (req, res) => {
     });
   }
 });
+
+// Obtener propuesta individual
+router.get("/:id", async (req, res) => {
+    try {
+      const propuesta = await Moderacion.findById(req.params.id);
+      if (!propuesta) return res.status(404).json({ error: "Propuesta no encontrada" });
+      res.json(propuesta);
+    } catch (err) {
+      res.status(500).json({ error: "Error al obtener la propuesta", message: err.message });
+    }
+  });
+  
+  // Reenviar propuesta rechazada
+  router.put("/reenviar/:id", async (req, res) => {
+    try {
+      const propuesta = await Moderacion.findById(req.params.id);
+      if (!propuesta) return res.status(404).json({ error: "No encontrada" });
+  
+      if (propuesta.estado !== "rechazado") {
+        return res.status(400).json({ error: "Solo se pueden reenviar propuestas rechazadas" });
+      }
+  
+      propuesta.estado = "pendiente";
+      propuesta.contenido = req.body.contenido;
+      propuesta.comentarioRechazo = undefined;
+      await propuesta.save();
+  
+      res.json({ mensaje: "✅ Propuesta reenviada correctamente" });
+    } catch (err) {
+      res.status(500).json({ error: "Error al reenviar propuesta", message: err.message });
+    }
+  });
+  
 
 export default router;

@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/moderacion";
+const hostname = window.location.hostname;
+const IP = hostname === "localhost" || hostname === "127.0.0.1" ? "localhost" : hostname;
+const API_URL = "http://192.168.56.1:5001/api/moderacion";
 
 // Crear una nueva propuesta de edición
 export const crearPropuesta = async (propuesta) => {
@@ -27,3 +29,13 @@ export const rechazarPropuesta = async (id, comentario) => {
   });
   return response.data;
 };
+
+export const obtenerPropuestaPorId = async (id) => {
+    const response = await axios.get(`${API_URL}/${id}`);
+    return response.data;
+  };
+
+export const reenviarPropuesta = async (id, contenido) => {
+    const response = await axios.put(`${API_URL}/reenviar/${id}`, {contenido});
+    return response.data;
+  };
