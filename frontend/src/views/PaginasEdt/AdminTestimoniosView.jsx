@@ -52,14 +52,23 @@ function AdminTestimoniosView() {
   };
 
   const handleReviewChange = (index, field, value) => {
-    const updatedReviews = [...reviews()];
-    updatedReviews[index] = { ...updatedReviews[index], [field]: value };
-    setReviews(updatedReviews);
+    const current = reviews();
+    current[index][field] = value;
+    setReviews(current); // <-- no recrea el array, mantiene foco
   };
+  
+  
+
 
   const addReview = () => {
-    setReviews([...reviews(), { stars: 5, reviewTitle: "", reviewText: "" }]);
+    setReviews([...reviews(), {
+      id: Date.now(), // ID único temporal
+      stars: 5,
+      reviewTitle: "",
+      reviewText: ""
+    }]);
   };
+  
 
   const removeReview = (index) => {
     const updatedReviews = reviews().filter((_, i) => i !== index);
@@ -125,18 +134,38 @@ function AdminTestimoniosView() {
 
         <h4 class="mt-4">💬 Testimonios</h4>
         {reviews().map((review, index) => (
-          <div class="mb-4 border p-3 rounded" key={index}>
-            <div class="mb-2">
-              <label>Título del Testimonio</label>
-              <input class="form-control" value={review.reviewTitle} onInput={(e) => handleReviewChange(index, "reviewTitle", e.currentTarget.value)} />
-            </div>
-            <div class="mb-2">
-              <label>Texto</label>
-              <textarea class="form-control" rows="2" value={review.reviewText} onInput={(e) => handleReviewChange(index, "reviewText", e.currentTarget.value)} />
-            </div>
-            <button type="button" class="btn btn-danger" onClick={() => removeReview(index)}>Eliminar</button>
-          </div>
-        ))}
+  <div class="mb-4 border p-3 rounded" key={review.id}>
+    <div class="mb-2">
+      <label>Título del Testimonio</label>
+      <input
+        class="form-control"
+        value={review.reviewTitle}
+        onInput={(e) =>
+          handleReviewChange(index, "reviewTitle", e.currentTarget.value)
+        }
+      />
+    </div>
+    <div class="mb-2">
+      <label>Texto</label>
+      <textarea
+        class="form-control"
+        rows="2"
+        value={review.reviewText}
+        onInput={(e) =>
+          handleReviewChange(index, "reviewText", e.currentTarget.value)
+        }
+      />
+    </div>
+    <button
+      type="button"
+      class="btn btn-danger"
+      onClick={() => removeReview(index)}
+    >
+      Eliminar
+    </button>
+  </div>
+))}
+
         <button type="button" class="btn btn-secondary mb-3" onClick={addReview}>Agregar Testimonio</button>
 
         <h4 class="mt-4">📬 Newsletter</h4>
