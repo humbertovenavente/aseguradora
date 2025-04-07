@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./navbar.css";
 
+// Tipos
 type MenuItem = { titulo: string; icono: string; ruta: string };
 type Menu = { tipo: string; items: MenuItem[] };
 type FooterData = { contenido: string };
@@ -19,19 +20,15 @@ export default function App(props: any) {
 
   const hasMenuOptions = () => isLoggedIn() || userRole() === "admin";
 
-  const toggleMenu = () => {
-    const nav = document.querySelector(".nav-links");
-    nav?.classList.toggle("active");
-  };
-
   return (
     <>
       {/* NAVBAR */}
       <nav class="main-nav">
         {hasMenuOptions() && (
-          <button class="menu-toggle" onClick={toggleMenu}>☰</button>
+          <button class="btn menu-btn" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">☰</button>
         )}
 
+        {/* Menú principal dinámico */}
         <div class="nav-links">
           <Show when={menuPrincipal.loading}><span>Cargando menú...</span></Show>
           <Show when={menuPrincipal()?.items}>
@@ -41,6 +38,7 @@ export default function App(props: any) {
           </Show>
         </div>
 
+        {/* Botón de login/logout */}
         {isLoggedIn() ? (
           <button class="btn btn-danger ms-auto" onClick={() => logout(navigate)}>Logout</button>
         ) : (
@@ -50,13 +48,13 @@ export default function App(props: any) {
 
       {/* SIDEBAR */}
       {hasMenuOptions() && (
-        <div class="offcanvas offcanvas-start sidebar-menu" tabIndex={-1} id="sidebarMenu">
+        <div class="offcanvas offcanvas-start sidebar-menu" tabindex="-1" id="sidebarMenu">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title">Menú</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
           </div>
           <div class="offcanvas-body">
-            {userRole() === "admin" && <A href="/operadoras">OPERADORAS</A>}
+            {userRole() === "admin" && <A href="/operadoras"> OPERADORAS</A>}
             {isLoggedIn() && <A href="/users">Users</A>}
             {userRole() === "admin" && <A href="/clientes">Clientes</A>}
             {userRole() === "admin" && <A href="/seguros">Informacion de Aseguradora</A>}
@@ -76,11 +74,11 @@ export default function App(props: any) {
       )}
 
       {/* CONTENIDO */}
-      <main style="min-height: calc(100vh - 120px);">
+      <main>
         {props.children}
       </main>
 
-      {/* FOOTER */}
+      {/* FOOTER dinámico */}
       <footer class="main-footer">
         <span>{footer()?.contenido || "Cargando..."}</span>
       </footer>
