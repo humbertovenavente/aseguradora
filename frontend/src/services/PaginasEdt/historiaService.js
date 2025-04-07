@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/historia";
+const API_URL = "http://localhost:5001/api/historia";
 
 // ✅ (Opcional) Crear una nueva historia
 // Útil solo si manejas múltiples “historias” en tu base de datos.

@@ -15,7 +15,7 @@ function getPeriodoDateRange(mes) {
   return { inicioMes, finMes };
 }
 
-// 🟢 Generar y guardar reporte hospital (con archivo en base64)
+// Generar y guardar reporte hospital (con archivo en base64)
 router.get('/hospital/:mes/generar', async (req, res) => {
   const { mes } = req.params;
   const { inicioMes, finMes } = getPeriodoDateRange(mes);
@@ -75,7 +75,7 @@ router.get('/hospital/:mes/generar', async (req, res) => {
       sheet.addRow([]);
       sheet.addRow(['', '', 'Total del mes', data.total]);
 
-      // ✅ Crear carpeta reportes si no existe
+      //  Crear carpeta reportes si no existe
       const reportesDir = path.join(__dirname, '../reportes');
       if (!fs.existsSync(reportesDir)) {
         fs.mkdirSync(reportesDir, { recursive: true });
@@ -113,7 +113,7 @@ router.get('/hospital/:mes/generar', async (req, res) => {
   }
 });
 
-// 🔍 Consultar reportes ya generados
+//  Consultar reportes ya generados
 router.get('/:tipo/:mes', async (req, res) => {
   try {
     const { tipo, mes } = req.params;
@@ -124,7 +124,7 @@ router.get('/:tipo/:mes', async (req, res) => {
   }
 });
 
-// ❌ Eliminar un reporte por ID
+// Eliminar un reporte por ID
 router.delete('/:id', async (req, res) => {
   try {
     await Reporte.findByIdAndDelete(req.params.id);

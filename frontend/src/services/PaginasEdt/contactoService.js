@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/contacto";
+const API_URL = "http://localhost:5001/api/contacto";
 
 // ✅ (Opcional) Crear un nuevo contacto
 // Útil si manejas múltiples registros de "Contacto" en tu base de datos.

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/menu";
+const API_URL = "http://localhost:5001/api/menu";
 
 
   // ✅ CORREGIDO
 export const obtenerMenuPorTipo = async (tipo) => {
-    const response = await axios.get(`http://localhost:5000/api/menu/${tipo}`);
+    const response = await axios.get(`http://localhost:5001/api/menu/${tipo}`);
     return response.data;
   };
   

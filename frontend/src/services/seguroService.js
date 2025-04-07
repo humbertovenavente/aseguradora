@@ -1,7 +1,7 @@
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-const API_URL = "http://localhost:5000/api/seguros";
+const API_URL = "http://localhost:5001/api/seguros";
 
 //  Obtener todos los seguros
 export const obtenerSeguros = async () => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/pagos";
+const API_URL = "http://localhost:5001/api/pagos";
 
 //  Crear un nuevo pago
 export const crearPago = async (pago) => {

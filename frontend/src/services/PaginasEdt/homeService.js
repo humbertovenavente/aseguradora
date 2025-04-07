@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/home";
+const API_URL = "http://localhost:5001/api/home";
 
 // ✅ (Opcional) Crear un nuevo Home
 // Útil si en algún momento decides manejar múltiples documentos de Home.

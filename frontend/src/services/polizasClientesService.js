@@ -1,7 +1,7 @@
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-const API_URL = "http://localhost:5000/api/polizas-clientes"; 
+const API_URL = "http://localhost:5001/api/polizas-clientes"; 
 
 // Pagar una póliza (POST)
 export const pagarPoliza = async (cliente_id, poliza_id, monto_pagado = 100) => {

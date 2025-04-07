@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/categorias";
+const API_URL = "http://localhost:5001/api/categorias";
 
 //  Crear una nueva categoría o subcategoría
 export const crearCategoria = async (categoria) => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/servicios";
+const API_URL = "http://localhost:5001/api/servicios";
 
 //  Crear un nuevo servicio
 export const crearServicio = async (servicio) => {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/redProveedores";
+const API_URL = "http://localhost:5001/api/redProveedores";
 
 // 📄 Obtener la lista de proveedores
 export const obtenerRedProveedores = async () => {

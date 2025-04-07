@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/faq";
+const API_URL = "http://localhost:5001/api/faq";
 
 // 📄 Obtener la FAQ
 export const obtenerFaq = async () => {

@@ -1,7 +1,7 @@
 // frontend/services/reportesService.js
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000/api/reporte";
+const API_BASE = "http://localhost:5001/api/reporte";
 
 export const generarReporteHospital = async (mes) => {
   const response = await axios.get(`${API_BASE}/hospital/${mes}/generar`);

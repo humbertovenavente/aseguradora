@@ -3,7 +3,7 @@
 // =========================
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/coberturas";
+const API_URL = "http://localhost:5001/api/coberturas";
 
 // Crear una nueva cobertura
 export const crearCobertura = async (cobertura) => {

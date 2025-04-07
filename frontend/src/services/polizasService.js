@@ -1,7 +1,7 @@
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-const API_URL = "http://localhost:5000/api/polizas";
+const API_URL = "http://localhost:5001/api/polizas";
 
 // Obtener todas las pólizas con datos de cobertura
 export const obtenerPolizas = async () => {
