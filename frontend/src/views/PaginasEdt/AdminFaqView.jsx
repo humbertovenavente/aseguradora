@@ -56,41 +56,42 @@ function AdminFaq() {
     <div class="container my-5">
       <h2 class="mb-4">Editar FAQ</h2>
       <form onSubmit={handleSubmit}>
-        {items().map((item, index) => (
-          <div class="card mb-3" key={index}>
-            <div class="card-body">
-              <div class="mb-3">
-                <label class="form-label">Pregunta:</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  value={item.pregunta}
-                  onInput={(e) =>
-                    handleItemChange(index, "pregunta", e.currentTarget.value)
-                  }
-                />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Respuesta:</label>
-                <textarea
-                  class="form-control"
-                  rows="3"
-                  value={item.respuesta}
-                  onInput={(e) =>
-                    handleItemChange(index, "respuesta", e.currentTarget.value)
-                  }
-                ></textarea>
-              </div>
-              <button
-                type="button"
-                class="btn btn-danger"
-                onClick={() => handleRemoveItem(index)}
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-        ))}
+      {items().map((item, index) => (
+  <div class="card mb-3" key={index}>
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Pregunta:</label>
+        <input
+          type="text"
+          class="form-control"
+          value={item.pregunta}
+          onInput={(e) =>
+            handleItemChange(index, "pregunta", e.currentTarget.value)
+          }
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Respuesta:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          value={item.respuesta}
+          onInput={(e) =>
+            handleItemChange(index, "respuesta", e.currentTarget.value)
+          }
+        ></textarea>
+      </div>
+      <button
+        type="button"
+        class="btn btn-danger"
+        onClick={() => handleRemoveItem(index)}
+      >
+        Eliminar
+      </button>
+    </div>
+  </div>
+))}
+
         <div class="mb-3">
           <button
             type="button"
