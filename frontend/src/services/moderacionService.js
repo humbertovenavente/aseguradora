@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/moderacion";
+const API_URL = "http://localhost:5001/api/moderacion";
 
 // Crear una nueva propuesta de edición
 export const crearPropuesta = async (propuesta) => {
