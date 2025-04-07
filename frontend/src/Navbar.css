@@ -1,47 +1,76 @@
-
-  
-/* Paleta de colores */
+/* ========== PALETA DE COLORES ========== */
 :root {
-    --dark-teal: #026E81;    /* Fondo principal navbar */
-    --teal: #00ABBD;         /* Opción para hover o acentos */
-    --blue: #0099DD;         /* Podrías usarlo en botones o bordes */
-    --orange: #FF9933;
-    --light-blue: #A1C7E0;
-  }
-  /* 
-  Reset básico para evitar márgenes por defecto en el body 
-  y permitir que todo el contenido ocupe la pantalla completa.
-*/
+  --dark-teal: #026E81;
+  --teal: #00ABBD;
+  --blue: #0099DD;
+  --orange: #FF9933;
+  --light-blue: #A1C7E0;
+}
+
+/* ========== RESET Y ESTRUCTURA ========== */
 html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  
-  /* NAVBAR horizontal arriba */
-  /* Menú principal */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  position: relative;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  font-family: sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ========== NAVBAR FIJO Y SCROLLABLE ========== */
 .main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
   background-color: var(--dark-teal);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1rem;
-  width: 100%;
-  margin: 0;
+  overflow-x: auto;
+  white-space: nowrap;
 }
-.menu-btn {
-  background-color: transparent;
-  border: none;
-  font-size: 1.8rem;
-  color: white;
-  cursor: pointer;
-  margin-right: 1rem;
+
+/* Ocultar scrollbar visual pero permitir scroll horizontal */
+.main-nav::-webkit-scrollbar {
+  display: none;
+}
+.main-nav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Botón hamburguesa oculto (ya no necesario) */
+.menu-toggle {
+  display: none;
+}
+
+/* Links de navegación */
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
 }
 
 .main-nav a {
+  flex: 0 0 auto;
   color: #fff;
   text-decoration: none;
-  margin-right: 1rem;
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   transition: background-color 0.3s ease;
@@ -49,12 +78,17 @@ html, body {
 
 .main-nav a:hover {
   background-color: var(--teal);
+  color: #fff;
 }
 
-/* Estilos para el menú off-canvas */
+/* ========== SIDEBAR OFFCANVAS ========== */
 .sidebar-menu {
   width: 250px;
   background-color: var(--light-blue);
+}
+
+.sidebar-menu .offcanvas-title {
+  color: white;
 }
 
 .sidebar-menu .offcanvas-body a {
@@ -65,122 +99,146 @@ html, body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-menu .offcanvas-title {
-  color: white;
-}
-
 .sidebar-menu .offcanvas-body a:hover {
   background-color: var(--teal);
   color: white;
 }
 
-  
-  /* Links de navegación en la barra */
-  .main-nav a {
-    color: #fff; /* Texto blanco para contraste */
-    text-decoration: none;
-    margin-right: 1rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Hover en los links */
-  .main-nav a:hover {
-    background-color: #fefefe;
-  }
-  
-  /* Título principal del sitio */
-  .site-title {
-    text-align: center;
-    margin-top: 1rem;
+/* ========== FOOTER FIJO ========== */
+.main-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: var(--dark-teal);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+  z-index: 100;
+}
+
+/* ========== CONTENIDO PRINCIPAL ========== */
+.app-main {
+  padding: 1rem;
+  padding-top: 70px;
+  padding-bottom: 80px;
+  min-height: calc(100vh - 140px);
+}
+
+/* ========== HERO SECTION ========== */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url("/ruta/imagen.jpg") center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+  text-align: center;
+  color: white;
+}
+
+.hero-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* ========== SERVICES SECTION ========== */
+.services-section {
+  background-color: #f3f3f3;
+  padding: 2rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.services-cards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.service-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  width: 250px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* ========== ABOUT SECTION ========== */
+.about-section {
+  width: 100%;
+  padding: 2rem 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ========== RESPONSIVE AJUSTES ========== */
+@media (max-width: 768px) {
+  .hero-content h1 {
     font-size: 2rem;
-    background-color: #fefefe;
-  }
-  
-  /* Estructura principal */
-  main {
-    /* Se extiende en la pantalla, sin limitar ancho */
-    flex: 1;
-  }
-  
-  /* HERO SECTION */
-  .hero-section {
-    background-color: var(--light-blue, #a1c7e0);
-    padding: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* 
-     Removemos el max-width y margin: 0 auto 
-     para que, en pantallas grandes, se extienda 
-     ocupando todo el ancho disponible 
-  */
-  .hero-content {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .cta-button {
-    background-color: var(--teal, #00ABBD);
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1.25rem;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .cta-button:hover {
-    background-color: var(--dark-teal, #026E81);
-  }
-  
-  /* SERVICES SECTION */
-  .services-section {
-    background-color: #f3f3f3;
-    padding: 2rem 1rem;
-    margin-bottom: 1rem;
   }
 
-  #root {
-    display: flex;
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .hero-buttons {
     flex-direction: column;
-    min-height: 100vh; /* Fuerza a ocupar toda la altura de la ventana */
   }
-  
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
   .services-cards {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    /* 
-      Deja wrap si quieres que, en pantallas pequeñas, 
-      se parta a otra línea en vez de forzar scroll horizontal.
-      Si no deseas wrap: flex-wrap: nowrap;  
-    */
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
   }
-  
+
   .service-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 1rem;
-    width: 250px;
-    border-radius: 5px;
-    text-align: center;
+    width: 90%;
   }
-  
-  /* ABOUT SECTION */
-  .about-section {
-    width: 100%;
-    padding: 2rem 1rem;
-    margin-bottom: 1rem;
+
+  .cta-button {
+    width: 90%;
+    max-width: 300px;
+    margin: 0.5rem auto;
+    display: block;
   }
-  
-  /* FOOTER */
+
   .main-footer {
-    background-color: var(--dark-teal, #026E81);
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-    width: 100%;
+    font-size: 0.85rem;
   }
+}
 
