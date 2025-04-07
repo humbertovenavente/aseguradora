@@ -37,6 +37,7 @@ import dashboardTrabajador from './routes/dashboardTrabajador.js';
 import reporteRouter from './routes/reporte.js';
 import menuRoutes from './routes/menuRoutes.js';
 import footerRoutes from './routes/footerRoutes.js';
+import moderacionRoutes from "./routes/moderacionRoutes.js";
 
 
 
@@ -83,7 +84,7 @@ app.use("/api/home", homeRoutes);
 //menu
 app.use('/api/menu', menuRoutes);
 app.use("/api/footer", footerRoutes);
-
+app.use("/api/moderacion", moderacionRoutes);
 
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI;
@@ -99,3 +100,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });
+
+

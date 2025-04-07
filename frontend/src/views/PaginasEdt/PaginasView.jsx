@@ -7,6 +7,7 @@ function PaginasView() {
 
   // Definimos las rutas de las secciones que puede editar el admin
   const adminPages = [
+    { path: "/moderacion", label: "Moderacion" },
     { path: "/pages-historia", label: "Historia" },
     { path: "/pages-contacto", label: "Contacto" },
     { path: "/pages-faq", label: "FAQ" },

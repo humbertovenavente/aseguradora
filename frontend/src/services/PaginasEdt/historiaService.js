@@ -2,6 +2,8 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5001/api/historia";
 
+const API_URL_MODERACION = "http://localhost:5001/api/moderacion";
+
 // ✅ (Opcional) Crear una nueva historia
 // Útil solo si manejas múltiples “historias” en tu base de datos.
 export const crearHistoria = async (historia) => {
@@ -31,5 +33,18 @@ export const actualizarHistoria = async (historia) => {
 // ❌ Eliminar la historia (opcional, si manejas múltiples)
 export const eliminarHistoria = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`);
+  return response.data;
+};
+
+
+// 📬 Enviar propuesta de edición de historia
+export const enviarPropuestaHistoria = async (contenido, correo) => {
+  const propuesta = {
+    pagina: "historia",
+    contenido,
+    creadoPor: correo
+  };
+
+  const response = await axios.post(API_URL_MODERACION, propuesta);
   return response.data;
 };

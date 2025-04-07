@@ -14,23 +14,25 @@ export default function Login() {
     try {
       const res = await login({ correo, contrasena });
       const userData = res.data.usuario;
-
+      
       if (!userData) {
         alert("Error en la autenticación");
         return;
       }
-
+      
+      // 🧠 Guarda el correo del usuario para luego saber quién hace propuestas
+      localStorage.setItem("usuario", JSON.stringify({ correo: userData.correo }));
+      
       console.log("Usuario autenticado:", userData);
-
-      //  Si el usuario está inactivo, no guardar datos en localStorage y mostrar el modal
+      
       if (userData.estado !== 1) {
         setErrorMessage("Tu cuenta aún no ha sido activada. Contacta al administrador.");
         setShowModal(true);
-        return; //  Detener el login aquí
+        return;
       }
-
-      // Si el usuario está activo, guardarlo en el sistema
+      
       setUser(userData.id, userData.rol_nombre, navigate);
+      
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Tu cuenta aún no ha sido activada. Contacta al administrador.");

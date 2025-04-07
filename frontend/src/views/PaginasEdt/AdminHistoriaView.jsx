@@ -1,6 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import { obtenerHistoria, actualizarHistoria } from "./../../services/PaginasEdt/historiaService";
-
+import { obtenerHistoria, enviarPropuestaHistoria } from "../../services/PaginasEdt/historiaService";
 
 function AdminHistoria() {
   const [titulo, setTitulo] = createSignal("");
@@ -26,23 +25,33 @@ function AdminHistoria() {
     setParrafos(nuevos);
   };
 
-  // Agrega un nuevo párrafo vacío al arreglo
   const handleAgregarParrafo = () => {
     setParrafos([...parrafos(), ""]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const usuarioLogueado = JSON.parse(localStorage.getItem("usuario"));
+    const correo = usuarioLogueado?.correo;
+
+    if (!correo) {
+      alert("⚠️ No se pudo identificar al usuario logueado.");
+      return;
+    }
+
+    const propuesta = {
+      titulo: titulo(),
+      imagenUrl: imagenUrl(),
+      parrafos: parrafos(),
+    };
+
     try {
-      await actualizarHistoria({ 
-        titulo: titulo(), 
-        imagenUrl: imagenUrl(), 
-        parrafos: parrafos() 
-      });
-      alert("¡Historia actualizada con éxito!");
+      await enviarPropuestaHistoria(propuesta, correo);
+      alert("✅ Propuesta enviada para revisión");
     } catch (error) {
-      console.error("Error al actualizar la historia:", error);
-      alert("Hubo un error al actualizar la historia");
+      console.error("Error al enviar la propuesta:", error.response?.data || error.message);
+      alert("❌ Error al enviar la propuesta");
     }
   };
 
@@ -50,7 +59,6 @@ function AdminHistoria() {
     <div class="container my-5">
       <div class="row justify-content-center">
         <div class="col-md-8">
-          {/* Card para darle estilo */}
           <div class="card shadow-sm">
             <div class="card-header">
               <h2 class="card-title mb-0">Editar Historia</h2>
@@ -104,13 +112,12 @@ function AdminHistoria() {
                   </button>
 
                   <button type="submit" class="btn btn-primary">
-                    Guardar
+                    Guardar cambios
                   </button>
                 </div>
               </form>
             </div>
           </div>
-          {/* Fin de la card */}
         </div>
       </div>
     </div>
