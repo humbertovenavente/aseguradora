@@ -1,12 +1,12 @@
 import { createSignal } from "solid-js";
 
 const initialHospitals = [
-  { id: 1, nombre: "Hospital Central", codigo: "HC-001", direccion: "Av. Reforma 123", status: "Pendiente", motivo: "" },
+  { id: 1, nombre: "ddd ", codigo: "HC-001", direccion: "Av. Reforma 123", status: "Pendiente", motivo: "" },
   { id: 2, nombre: "Hospital Regional", codigo: "HR-002", direccion: "Calle 8 #456", status: "Pendiente", motivo: "" },
 ];
 
 const initialPharmacies = [
-  { id: 1, nombre: "Farmacia Central", codigo: "FC-001", direccion: "Av. 5 de Mayo 789", status: "Pendiente", motivo: "" },
+  { id: 1, nombre: "Farmacia ", codigo: "FC-001", direccion: "Av. 5 de Mayo 789", status: "Pendiente", motivo: "" },
   { id: 2, nombre: "Farmacia Salud", codigo: "FS-002", direccion: "Blvd. Los Próceres 101", status: "Pendiente", motivo: "" },
 ];
 

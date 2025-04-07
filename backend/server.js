@@ -16,6 +16,10 @@ import categoriaRoutes from './routes/categoriaRoutes.js';
 import empleadosRoutes from './routes/empleadosRoutes.js';
 import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
+import aseguradoraRoutes from "./routes/aseguradoras.js";
+import solicitudRoutes from './routes/solicitudesRoutes.js';
+
+
 // Páginas editables
 import historiaRoutes from "./routes/PaginasEdt/historiaRoutes.js";
 import contactoRoutes from "./routes/PaginasEdt/contactoRoutes.js";
@@ -33,6 +37,7 @@ import dashboardTrabajador from './routes/dashboardTrabajador.js';
 import reporteRouter from './routes/reporte.js';
 import menuRoutes from './routes/menuRoutes.js';
 import footerRoutes from './routes/footerRoutes.js';
+
 
 
 dotenv.config();
@@ -56,12 +61,15 @@ app.use('/api/fichatecnica', fichaTecnicaRoutes);
 app.use("/api/citas", citaRoutes);
 app.use('/api/polizas-clientes', clientePoliza);
 app.use('/api/dashboard-trabajador', dashboardTrabajador);
+app.use("/api/solicitudes", solicitudRoutes);
 app.use('/api/reporte', reporteRouter);
 // ✅ Servir archivos Excel de la carpeta /reportes
 app.use('/reportes', express.static(path.join(process.cwd(), 'reportes')));
 
 // ✅ Rutas
 app.use('/api/reporte', reporteRouter);
+app.use("/api/aseguradoras", aseguradoraRoutes);
+
 
 
 

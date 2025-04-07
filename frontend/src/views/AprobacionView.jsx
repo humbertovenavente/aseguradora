@@ -1,199 +1,84 @@
-// AprobacionView.jsx
-import { createSignal } from "solid-js";
+import { createSignal, onMount, For, Show } from "solid-js";
+import API_URL from "../config";
 
-const defaultMinCost = 250; // Umbral mínimo para aprobar recetas
+const AprobacionView = () => {
+  const [solicitudes, setSolicitudes] = createSignal([]);
+  const [mensaje, setMensaje] = createSignal("");
 
-// Solicitudes de servicios médicos simuladas
-const initialServiceRequests = [
-  {
-    id: 1,
-    hospital: "Hospital Central",
-    affiliate: "12345",
-    service: "Consulta General",
-    monto: 500,
-    isAffiliateValid: true,
-    isUpToDate: true,
-    hasCoverage: true,
-    status: "Pendiente",
-    authNumber: null,
-    error: null,
-  },
-  {
-    id: 2,
-    hospital: "Hospital Regional",
-    affiliate: "54321",
-    service: "Cirugía Menor",
-    monto: 3000,
-    isAffiliateValid: false,
-    isUpToDate: true,
-    hasCoverage: true,
-    status: "Pendiente",
-    authNumber: null,
-    error: null,
-  },
-];
-
-// Solicitudes de medicinas simuladas
-const initialMedicineRequests = [
-  {
-    id: 1,
-    farmacia: "Farmacia Central",
-    affiliate: "12345",
-    medicine: "Antibiótico X",
-    totalCost: 180, // Menor al umbral, se rechazaría
-    status: "Pendiente",
-    error: null,
-  },
-  {
-    id: 2,
-    farmacia: "Farmacia Salud",
-    affiliate: "67890",
-    medicine: "Vitamina C",
-    totalCost: 300,
-    status: "Pendiente",
-    error: null,
-  },
-];
-
-function AprobacionView() {
-  const [serviceRequests, setServiceRequests] = createSignal(initialServiceRequests);
-  const [medicineRequests, setMedicineRequests] = createSignal(initialMedicineRequests);
-
-  // Función para aprobar solicitud de servicio
-  const handleAprobarServicio = (id) => {
-    const updatedRequests = serviceRequests().map((req) => {
-      if (req.id === id) {
-        // Validaciones simuladas
-        if (!req.isAffiliateValid) {
-          return { ...req, status: "Rechazado", error: "Afiliado no es válido" };
-        }
-        if (!req.isUpToDate) {
-          return { ...req, status: "Rechazado", error: "Afiliado no está al día en sus pagos" };
-        }
-        if (!req.hasCoverage) {
-          return { ...req, status: "Rechazado", error: "No tiene cobertura para este servicio" };
-        }
-        // Si pasa todas las validaciones, se aprueba y se genera un número de autorización
-        const authNumber = "AUTH-" + Math.floor(Math.random() * 1000000);
-        return { ...req, status: "Aprobado", authNumber, error: null };
-      }
-      return req;
-    });
-    setServiceRequests(updatedRequests);
+  const cargarSolicitudes = async () => {
+    try {
+      const res = await fetch(`${API_URL}/solicitudes`);
+      const data = await res.json();
+      setSolicitudes(data);
+    } catch (err) {
+      console.error("Error cargando solicitudes:", err);
+    }
   };
 
-  // Función para rechazar manualmente solicitud de servicio
-  const handleRechazarServicio = (id, reason) => {
-    const updatedRequests = serviceRequests().map((req) => {
-      if (req.id === id) {
-        return { ...req, status: "Rechazado", error: reason };
+  const actualizarEstado = async (id, nuevoEstado) => {
+    try {
+      const res = await fetch(`${API_URL}/solicitudes/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+
+      if (res.ok) {
+        setMensaje(`Solicitud ${nuevoEstado} correctamente.`);
+        cargarSolicitudes();
+      } else {
+        setMensaje("Error al actualizar estado");
       }
-      return req;
-    });
-    setServiceRequests(updatedRequests);
+    } catch (err) {
+      console.error("Error al actualizar estado:", err);
+    }
   };
 
-  // Función para aprobar solicitud de medicina
-  const handleAprobarMedicina = (id) => {
-    const updatedMedicines = medicineRequests().map((req) => {
-      if (req.id === id) {
-        if (req.totalCost < defaultMinCost) {
-          return { ...req, status: "Rechazado", error: `El costo total es menor a Q${defaultMinCost}` };
-        }
-        return { ...req, status: "Aprobado", error: null };
-      }
-      return req;
-    });
-    setMedicineRequests(updatedMedicines);
-  };
+  onMount(cargarSolicitudes);
 
-  // Función para rechazar manualmente solicitud de medicina
-  const handleRechazarMedicina = (id, reason) => {
-    const updatedMedicines = medicineRequests().map((req) => {
-      if (req.id === id) {
-        return { ...req, status: "Rechazado", error: reason };
-      }
-      return req;
-    });
-    setMedicineRequests(updatedMedicines);
-  };
+  const pendientes = () => solicitudes().filter((s) => s.estado === "pendiente");
+  const aprobadas = () => solicitudes().filter((s) => s.estado === "aprobado");
+  const rechazadas = () => solicitudes().filter((s) => s.estado === "rechazado");
+
+  const Seccion = ({ titulo, color, icono, lista }) => (
+    <div class="mb-4">
+      <h4 class={`text-${color}`}>
+        <i class={`me-2 bi bi-${icono}`}></i>
+        {titulo}
+      </h4>
+      <Show when={lista().length > 0} fallback={<p>No hay solicitudes {titulo.toLowerCase()}.</p>}>
+        <For each={lista()}>
+          {(s, i) => (
+            <div class="card mb-2 p-3">
+              
+              <p><b>Hospital:</b> {s.nombre}</p>
+              <p><b>Aseguradora:</b> {s.aseguradora}</p>
+              <p><b>Estado:</b> <span class={`text-${
+                s.estado === "aprobado" ? "success" : s.estado === "rechazado" ? "danger" : "warning"
+              }`}>{s.estado}</span></p>
+              <Show when={s.estado === "pendiente"}>
+                <div class="mt-2">
+                  <button class="btn btn-success me-2" onClick={() => actualizarEstado(s._id, "aprobado")}>Aprobar</button>
+                  <button class="btn btn-danger" onClick={() => actualizarEstado(s._id, "rechazado")}>Rechazar</button>
+                </div>
+              </Show>
+            </div>
+          )}
+        </For>
+      </Show>
+    </div>
+  );
 
   return (
     <div class="container mt-4">
-      <h1 class="mb-4">Aprobación de Solicitudes</h1>
+      <h3>Historial de Solicitudes del Hospital</h3>
+      {mensaje() && <div class="alert alert-info mt-3">{mensaje()}</div>}
 
-      <h2>Solicitudes de Servicios Médicos</h2>
-      {serviceRequests().map((req) => (
-        <div class="card mb-3" key={req.id}>
-          <div class="card-body">
-            <h5 class="card-title">
-              {req.hospital} - {req.service}
-            </h5>
-            <p class="card-text">
-              Afiliado: {req.affiliate} <br />
-              Monto: Q{req.monto} <br />
-              Estado: {req.status} {req.authNumber ? `(Auth: ${req.authNumber})` : ""}
-              <br />
-              {req.error && <span class="text-danger">Error: {req.error}</span>}
-            </p>
-            {req.status === "Pendiente" && (
-              <div>
-                <button
-                  class="btn btn-success me-2"
-                  onClick={() => handleAprobarServicio(req.id)}
-                >
-                  Aprobar
-                </button>
-                <button
-                  class="btn btn-danger"
-                  onClick={() =>
-                    handleRechazarServicio(req.id, "Manual: Rechazado por el administrador")
-                  }
-                >
-                  Rechazar
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-
-      <h2>Solicitudes de Medicinas</h2>
-      {medicineRequests().map((req) => (
-        <div class="card mb-3" key={req.id}>
-          <div class="card-body">
-            <h5 class="card-title">
-              {req.farmacia} - {req.medicine}
-            </h5>
-            <p class="card-text">
-              Afiliado: {req.affiliate} <br />
-              Costo Total: Q{req.totalCost} <br />
-              Estado: {req.status} <br />
-              {req.error && <span class="text-danger">Error: {req.error}</span>}
-            </p>
-            {req.status === "Pendiente" && (
-              <div>
-                <button
-                  class="btn btn-success me-2"
-                  onClick={() => handleAprobarMedicina(req.id)}
-                >
-                  Aprobar
-                </button>
-                <button
-                  class="btn btn-danger"
-                  onClick={() =>
-                    handleRechazarMedicina(req.id, "Manual: Rechazado por el administrador")
-                  }
-                >
-                  Rechazar
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
+      <Seccion titulo="Pendientes" color="warning" icono="exclamation-circle" lista={pendientes} />
+      <Seccion titulo="Aprobadas" color="success" icono="check-circle" lista={aprobadas} />
+      <Seccion titulo="Rechazadas" color="danger" icono="x-circle" lista={rechazadas} />
     </div>
   );
-}
+};
 
 export default AprobacionView;

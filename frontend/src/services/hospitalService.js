@@ -41,3 +41,23 @@ export const obtenerHospitalesPorServicio = async (servicioId) => {
   const response = await axios.get(`${API_URL}?servicioId=${servicioId}`);
   return response.data;
 };
+
+/// esto es para conexion
+// Obtener hospitales pendientes
+export const obtenerHospitalesPendientes = async () => {
+  const response = await axios.get(`${API_URL}/pendientes`);
+  return response.data;
+};
+
+// Aprobar hospital
+export const aprobarHospital = async (id) => {
+  const response = await axios.patch(`${API_URL}/aprobar/${id}`);
+  return response.data;
+};
+
+// Rechazar hospital
+export const rechazarHospital = async (id) => {
+  const response = await axios.patch(`${API_URL}/rechazar/${id}`);
+  return response.data;
+};
+
