@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import { obtenerContacto, actualizarContacto } from "../../services/PaginasEdt/contactoService";
+import { obtenerContacto, enviarPropuestaContacto } from "../../services/PaginasEdt/contactoService";
 
 function AdminContacto() {
   const [titulo, setTitulo] = createSignal("");
@@ -25,18 +25,29 @@ function AdminContacto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const usuarioLogueado = JSON.parse(localStorage.getItem("usuario"));
+    const correoUsuario = usuarioLogueado?.correo;
+
+    if (!correoUsuario) {
+      alert("⚠️ No se pudo identificar al usuario logueado.");
+      return;
+    }
+
+    const contenido = {
+      titulo: titulo(),
+      introduccion: introduccion(),
+      telefono: telefono(),
+      direccion: direccion(),
+      correo: correo(),
+    };
+
     try {
-      await actualizarContacto({
-        titulo: titulo(),
-        introduccion: introduccion(),
-        telefono: telefono(),
-        direccion: direccion(),
-        correo: correo(),
-      });
-      alert("¡Información de contacto actualizada con éxito!");
+      await enviarPropuestaContacto(contenido, correoUsuario);
+      alert("✅ Propuesta enviada para revisión");
     } catch (error) {
-      console.error("Error al actualizar contacto:", error);
-      alert("Hubo un error al actualizar el contacto");
+      console.error("Error al enviar propuesta:", error.response?.data || error.message);
+      alert("❌ Hubo un error al enviar la propuesta");
     }
   };
 
@@ -106,7 +117,7 @@ function AdminContacto() {
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                  Guardar
+                  Enviar propuesta
                 </button>
               </form>
             </div>

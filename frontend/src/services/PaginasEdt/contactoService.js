@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:5001/api/contacto";
+const API_URL_MODERACION = "http://localhost:5001/api/moderacion";
+
 
 // ✅ (Opcional) Crear un nuevo contacto
 // Útil si manejas múltiples registros de "Contacto" en tu base de datos.
@@ -33,3 +35,17 @@ export const eliminarContacto = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`);
   return response.data;
 };
+
+
+// ✅ Crear propuesta de edición para contacto (moderación)
+export const enviarPropuestaContacto = async (contenido, correoUsuario) => {
+  const propuesta = {
+    pagina: "contacto",
+    contenido, // ya debe tener: titulo, introduccion, telefono, direccion, correo
+    creadoPor: correoUsuario,
+  };
+
+  const response = await axios.post(API_URL_MODERACION, propuesta);
+  return response.data;
+};
+

@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import { obtenerFaq, actualizarFaq } from "../../services/PaginasEdt/faqService";
+import { obtenerFaq, enviarPropuestaFaq } from "../../services/PaginasEdt/faqService";
 
 function AdminFaq() {
   const [items, setItems] = createSignal([]);
@@ -34,12 +34,21 @@ function AdminFaq() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const usuarioLogueado = JSON.parse(localStorage.getItem("usuario"));
+    const correo = usuarioLogueado?.correo;
+
+    if (!correo) {
+      alert("⚠️ No se pudo identificar al usuario logueado.");
+      return;
+    }
+
     try {
-      await actualizarFaq({ items: items() });
-      alert("FAQ actualizada con éxito!");
+      await enviarPropuestaFaq(items(), correo);
+      alert("✅ Propuesta enviada para revisión");
     } catch (error) {
-      console.error("Error al actualizar FAQ:", error);
-      alert("Error al actualizar FAQ");
+      console.error("Error al enviar la propuesta:", error.response?.data || error.message);
+      alert("❌ Error al enviar la propuesta");
     }
   };
 

@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-import { obtenerRedProveedores, actualizarRedProveedores } from "../../services/PaginasEdt/redProveedoresService";
+import { obtenerRedProveedores, enviarPropuestaRedProveedores } from "../../services/PaginasEdt/redProveedoresService";
 
 function AdminRedProveedores() {
   const [proveedores, setProveedores] = createSignal([]);
@@ -34,12 +34,21 @@ function AdminRedProveedores() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const correo = usuario?.correo;
+
+    if (!correo) {
+      alert("⚠️ No se pudo identificar al usuario.");
+      return;
+    }
+
     try {
-      await actualizarRedProveedores({ proveedores: proveedores() });
-      alert("Proveedores actualizados con éxito!");
+      await enviarPropuestaRedProveedores(proveedores(), correo);
+      alert("✅ Propuesta enviada para revisión");
     } catch (error) {
-      console.error("Error al actualizar proveedores:", error);
-      alert("Error al actualizar proveedores");
+      console.error("Error al enviar propuesta:", error);
+      alert("❌ Hubo un error al enviar la propuesta");
     }
   };
 

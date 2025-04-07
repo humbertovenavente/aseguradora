@@ -1,11 +1,11 @@
 import { createSignal, createResource, For } from "solid-js";
-import { obtenerMenuPorTipo, actualizarMenu } from "../../services/menuService";
+import { obtenerMenuPorTipo } from "../../services/menuService";
+import { crearPropuesta } from "../../services/moderacionService";
 
 export default function AdminNavbarEditor() {
   const [menu, { mutate, refetch }] = createResource(() => "principal", obtenerMenuPorTipo);
   const [editando, setEditando] = createSignal(false);
 
-  // Manejo de cambios en campos individuales
   const actualizarItem = (index, campo, valor) => {
     const nuevo = [...menu()?.items];
     nuevo[index][campo] = valor;
@@ -29,10 +29,30 @@ export default function AdminNavbarEditor() {
   };
 
   const guardarCambios = async () => {
-    await actualizarMenu("principal", menu());
-    setEditando(false);
-    await refetch();
-    alert("¡Menú actualizado correctamente!");
+    const usuario = JSON.parse(localStorage.getItem("usuario"))?.correo;
+
+    if (!usuario) {
+      alert("⚠️ No se pudo identificar al usuario logueado.");
+      return;
+    }
+
+    const propuesta = {
+      pagina: "navbar",
+      contenido: {
+        tipo: "principal",       // 👈 necesario para el switch-case del backend
+        items: menu().items,     // solo mandamos lo necesario
+      },
+      creadoPor: usuario
+    };
+
+    try {
+      await crearPropuesta(propuesta);
+      setEditando(false);
+      alert("✅ Propuesta enviada para revisión");
+    } catch (error) {
+      console.error("Error al enviar propuesta:", error);
+      alert("❌ Error al enviar propuesta");
+    }
   };
 
   return (
@@ -66,7 +86,6 @@ export default function AdminNavbarEditor() {
                   value={item.icono}
                   onInput={(e) => actualizarItem(index(), "icono", e.target.value)}
                 />
-
                 <button class="btn btn-danger mt-2" onClick={() => eliminarItem(index())}>
                   Eliminar
                 </button>
@@ -78,7 +97,7 @@ export default function AdminNavbarEditor() {
             ➕ Agregar ítem
           </button>
           <button class="btn btn-success mt-2" onClick={guardarCambios}>
-            💾 Guardar cambios
+            💾 Enviar a moderación
           </button>
         </>
       )}

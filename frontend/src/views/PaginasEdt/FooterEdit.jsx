@@ -1,21 +1,33 @@
 import { createSignal, createResource } from "solid-js";
-import { obtenerFooter, actualizarFooter } from "../../services/footerService";
+import { obtenerFooter, proponerEdicionFooter } from "../../services/footerService";
 
 export default function AdminFooterEditor() {
-  const [footer, { mutate, refetch }] = createResource(obtenerFooter);
+  const [footer, { refetch }] = createResource(obtenerFooter);
   const [contenido, setContenido] = createSignal("");
   const [editando, setEditando] = createSignal(false);
 
   const guardarCambios = async () => {
-    await actualizarFooter(contenido());
-    await refetch();
-    setEditando(false);
-    alert("✅ Footer actualizado correctamente.");
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const correo = usuario?.correo;
+
+    if (!correo) {
+      alert("⚠️ No se pudo identificar al usuario logueado.");
+      return;
+    }
+
+    try {
+      await proponerEdicionFooter(contenido(), correo);
+      setEditando(false);
+      alert("📨 Propuesta de edición enviada para aprobación.");
+    } catch (error) {
+      console.error("Error al enviar propuesta:", error);
+      alert("❌ Error al enviar la propuesta.");
+    }
   };
 
   return (
     <div class="container mt-4">
-      <h2>Editor de Footer</h2>
+      <h2>📝 Editor del Footer</h2>
 
       {editando() ? (
         <>
@@ -26,7 +38,7 @@ export default function AdminFooterEditor() {
             onInput={(e) => setContenido(e.target.value)}
           />
           <button class="btn btn-success me-2" onClick={guardarCambios}>
-            💾 Guardar
+            💾 Enviar propuesta
           </button>
           <button class="btn btn-secondary" onClick={() => setEditando(false)}>
             Cancelar
