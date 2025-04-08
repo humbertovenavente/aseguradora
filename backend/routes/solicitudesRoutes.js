@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
     const guardada = await nuevaSolicitud.save();
     res.json(guardada);
   } catch (err) {
-    console.error("❌ Error al guardar solicitud:", err);
+    console.error("Error al guardar solicitud:", err);
     res.status(500).json({ error: 'Error al procesar la solicitud' });
   }
 });
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 
     res.json(solicitudes);
   } catch (err) {
-    console.error("❌ Error al obtener solicitudes:", err);
+    console.error(" Error al obtener solicitudes:", err);
     res.status(500).json({ error: 'Error al obtener solicitudes' });
   }
 });
@@ -42,7 +42,7 @@ router.get('/hospital/:nombre', async (req, res) => {
     const solicitudes = await Solicitud.find({ nombre: req.params.nombre }).sort({ createdAt: -1 });
     res.json(solicitudes);
   } catch (err) {
-    console.error("❌ Error al obtener solicitudes:", err);
+    console.error(" Error al obtener solicitudes:", err);
     res.status(500).json({ error: 'Error al obtener solicitudes del hospital' });
   }
 });
@@ -65,7 +65,7 @@ router.put('/:id', async (req, res) => {
 
     res.json(solicitudActualizada);
   } catch (err) {
-    console.error('❌ Error al actualizar solicitud:', err);
+    console.error('Error al actualizar solicitud:', err);
     res.status(500).json({ error: 'Error al actualizar estado' });
   }
 });
