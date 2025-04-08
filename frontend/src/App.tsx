@@ -6,7 +6,7 @@ import { obtenerFooter } from "./services/footerService";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import "./navbar.css";
+import "./Navbar.css";
 
 // Tipos
 type MenuItem = { titulo: string; icono: string; ruta: string };
