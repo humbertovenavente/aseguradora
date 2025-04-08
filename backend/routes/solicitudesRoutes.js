@@ -1,10 +1,10 @@
 import express from 'express';
+import axios from 'axios'; // Para comunicarte con Quarkus
 const router = express.Router();
 
-// Modelo
-import Solicitud from '../models/Solicitud.js'; // Asegúrate que este archivo existe o créalo
+import Solicitud from '../models/Solicitud.js';
 
-// 📥 Crear nueva solicitud (endpoint que llama Quarkus)
+// Crear nueva solicitud (endpoint que llama Quarkus)
 router.post('/', async (req, res) => {
   try {
     const nuevaSolicitud = new Solicitud(req.body);
@@ -23,9 +23,9 @@ router.get('/', async (req, res) => {
     let solicitudes = [];
 
     if (nombre) {
-      solicitudes = await Solicitud.find({ nombre: new RegExp(`^${nombre}$`, "i") }); // match insensible
+      solicitudes = await Solicitud.find({ nombre: new RegExp(`^${nombre}$`, "i") });
     } else {
-      solicitudes = await Solicitud.find(); // fallback por si no viene nombre
+      solicitudes = await Solicitud.find();
     }
 
     res.json(solicitudes);
@@ -35,8 +35,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-
-// GET /api/solicitudes/hospital/:nombre
+// Obtener todas las solicitudes por nombre de hospital
 router.get('/hospital/:nombre', async (req, res) => {
   try {
     const solicitudes = await Solicitud.find({ nombre: req.params.nombre }).sort({ createdAt: -1 });
@@ -47,7 +46,7 @@ router.get('/hospital/:nombre', async (req, res) => {
   }
 });
 
-//  Actualizar estado de solicitud
+// ✅ Actualizar estado de solicitud y sincronizar con Oracle (Quarkus)
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
@@ -63,12 +62,24 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Solicitud no encontrada' });
     }
 
+    // Enviar PATCH a Quarkus para actualizar estado en Oracle
+    try {
+      await axios.patch(
+        `http://localhost:8080/hospital/solicitudes/${encodeURIComponent(solicitudActualizada.nombre)}/estado`,
+        estado,
+        {
+          headers: { "Content-Type": "text/plain" }
+        }
+      );
+    } catch (syncErr) {
+      console.error("⚠️ Error sincronizando con Quarkus:", syncErr.message);
+    }
+
     res.json(solicitudActualizada);
   } catch (err) {
     console.error('Error al actualizar solicitud:', err);
     res.status(500).json({ error: 'Error al actualizar estado' });
   }
 });
-
 
 export default router;
