@@ -1,95 +1,94 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
+import {
+  obtenerRecetas,
+  obtenerMontoMinimo,
+  actualizarMontoMinimo,
+} from "../services/recetaService";
 
-const initialHospitals = [
-  { id: 1, nombre: "ddd ", codigo: "HC-001", direccion: "Av. Reforma 123", status: "Pendiente", motivo: "" },
-  { id: 2, nombre: "Hospital Regional", codigo: "HR-002", direccion: "Calle 8 #456", status: "Pendiente", motivo: "" },
-];
+export default function AdminRecetas() {
+  const [recetas, setRecetas] = createSignal([]);
+  const [montoMinimo, setMontoMinimo] = createSignal(250);
+  const [nuevoMonto, setNuevoMonto] = createSignal(250);
 
-const initialPharmacies = [
-  { id: 1, nombre: "Farmacia ", codigo: "FC-001", direccion: "Av. 5 de Mayo 789", status: "Pendiente", motivo: "" },
-  { id: 2, nombre: "Farmacia Salud", codigo: "FS-002", direccion: "Blvd. Los Próceres 101", status: "Pendiente", motivo: "" },
-];
-
-function AprobacionOrgView() {
-  const [hospitals, setHospitals] = createSignal(initialHospitals);
-  const [pharmacies, setPharmacies] = createSignal(initialPharmacies);
-
-  const updateStatus = (listSignal, id, newStatus, reason = "") => {
-    const updated = listSignal().map(item =>
-      item.id === id ? { ...item, status: newStatus, motivo: reason } : item
-    );
-    listSignal === hospitals ? setHospitals(updated) : setPharmacies(updated);
+  const cargarDatos = async () => {
+    try {
+      const recetasData = await obtenerRecetas();
+      const montoData = await obtenerMontoMinimo();
+      setRecetas(recetasData);
+      setMontoMinimo(montoData.valor);
+      setNuevoMonto(montoData.valor);
+    } catch (err) {
+      console.error("Error cargando datos de recetas:", err);
+    }
   };
 
+  const actualizarMonto = async () => {
+    try {
+      await actualizarMontoMinimo(nuevoMonto());
+      alert("Monto mínimo actualizado correctamente");
+      setMontoMinimo(nuevoMonto());
+      cargarDatos();
+    } catch (err) {
+      console.error("Error actualizando monto mínimo:", err);
+    }
+  };
+
+  onMount(cargarDatos);
+
   return (
-    <div class="container mt-5">
-      <h1 class="mb-4">Aprobación de Hospitales y Farmacias</h1>
+    <div class="container mt-4">
+      <h2>Panel de Recetas</h2>
 
-      {/* Sección Hospitales */}
-      <section class="mb-5">
-        <h2>Hospitales Pendientes</h2>
-        {hospitals().map(h => (
-          <div class="card mb-3" key={h.id}>
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h5>{h.nombre}</h5>
-                <small>Código: {h.codigo} — Dirección: {h.direccion}</small>
-                <p class="mt-1">
-                  Estado: 
-                  <span class={`badge ms-2 ${h.status === "Aprobado" ? "bg-success" : h.status === "Rechazado" ? "bg-danger" : "bg-warning"}`}>
-                    {h.status}
-                  </span>
-                </p>
-                {h.motivo && <p class="text-danger">Motivo: {h.motivo}</p>}
-              </div>
-              {h.status === "Pendiente" && (
-                <div>
-                  <button class="btn btn-success me-2" onClick={() => updateStatus(hospitals, h.id, "Aprobado")}>
-                    Aprobar
-                  </button>
-                  <button class="btn btn-danger" onClick={() => updateStatus(hospitals, h.id, "Rechazado", "No cumple requisitos")}>
-                    Rechazar
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </section>
+      <div class="card p-3 my-4">
+        <h5>Monto mínimo actual: Q{montoMinimo()}</h5>
+        <div class="d-flex gap-2 flex-wrap">
+          <input
+            type="number"
+            class="form-control"
+            value={nuevoMonto()}
+            onInput={(e) => setNuevoMonto(+e.target.value)}
+          />
+          <button class="btn btn-primary" onClick={actualizarMonto}>
+            Actualizar monto mínimo
+          </button>
+        </div>
+      </div>
 
-      {/* Sección Farmacias */}
-      <section>
-        <h2>Farmacias Pendientes</h2>
-        {pharmacies().map(f => (
-          <div class="card mb-3" key={f.id}>
-            <div class="card-body d-flex justify-content-between align-items-center">
-              <div>
-                <h5>{f.nombre}</h5>
-                <small>Código: {f.codigo} — Dirección: {f.direccion}</small>
-                <p class="mt-1">
-                  Estado:
-                  <span class={`badge ms-2 ${f.status === "Aprobado" ? "bg-success" : f.status === "Rechazado" ? "bg-danger" : "bg-warning"}`}>
-                    {f.status}
-                  </span>
-                </p>
-                {f.motivo && <p class="text-danger">Motivo: {f.motivo}</p>}
-              </div>
-              {f.status === "Pendiente" && (
-                <div>
-                  <button class="btn btn-success me-2" onClick={() => updateStatus(pharmacies, f.id, "Aprobado")}>
-                    Aprobar
-                  </button>
-                  <button class="btn btn-danger" onClick={() => updateStatus(pharmacies, f.id, "Rechazado", "No cumple requisitos")}>
-                    Rechazar
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </section>
+      <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID Receta</th>
+            <th>Farmacia</th>
+            <th>Cliente</th>
+            <th>Póliza</th>
+            <th>Monto</th>
+            <th>Descuento</th>
+            <th>Total a Pagar</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recetas().map((r) => {
+            const cliente = r.cliente;
+            return (
+              <tr>
+                <td>{r.idReceta}</td>
+                <td>{r.farmacia}</td>
+                <td>{cliente ? `${cliente.nombre} ${cliente.apellido || ""}` : "No registrado"}</td>
+                <td>{cliente?.polizaNombre || "Sin póliza"}</td>
+                <td>Q{r.monto?.toFixed(2)}</td>
+                <td>Q{r.descuento?.toFixed(2)}</td>
+                <td>
+                  Q{(r.estado === "aprobada" ? (r.monto - r.descuento) : r.monto).toFixed(2)}
+                </td>
+                <td>{r.estado}</td>
+                <td>{new Date(r.fecha).toLocaleString()}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
-
-export default AprobacionOrgView;

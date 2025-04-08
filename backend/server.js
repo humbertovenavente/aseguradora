@@ -18,6 +18,9 @@ import usuariosRoutes from "./routes/usuariosRoutes.js";
 import rolesRoutes from "./routes/rolesRoutes.js";
 import aseguradoraRoutes from "./routes/aseguradoras.js";
 import solicitudRoutes from './routes/solicitudesRoutes.js';
+import recetasRoutes from './routes/recetasRoutes.js';
+
+
 
 
 // Páginas editables
@@ -64,6 +67,7 @@ app.use('/api/polizas-clientes', clientePoliza);
 app.use('/api/dashboard-trabajador', dashboardTrabajador);
 app.use("/api/solicitudes", solicitudRoutes);
 app.use('/api/reporte', reporteRouter);
+app.use('/api/recetas', recetasRoutes);
 // ✅ Servir archivos Excel de la carpeta /reportes
 app.use('/reportes', express.static(path.join(process.cwd(), 'reportes')));
 
