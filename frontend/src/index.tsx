@@ -40,6 +40,8 @@ import FichasDetalleTM from "./views/FichasDetalleTM";
 import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
+import SolicitudServiceView from "./views/SolicitudServiceView.jsx";
+
 
 
 import PaginasView from "./views/PaginasEdt/PaginasView";
@@ -95,6 +97,7 @@ render(() => (
             <Route path="/aprobacion" component={requireRole("admin", AprobacionView)} />
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
+            <Route path="/solicitudes" component={requireRole("admin", SolicitudServiceView)} />
             
             <Route path="/operadoras/fichastm" component={requireRole("admin", FichasTM)} />
             <Route path="/operadoras/fichastm/:id" component={requireRole("admin", FichasDetalleTM)} />

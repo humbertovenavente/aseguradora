@@ -87,6 +87,17 @@ export const crearClienteDesdeUsuario = async (usuarioId, cliente) => {
 };
 
 
+// Obtener historial de servicios por cliente
+export const getHistorialCliente = async (clienteId) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/clientes/${clienteId}/historial`);
+        return response.data.historialServicios;
+    } catch (error) {
+        console.error("Error al obtener historial de cliente:", error);
+        return [];
+    }
+};
+
 
 // esto solamente es para lo que vamos a utilizar en jalar la informacion 
 export async function obtenerHistorialCliente(clienteId) {

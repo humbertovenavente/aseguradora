@@ -85,4 +85,32 @@ router.post("/", async (req, res) => {
 });
 
 
+//insetar un nuevo historial 
+/**
+ * Agregar un nuevo servicio al historial de un paciente
+ */
+router.post('/historial/:fichaId', async (req, res) => {
+    try {
+        const { fichaId } = req.params;
+        const nuevoServicio = req.body; // Asegúrate de que este contenga los campos correctos
+
+        const fichaActualizada = await FichaTecnica.findByIdAndUpdate(
+            fichaId,
+            { $push: { historialServicios: nuevoServicio } },
+            { new: true }
+        );
+
+        if (!fichaActualizada) {
+            return res.status(404).json({ message: "Ficha técnica no encontrada" });
+        }
+
+        res.json(fichaActualizada);
+    } catch (error) {
+        console.error("Error al agregar historial:", error);
+        res.status(500).json({ message: "Error interno al agregar historial" });
+    }
+});
+
+
+
 export default router;

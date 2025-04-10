@@ -106,6 +106,80 @@ router.put('/:id', async (req, res) => {
 });
 
 
-//hospital guardar
+//conexion de aprovar solicitud
+// PUT - Aprobar solicitud y agregar al historial del cliente
+router.put("/solicitudes/:id/aprobar", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const solicitud = await Solicitud.findById(id);
+    if (!solicitud) return res.status(404).json({ message: "Solicitud no encontrada" });
+
+    if (solicitud.estado !== "pendiente") {
+      return res.status(400).json({ message: "La solicitud ya fue procesada" });
+    }
+
+    const cliente = await Cliente.findById(solicitud.afiliado);
+    const servicio = await Servicio.findById(solicitud.servicio);
+    const hospital = await Hospital.findById(solicitud.hospital);
+
+    if (!cliente || !servicio || !hospital) {
+      return res.status(404).json({ message: "Datos faltantes: cliente, servicio u hospital" });
+    }
+
+    // Agregar historial al cliente
+    cliente.historialServicios.push({
+      hospital: hospital._id,
+      servicio: servicio._id,
+      fechaServicio: solicitud.fechaServicio || new Date(),
+      costo: solicitud.monto,
+      copago: 0, // Se puede recalcular luego
+      comentarios: solicitud.comentarios || "",
+      resultados: solicitud.resultados || "",
+      estadoCopago: "pendiente"
+    });
+
+    solicitud.estado = "aprobada";
+
+    await cliente.save();
+    await solicitud.save();
+
+    res.status(200).json({ message: "Solicitud aprobada y añadida al historial del cliente." });
+  } catch (error) {
+    console.error("❌ Error al aprobar solicitud:", error);
+    res.status(500).json({ message: "Error al aprobar solicitud", error: error.message });
+  }
+});
+
+// Aprobación con historial
+router.put("/solicitudes/:id/aprobar", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const solicitud = await Solicitud.findById(id);
+
+    if (!solicitud) return res.status(404).json({ message: "Solicitud no encontrada." });
+
+    solicitud.estado = "aprobado";
+    await solicitud.save();
+
+    // Enviar historial al cliente en aseguradora (desde hospital)
+    const payload = {
+      hospitalId: solicitud.hospital,
+      servicioId: solicitud.servicio,
+      fechaServicio: new Date(),
+      costo: solicitud.monto,
+      comentarios: "Atención registrada desde hospital.",
+      resultados: "Pendiente de evaluación"
+    };
+
+    await axios.post(`http://localhost:5001/api/clientes/${solicitud.afiliado}/historial`, payload);
+
+    res.status(200).json({ message: "Solicitud aprobada y enviada al historial del cliente." });
+  } catch (error) {
+    console.error("❌ Error aprobando solicitud:", error);
+    res.status(500).json({ message: "Error al aprobar la solicitud." });
+  }
+});
+
 
 export default router;

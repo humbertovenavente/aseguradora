@@ -1,22 +1,31 @@
 import { createSignal, createEffect } from "solid-js";
 import { getFichaTecnicaById, updateFichaTecnica } from "../services/fichaTecnicaService";
+import { getHistorialCliente, actualizarCliente } from "../services/clientesService";
 import { useParams, useNavigate } from "@solidjs/router";
-import { actualizarCliente } from "../services/clientesService";
 
 const FichaTecnicaDetail = () => {
     const params = useParams();
     const navigate = useNavigate();
     const [ficha, setFicha] = createSignal(null);
+    const [historial, setHistorial] = createSignal([]);
     const [isEditing, setIsEditing] = createSignal(false);
 
+    // Cargar ficha técnica
     createEffect(async () => {
         const data = await getFichaTecnicaById(params.id);
         setFicha(data);
     });
 
+    // Cargar historial de servicios por cliente
+    createEffect(async () => {
+        if (ficha() && ficha().clienteId?._id) {
+            const historialData = await getHistorialCliente(ficha().clienteId._id);
+            setHistorial(historialData); // ✅ Este debe ser un array
+        }
+    });
+
     const handleSave = async () => {
         try {
-            // Obtener los datos editados del cliente
             const clienteActualizado = {
                 nombre: ficha().clienteId?.nombre,
                 apellido: ficha().clienteId?.apellido,
@@ -26,13 +35,10 @@ const FichaTecnicaDetail = () => {
                 direccion: ficha().clienteId?.direccion,
                 numeroAfiliacion: ficha().clienteId?.numeroAfiliacion
             };
-    
-            // Actualizar el cliente en la base de datos
+
             await actualizarCliente(ficha().clienteId?._id, clienteActualizado);
-            
-            // También actualizar la ficha técnica (si hay otros cambios)
             await updateFichaTecnica(params.id, ficha());
-    
+
             alert("Ficha y cliente actualizados correctamente");
             setIsEditing(false);
         } catch (error) {
@@ -43,8 +49,9 @@ const FichaTecnicaDetail = () => {
     return (
         <div class="container">
             <h2 class="text-center">Detalle de la Ficha Técnica</h2>
+
             {ficha() ? (
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-body">
                         <h4>{ficha().clienteId?.nombre} {ficha().clienteId?.apellido}</h4>
                         <p><strong>DPI:</strong> {ficha().clienteId?.documento}</p>
@@ -65,7 +72,28 @@ const FichaTecnicaDetail = () => {
                 <p>Cargando ficha técnica...</p>
             )}
 
-            {/* MODAL PARA EDICIÓN */}
+            {/* HISTORIAL DE SERVICIOS */}
+            <div>
+                <h5 class="mb-3">Historial de Servicios</h5>
+                {historial().length > 0 ? (
+                    <ul class="list-group mb-4">
+                        {historial().map((servicio) => (
+                            <li class="list-group-item" key={servicio._id}>
+                                <strong>{servicio.servicio?.nombre || "Servicio"}</strong> - {new Date(servicio.fechaServicio).toLocaleDateString()}<br />
+                                <em>{servicio.servicio?.descripcion}</em><br />
+                                <strong>Hospital:</strong> {servicio.hospital?.nombre || "No especificado"}<br />
+                                <strong>Costo:</strong> Q{servicio.costo} | <strong>Copago:</strong> Q{servicio.copago} ({servicio.estadoCopago})<br />
+                                <strong>Resultados:</strong> {servicio.resultados}<br />
+                                <strong>Comentarios:</strong> {servicio.comentarios}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No hay servicios registrados.</p>
+                )}
+            </div>
+
+            {/* MODAL DE EDICIÓN */}
             {isEditing() && ficha() && (
                 <div class="modal fade show d-block" tabindex="-1">
                     <div class="modal-dialog">
@@ -75,6 +103,7 @@ const FichaTecnicaDetail = () => {
                                 <button type="button" class="btn-close" onClick={() => setIsEditing(false)}></button>
                             </div>
                             <div class="modal-body">
+                                {/* Campos editables */}
                                 <label>Nombre:</label>
                                 <input type="text" class="form-control mb-2" value={ficha().clienteId?.nombre}
                                     onInput={(e) => setFicha({ ...ficha(), clienteId: { ...ficha().clienteId, nombre: e.target.value } })} />
@@ -92,18 +121,15 @@ const FichaTecnicaDetail = () => {
                                     onInput={(e) => setFicha({ ...ficha(), clienteId: { ...ficha().clienteId, telefono: e.target.value } })} />
 
                                 <label>Fecha de Nacimiento:</label>
-                                <input
-    type="date"
-    class="form-control mb-2"
-    value={ficha().clienteId?.fechaNacimiento 
-        ? new Date(ficha().clienteId?.fechaNacimiento).toISOString().split('T')[0] 
-        : ""
-    }
-    onInput={(e) => setFicha({ 
-        ...ficha(), 
-        clienteId: { ...ficha().clienteId, fechaNacimiento: e.target.value } 
-    })}
-/>
+                                <input type="date" class="form-control mb-2"
+                                    value={ficha().clienteId?.fechaNacimiento 
+                                        ? new Date(ficha().clienteId?.fechaNacimiento).toISOString().split('T')[0] 
+                                        : ""}
+                                    onInput={(e) => setFicha({ 
+                                        ...ficha(), 
+                                        clienteId: { ...ficha().clienteId, fechaNacimiento: e.target.value } 
+                                    })}
+                                />
 
                                 <label>Dirección:</label>
                                 <input type="text" class="form-control mb-2" value={ficha().clienteId?.direccion}
@@ -117,9 +143,6 @@ const FichaTecnicaDetail = () => {
                                 <input type="text" class="form-control mb-2" value={ficha().seguroId?.codigo}
                                     onInput={(e) => setFicha({ ...ficha(), seguroId: { ...ficha().seguroId, codigo: e.target.value } })} />
 
-                                <label># Carnet de Seguro:</label>
-                                <input type="text" class="form-control mb-2" value={ficha().usuarioId?._id} disabled />
-
                                 <label>Correo:</label>
                                 <input type="text" class="form-control mb-2" value={ficha().usuarioId?.correo}
                                     onInput={(e) => setFicha({ ...ficha(), usuarioId: { ...ficha().usuarioId, correo: e.target.value } })} />
@@ -132,8 +155,6 @@ const FichaTecnicaDetail = () => {
                     </div>
                 </div>
             )}
-
-            {/* FONDO OSCURO DEL MODAL */}
             {isEditing() && <div class="modal-backdrop fade show"></div>}
         </div>
     );
