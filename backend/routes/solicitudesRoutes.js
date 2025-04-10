@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios'; // Para comunicarte con Quarkus
 const router = express.Router();
 
+import Hospital from "../models/Hospital.js";
 import Solicitud from '../models/Solicitud.js';
 
 // Crear nueva solicitud (endpoint que llama Quarkus)
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Obtener todas las solicitudes por nombre de hospital
+// Obtener todas las solicitudes por nombre de hospital y colocarlo en hospitales
 router.get('/hospital/:nombre', async (req, res) => {
   try {
     const solicitudes = await Solicitud.find({ nombre: req.params.nombre }).sort({ createdAt: -1 });
@@ -46,7 +47,8 @@ router.get('/hospital/:nombre', async (req, res) => {
   }
 });
 
-// ✅ Actualizar estado de solicitud y sincronizar con Oracle (Quarkus)
+//  Actualizar estado de solicitud y sincronizar con Oracle (Quarkus)
+//  Actualizar estado de solicitud y sincronizar con Oracle (Quarkus)
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
@@ -62,7 +64,28 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Solicitud no encontrada' });
     }
 
-    // Enviar PATCH a Quarkus para actualizar estado en Oracle
+    // Si fue aprobada, crear hospital (si no existe)
+    if (estado === "aprobado") {
+      const yaExiste = await Hospital.findOne({
+        nombre: solicitudActualizada.nombre,
+        telefono: solicitudActualizada.telefono,
+      });
+
+      if (!yaExiste) {
+        await Hospital.create({
+          nombre: solicitudActualizada.nombre,
+          direccion: solicitudActualizada.direccion,
+          telefono: solicitudActualizada.telefono,
+          convenioActivo: true,
+          estado: "aprobado",
+        });
+        console.log("🏥 Hospital creado a partir de la solicitud");
+      } else {
+        console.log("🔁 Hospital ya existía, no se creó duplicado");
+      }
+    }
+
+    // Enviar PATCH a Quarkus para sincronizar
     try {
       await axios.patch(
         `http://localhost:8080/hospital/solicitudes/${encodeURIComponent(solicitudActualizada.nombre)}/estado`,
@@ -81,5 +104,8 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar estado' });
   }
 });
+
+
+//hospital guardar
 
 export default router;

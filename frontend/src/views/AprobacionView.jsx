@@ -51,7 +51,7 @@ const AprobacionView = () => {
           {(s, i) => (
             <div class="card mb-2 p-3">
               
-              <p><b>Hospital:</b> {s.nombre}</p>
+              <p><b>Nombre:</b> {s.nombre}</p>
               <p><b>Aseguradora:</b> {s.aseguradora}</p>
               <p><b>Estado:</b> <span class={`text-${
                 s.estado === "aprobado" ? "success" : s.estado === "rechazado" ? "danger" : "warning"
