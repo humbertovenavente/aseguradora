@@ -9,7 +9,6 @@ import Poliza from '../models/Poliza.js';
 
 const router = express.Router();
 
-// POST - Crear nueva solicitud con validación
 // POST - Crear nueva solicitud con validación y número de autorización
 router.post('/', async (req, res) => {
     try {
@@ -80,6 +79,7 @@ router.get('/', async (req, res) => {
       res.status(500).json({ message: 'Error al obtener solicitudes' });
     }
   });
+  
   
   
 
