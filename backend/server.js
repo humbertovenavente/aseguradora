@@ -48,7 +48,6 @@ import solicitudesFarmaciaRoutes from './routes/solicitudesFarmaciaRoutes.js';
 
 
 
-
 dotenv.config();
 
 const app = express();

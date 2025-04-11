@@ -1,44 +1,8 @@
 import axios from "axios";
 import API_URL from "../config";
 
-// 🔹 Obtener todas las solicitudes hospitalarias
-export const obtenerSolicitudes = async () => {
-  const res = await axios.get(`${API_URL}/solicitudes`);
-  return res.data;
-};
-
-// 🔹 Aprobar una solicitud
-export const aprobarSolicitud = async (id) => {
-  const res = await axios.put(`${API_URL}/solicitudes/${id}/aprobar`);
-  return res.data;
-};
-
-// 🔹 Rechazar una solicitud
-export const rechazarSolicitud = async (id) => {
-  const res = await axios.put(`${API_URL}/solicitudes/${id}/rechazar`);
-  return res.data;
-};
-
-// 🔹 Actualizar estado general (sin origen)
-export const actualizarEstadoSolicitud = async (id, nuevoEstado) => {
-  const res = await axios.put(`${API_URL}/solicitudes/${id}`, {
-    estado: nuevoEstado
-  });
-
-  if (res.status !== 200) {
-    throw new Error("Error actualizando solicitud");
-  }
-
-  return res.data;
-};
-
-// 🔹 Actualizar estado según origen (farmacia u hospital)
-export const actualizarEstadoPorOrigen = async (id, nuevoEstado, origen) => {
-  const endpoint = origen === "farmacia"
-    ? `${API_URL}/solicitudes/farmacia/${id}`
-    : `${API_URL}/solicitudes/hospital/${id}`;
-
-  const res = await fetch(endpoint, {
+export async function actualizarEstadoSolicitud(id, nuevoEstado) {
+  const res = await fetch(`${API_URL}/solicitudes/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
