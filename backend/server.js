@@ -44,7 +44,7 @@ import reporteRouter from './routes/reporte.js';
 import menuRoutes from './routes/menuRoutes.js';
 import footerRoutes from './routes/footerRoutes.js';
 import moderacionRoutes from "./routes/moderacionRoutes.js";
-
+import solicitudesFarmaciaRoutes from './routes/solicitudesFarmaciaRoutes.js';
 
 
 
@@ -81,6 +81,10 @@ app.use('/reportes', express.static(path.join(process.cwd(), 'reportes')));
 
 // ✅ Rutas
 app.use('/api/reporte', reporteRouter);
+// - Solicitudes de Hospital
+app.use("/api/solicitudes/hospital", solicitudRoutes);
+// - Solicitudes de Farmacia
+app.use("/api/solicitudes/farmacia", solicitudesFarmaciaRoutes);
 app.use("/api/aseguradoras", aseguradoraRoutes);
 
 

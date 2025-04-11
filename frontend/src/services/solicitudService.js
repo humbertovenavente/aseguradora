@@ -21,18 +21,19 @@ export const rechazarSolicitud = async (id) => {
 
 // Actualizar estado (si fuera necesario)
 export const actualizarEstadoSolicitud = async (id, nuevoEstado) => {
-  const res = await axios.put(`${API_URL}/solicitudes/${id}`, {
-    estado: nuevoEstado
+  const res = await fetch(`${API_URL}/solicitudes/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ estado: nuevoEstado })
   });
 
-  if (res.status !== 200) {
-    throw new Error("Error actualizando solicitud");
-  }
-
-  return res.data;
+  if (!res.ok) throw new Error("Error actualizando solicitud");
+  return await res.json();
 };
 
-// Enviar nueva solicitud de atención
+// Enviar nueva solicitud (hospital o farmacia)
 export const enviarSolicitudHospital = async (datos) => {
   const res = await fetch(`${API_URL}/solicitudes`, {
     method: "POST",
