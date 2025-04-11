@@ -98,7 +98,9 @@ router.post('/', async (req, res) => {
             polizaNombre,
             fechaVencimiento,
             estadoPago: false,
+            aseguradora: new mongoose.Types.ObjectId(req.body.aseguradora || "67f84c1741019fe432da579c"),
             usuarioId: usuarioGuardado._id // se asocia cliente con el usuario recien creado, dspues se guarda en la base de datos
+            
         });
 
         const clienteGuardado = await nuevoCliente.save();
@@ -238,7 +240,9 @@ router.post('/crear-desde-usuario/:usuarioId', async (req, res) => {
             polizaNombre: polizaDefault.nombre,
             fechaVencimiento: polizaDefault.vigencia,
             usuarioId: usuario._id,
-            estadoPago: false
+            estadoPago: false,
+            aseguradora: new mongoose.Types.ObjectId(req.body.aseguradora || "67f84c1741019fe432da579c")
+
         });
 
         await nuevoCliente.save();
@@ -314,9 +318,8 @@ router.post('/:id/historial', async (req, res) => {
  */
 router.get('/:id/historial', async (req, res) => {
     try {
-        const { id } = req.params; // ID del cliente
+        const { id } = req.params;
 
-        // Buscar el cliente con el historial de servicios
         const cliente = await Cliente.findById(id)
             .populate("historialServicios.hospital", "nombre direccion telefono")
             .populate("historialServicios.servicio", "nombre descripcion precioAseguradora");
@@ -325,12 +328,14 @@ router.get('/:id/historial', async (req, res) => {
             return res.status(404).json({ message: "Cliente no encontrado." });
         }
 
-        res.status(200).json({ historialServicios: cliente.historialServicios });
+        // Devolver directamente el historial ya poblado
+        return res.status(200).json(cliente.historialServicios);
     } catch (error) {
-        console.error(error);
+        console.error("Error al obtener el historial de servicios:", error);
         res.status(500).json({ message: "Error al obtener el historial de servicios.", error: error.message });
     }
 });
+
 
 router.delete('/:id/historial', async (req, res) => {
     try {
@@ -404,7 +409,7 @@ router.put('/:id/recalcular-copago', async (req, res) => {
 // PUT - Marcar como pagado un servicio del historial
 router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
     try {
-        console.log("➡️ Entrando a la ruta de pago de copago");
+        console.log("Entrando a la ruta de pago de copago");
         const { clienteId, historialId } = req.params;
 
         const cliente = await Cliente.findById(clienteId);
@@ -412,13 +417,13 @@ router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
             return res.status(404).json({ message: "Cliente no encontrado." });
         }
 
-        console.log("✅ Cliente encontrado");
-        console.log("📋 IDs de historial existentes:");
+        console.log("Cliente encontrado");
+        console.log("IDs de historial existentes:");
         cliente.historialServicios.forEach(h => {
             console.log("   -", h._id.toString());
         });
 
-        // ✅ CORRECCIÓN AQUÍ
+        //  CORRECCIÓN AQUÍ
         const historial = cliente.historialServicios.find(h =>
             new mongoose.Types.ObjectId(h._id).equals(historialId)
         );
@@ -493,6 +498,31 @@ router.get('/buscar-por-documento/:documento', async (req, res) => {
   });
   
   
+  // CONEXION con Hospital para buscar Historial por Documento y Aseguradora 
+
+  // GET 
+router.get('/historial/buscar', async (req, res) => {
+    try {
+      const { documento, aseguradoraId } = req.query;
+  
+      if (!documento || !aseguradoraId) {
+        return res.status(400).json({ message: "Faltan datos: documento o aseguradoraId." });
+      }
+  
+      const cliente = await Cliente.findOne({ documento, aseguradora: aseguradoraId })
+        .populate("historialServicios.hospital", "nombre direccion telefono")
+        .populate("historialServicios.servicio", "nombre descripcion precioAseguradora");
+  
+      if (!cliente) {
+        return res.status(404).json({ message: "Cliente no encontrado con ese DPI y aseguradora." });
+      }
+  
+      res.status(200).json({ cliente, historial: cliente.historialServicios });
+    } catch (error) {
+      console.error("Error al buscar historial:", error);
+      res.status(500).json({ message: "Error interno", error: error.message });
+    }
+  });
   
   
 

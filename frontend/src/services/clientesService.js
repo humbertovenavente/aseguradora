@@ -102,6 +102,35 @@ export const getHistorialCliente = async (clienteId) => {
 // esto solamente es para lo que vamos a utilizar en jalar la informacion 
 export async function obtenerHistorialCliente(clienteId) {
     const respuesta = await axios.get(`${CLIENTES_API}/${clienteId}/historial`);
-    return respuesta.data.historialServicios; // Solo devuelve el historial
-
+    return respuesta.data; //  Devuelve directamente el historial poblado
 }
+
+// Buscar cliente por documento (DPI)
+export const buscarClientePorDPI = async (documento) => {
+    try {
+      const res = await axios.get(`${CLIENTES_API}/buscar-por-documento/${documento}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error al buscar cliente por DPI:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+  export const buscarClientePorDpiYAseguradora = async (dpi, aseguradoraId) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/clientes/buscar-por-documento/${dpi}`);
+      const cliente = response.data;
+  
+      // Validar que el cliente tenga la aseguradora deseada
+      if (cliente.aseguradora === aseguradoraId) {
+        return cliente;
+      } else {
+        throw new Error("El cliente no pertenece a esta aseguradora.");
+      }
+    } catch (error) {
+      console.error("Error al buscar cliente por DPI y aseguradora:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+  

@@ -29,6 +29,7 @@ const ClienteSchema = new mongoose.Schema({
   estadoPago: { type: Boolean, default: false },
 
   usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
+  aseguradora: { type: mongoose.Schema.Types.ObjectId, ref: "Seguro" },
 
 
 

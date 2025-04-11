@@ -47,7 +47,8 @@ const UsuariosAdmin = () => {
                 await crearClienteDesdeUsuario(user._id, {
                   documento: "DOC" + Date.now(),
                   numeroAfiliacion: "AFI" + Date.now(),
-                  direccion: "Dirección por defecto"
+                  direccion: "Dirección por defecto",
+                  aseguradora: "67f84c1741019fe432da579c",
                 });
               }
             }

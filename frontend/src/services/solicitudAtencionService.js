@@ -13,7 +13,7 @@ export const enviarSolicitudAtencion = async (datos) => {
     const response = await axios.post(API_URL, datos);
     return response.data;
   } catch (error) {
-    console.error("❌ Error al enviar solicitud de atención:", error.response?.data || error.message);
+    console.error(" Error al enviar solicitud de atención:", error.response?.data || error.message);
     throw new Error(error.response?.data?.message || "Error al enviar solicitud de atención");
   }
 };
@@ -26,7 +26,7 @@ export const obtenerSolicitudesAtencion = async () => {
     const response = await axios.get(API_URL);
     return response.data;
   } catch (error) {
-    console.error("❌ Error al obtener solicitudes:", error.response?.data || error.message);
+    console.error(" Error al obtener solicitudes:", error.response?.data || error.message);
     return [];
   }
 };

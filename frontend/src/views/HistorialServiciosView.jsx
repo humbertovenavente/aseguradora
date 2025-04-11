@@ -24,7 +24,7 @@ export default function HistorialServiciosView() {
     setHistorialServicios(historial);
   });
 
-  // ✅ Función para pagar copago
+  //  Función para pagar copago
   const manejarPago = async (historialId) => {
     const confirmacion = window.confirm("¿Seguro que deseas saldar la cuenta?");
     if (confirmacion) {
@@ -32,7 +32,7 @@ export default function HistorialServiciosView() {
         await pagarCopagoCliente(params.id, historialId);
         alert("Pago realizado con éxito.");
 
-        // 🔁 Recargar historial actualizado
+        //  Recargar historial actualizado
         const historialActualizado = await obtenerHistorialCliente(params.id);
         setHistorialServicios(historialActualizado);
       } catch (error) {
@@ -41,7 +41,7 @@ export default function HistorialServiciosView() {
     }
   };
 
-  // ✅ Función para recalcular copagos
+  // Función para recalcular copagos
   const manejarRecalculoCopago = async () => {
     try {
       await recalcularCopagoCliente(params.id);
