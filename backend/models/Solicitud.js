@@ -1,17 +1,21 @@
-import mongoose from 'mongoose';
-
 const solicitudSchema = new mongoose.Schema({
-  afiliado: { type: mongoose.Schema.Types.ObjectId, ref: "Cliente", required: true },
-  servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicio", required: true },
-  hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital", required: true },
+  // Opcional para farmacia
+  nombre: String,
+  direccion: String,
+  telefono: String,
+  aseguradora: String,
+  aseguradoraNombre: String,
+  origen: String,
+  codigoSolicitud: String,
+
+  // Opcional para hospital
+  afiliado: { type: mongoose.Schema.Types.ObjectId, ref: "Cliente" },
+  servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicio" },
+  hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital" },
   monto: Number,
   fechaServicio: Date,
   comentarios: String,
   resultados: String,
-  estado: {
-    type: String,
-    default: 'pendiente'
-  }
-}, { timestamps: true });
 
-export default mongoose.model('Solicitud', solicitudSchema);
+  estado: { type: String, default: 'pendiente' }
+}, { timestamps: true });
