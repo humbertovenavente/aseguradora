@@ -30,6 +30,9 @@ const ClienteSchema = new mongoose.Schema({
 
   usuarioId: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
 
+
+
+
   historialServicios: [HistorialServicioSchema]
 
 }, { timestamps: true });

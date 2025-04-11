@@ -11,7 +11,8 @@ const solicitudAtencionSchema = new mongoose.Schema({
   estado: {
     type: String,
     default: 'pendiente'
-  }
+  },
+  numeroAutorizacion: String, // 👈 AGREGA ESTO
 }, { timestamps: true });
 
 export default mongoose.model('SolicitudAtencion', solicitudAtencionSchema);

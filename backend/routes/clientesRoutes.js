@@ -444,8 +444,57 @@ router.put('/:clienteId/historial/:historialId/pagar', async (req, res) => {
 });
 
 
+// Obtener clientes filtrados por hospital y aseguradora
+router.get('/hospital/:hospitalId/aseguradora/:aseguradoraId', async (req, res) => {
+    try {
+      const { hospitalId, aseguradoraId } = req.params;
+  
+      const clientes = await Cliente.find({
+        aseguradora: aseguradoraId,
+        hospitalesAutorizados: { $in: [hospitalId] }
+      });
+  
+      res.json(clientes);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al obtener clientes filtrados' });
+    }
+  });
+  
 
+  // routes/clientesRoutes.js
+router.get('/hospital/:hospitalId', async (req, res) => {
+    try {
+      const clientes = await Cliente.find({
+        hospitalesAutorizados: req.params.hospitalId
+      });
+      res.json(clientes);
+    } catch (err) {
+      res.status(500).json({ error: 'Error al obtener clientes por hospital' });
+    }
+  });
 
+  // Buscar cliente por número de afiliación, hospital y aseguradora
+// Buscar cliente por número de afiliación SIN necesidad de aseguradora ni hospital
+// Buscar cliente por documento (DPI)
+router.get('/buscar-por-documento/:documento', async (req, res) => {
+    try {
+      const { documento } = req.params;
+      const cliente = await Cliente.findOne({ documento });
+  
+      if (!cliente) {
+        return res.status(404).json({ message: "Cliente no encontrado con ese DPI." });
+      }
+  
+      res.status(200).json(cliente);
+    } catch (error) {
+      console.error("Error al buscar cliente:", error);
+      res.status(500).json({ message: "Error al buscar el cliente por documento." });
+    }
+  });
+  
+  
+  
+  
 
 
 export default router;

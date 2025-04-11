@@ -1,17 +1,16 @@
 import mongoose from 'mongoose';
 
 const solicitudSchema = new mongoose.Schema({
-  afiliado: { type: mongoose.Schema.Types.ObjectId, ref: "Cliente", required: true },
-  servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicio", required: true },
-  hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital", required: true },
-  monto: Number,
-  fechaServicio: Date,
-  comentarios: String,
-  resultados: String,
+  nombre: String,
+  direccion: String,
+  telefono: String,
+  aseguradora: String,
   estado: {
     type: String,
-    default: 'pendiente'
+    default: 'pendiente' // El backend de Quarkus envía pendiente
   }
 }, { timestamps: true });
 
-export default mongoose.model('Solicitud', solicitudSchema);
+// Asegúrate de que la colección se llame 'solicituds'
+export default mongoose.model('Solicitud', solicitudSchema, 'solicituds');
+

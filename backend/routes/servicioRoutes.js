@@ -119,4 +119,19 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// ✅ Obtener servicios aprobados para un hospital específico
+router.get('/hospital/:hospitalId', async (req, res) => {
+    try {
+      const servicios = await Servicio.find({
+        hospitalesAprobados: req.params.hospitalId
+      }).select("nombre descripcion precioAseguradora");
+  
+      res.json(servicios);
+    } catch (error) {
+      console.error("❌ Error al obtener servicios por hospital:", error);
+      res.status(500).json({ mensaje: "Error al obtener servicios por hospital", error: error.message });
+    }
+  });
+  
+
 export default router;
