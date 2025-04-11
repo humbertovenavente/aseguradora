@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const solicitudSchema = new mongoose.Schema({
   // Opcional para farmacia
   nombre: String,
@@ -19,3 +21,6 @@ const solicitudSchema = new mongoose.Schema({
 
   estado: { type: String, default: 'pendiente' }
 }, { timestamps: true });
+
+const Solicitud = mongoose.model('Solicitud', solicitudSchema);
+export default Solicitud;

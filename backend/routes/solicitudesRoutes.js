@@ -4,7 +4,7 @@ const router = express.Router();
 
 import Hospital from "../models/Hospital.js";
 import Solicitud from '../models/Solicitud.js';
-import Cliente from "../models/Cliente.js";
+import Cliente from "../models/Clientes.js";
 import Servicio from "../models/Servicio.js";
 
 // Crear nueva solicitud (endpoint que llama Quarkus o Farmacia)
