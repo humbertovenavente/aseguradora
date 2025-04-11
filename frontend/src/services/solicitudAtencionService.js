@@ -40,4 +40,21 @@ export const aprobarSolicitudAtencion = async (id) => {
     const res = await axios.put(`http://localhost:5001/api/solicitudes-atencion/${id}/rechazar`);
     return res.data;
   };
+
+  // src/services/solicitudesService.js
+// src/services/solicitudAtencionService.js
+export async function enviarSolicitudHospital(data) {
+    const res = await fetch("http://localhost:5001/api/solicitudes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  
+    if (!res.ok) {
+      throw new Error("Error al enviar solicitud");
+    }
+  
+    return await res.json();
+  }
+  
   

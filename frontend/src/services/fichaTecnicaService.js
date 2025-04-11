@@ -53,3 +53,15 @@ export const deleteFichaTecnica = async (id) => {
         throw error;
     }
 };
+
+// agregar servicios
+export const agregarHistorialServicio = async (fichaId, nuevoServicio) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/fichatecnica/historial/${fichaId}`, nuevoServicio);
+        return response.data;
+    } catch (error) {
+        console.error("Error al agregar historial de servicio:", error);
+        throw error;
+    }
+};
+

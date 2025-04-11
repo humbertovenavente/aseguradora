@@ -1,8 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import {
-  obtenerSolicitudesAtencion,
-  aprobarSolicitudAtencion,
-  rechazarSolicitudAtencion
+  obtenerSolicitudesAtencion
 } from "../services/solicitudAtencionService";
 
 const SolicitudServiceView = () => {
@@ -15,16 +13,6 @@ const SolicitudServiceView = () => {
     } catch (err) {
       console.error("Error cargando solicitudes:", err);
     }
-  };
-
-  const manejarAprobacion = async (id) => {
-    await aprobarSolicitudAtencion(id);
-    await cargarSolicitudes();
-  };
-
-  const manejarRechazo = async (id) => {
-    await rechazarSolicitudAtencion(id);
-    await cargarSolicitudes();
   };
 
   onMount(() => {
@@ -43,7 +31,7 @@ const SolicitudServiceView = () => {
               <th>Hospital</th>
               <th>Monto</th>
               <th>Estado</th>
-              <th>Acciones</th>
+              <th>Autorización</th>
             </tr>
           </thead>
           <tbody>
@@ -53,26 +41,19 @@ const SolicitudServiceView = () => {
                 <td>{solicitud.servicio?.nombre}</td>
                 <td>{solicitud.hospital?.nombre}</td>
                 <td>Q{solicitud.monto}</td>
-                <td>{solicitud.estado}</td>
                 <td>
-                  {solicitud.estado === "pendiente" ? (
-                    <>
-                      <button
-                        class="btn btn-success btn-sm me-2"
-                        onClick={() => manejarAprobacion(solicitud._id)}
-                      >
-                        Aprobar
-                      </button>
-                      <button
-                        class="btn btn-danger btn-sm"
-                        onClick={() => manejarRechazo(solicitud._id)}
-                      >
-                        Rechazar
-                      </button>
-                    </>
-                  ) : (
-                    <span>{solicitud.estado}</span>
-                  )}
+                  <span class={
+                    solicitud.estado === "aprobada"
+                      ? "text-success"
+                      : solicitud.estado === "rechazada"
+                      ? "text-danger"
+                      : "text-warning"
+                  }>
+                    {solicitud.estado}
+                  </span>
+                </td>
+                <td>
+                  {solicitud.numeroAutorizacion || "—"} 
                 </td>
               </tr>
             ))}

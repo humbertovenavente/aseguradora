@@ -1,7 +1,6 @@
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-// Ya incluye /api → NO lo repitas
 const API_URL = `${API_BASE_URL}/recetas`;
 
 export const obtenerRecetas = async () => {
@@ -20,5 +19,3 @@ export const actualizarMontoMinimo = async (nuevoMonto) => {
   });
   return response.data;
 };
-
-

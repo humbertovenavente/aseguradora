@@ -7,19 +7,19 @@ export const obtenerSolicitudes = async () => {
   return res.data;
 };
 
-// Aprobar una solicitud (vía ruta específica en el backend)
+// Aprobar una solicitud
 export const aprobarSolicitud = async (id) => {
   const res = await axios.put(`${API_URL}/solicitudes/${id}/aprobar`);
   return res.data;
 };
 
-// Rechazar una solicitud (vía ruta específica en el backend)
+// Rechazar una solicitud
 export const rechazarSolicitud = async (id) => {
   const res = await axios.put(`${API_URL}/solicitudes/${id}/rechazar`);
   return res.data;
 };
 
-// Actualizar el estado manualmente (opcional)
+// Actualizar estado (si fuera necesario)
 export const actualizarEstadoSolicitud = async (id, nuevoEstado) => {
   const res = await axios.put(`${API_URL}/solicitudes/${id}`, {
     estado: nuevoEstado
@@ -32,12 +32,11 @@ export const actualizarEstadoSolicitud = async (id, nuevoEstado) => {
   return res.data;
 };
 
+// Enviar nueva solicitud de atención
 export const enviarSolicitudHospital = async (datos) => {
-  const res = await fetch(API, {
+  const res = await fetch(`${API_URL}/solicitudes`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos)
   });
 
@@ -46,5 +45,5 @@ export const enviarSolicitudHospital = async (datos) => {
     throw new Error(error.message || "Error al enviar solicitud");
   }
 
-  return await res.json();
+  return await res.json(); // Devuelve el objeto completo con _id
 };
