@@ -51,24 +51,33 @@ export default function ManageCitas() {
   const guardarCambios = async () => {
     const citaId = citaSeleccionada()._id;
     const { fecha, horaInicio, horaFin, motivo, idHospital, idServicio } = formData();
-
-    const fechaDate = new Date(fecha);
-
-    if (isNaN(fechaDate.getTime())) {
-      setErrorMensaje("⚠️ Fecha inválida al actualizar cita.");
+  
+    // ✅ Validar que esté en formato correcto YYYY-MM-DD
+    const fechaValida = Date.parse(fecha);
+    if (isNaN(fechaValida)) {
+      setErrorMensaje("⚠ Fecha inválida al actualizar cita.");
       return;
     }
-
+  
+    // ✅ Validación opcional para evitar fechas pasadas
+    const fechaDate = new Date(fechaValida);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    if (fechaDate < hoy) {
+      setErrorMensaje("⚠ No se puede agendar una cita en una fecha pasada.");
+      return;
+    }
+  
     try {
       const citaData = {
-        fecha: fechaDate.toISOString(),
+        fecha, // 👈 MANDAR COMO STRING "YYYY-MM-DD"
         horaInicio,
         horaFin,
         motivo,
         idHospital,
         idServicio,
       };
-
+  
       await actualizarCita(citaId, citaData);
       modalRef().hide();
       await fetchData();
@@ -76,6 +85,7 @@ export default function ManageCitas() {
       setErrorMensaje(err.response?.data?.mensaje || "Error al actualizar la cita.");
     }
   };
+  
 
   const cambiarEstado = async (id, nuevoEstado) => {
     try {
@@ -101,9 +111,9 @@ export default function ManageCitas() {
 
         try {
           await enviarCitaAlHospital(payload);
-          alert("✅ Cita confirmada y enviada al hospital.");
+          alert(" Cita confirmada y enviada al hospital.");
         } catch (error) {
-          alert("⚠️ La cita fue confirmada, pero hubo un error al enviarla al hospital.");
+          alert("La cita fue confirmada, pero hubo un error al enviarla al hospital.");
         }
       }
 
