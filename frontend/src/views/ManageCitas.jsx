@@ -2,6 +2,7 @@ import { createSignal, onMount, For, Show } from "solid-js";
 import { obtenerCitas, actualizarCita } from "../services/citaService";
 import { obtenerHospitales } from "../services/hospitalService";
 import { obtenerServicios } from "../services/servicioService";
+import { enviarCitaAlHospital } from "../services/citaSolicitud";
 import Modal from "bootstrap/js/dist/modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -49,31 +50,63 @@ export default function ManageCitas() {
 
   const guardarCambios = async () => {
     const citaId = citaSeleccionada()._id;
-  
-    // Clonar solo los campos que quieres guardar
     const { fecha, horaInicio, horaFin, motivo, idHospital, idServicio } = formData();
-  
+
+    const fechaDate = new Date(fecha);
+
+    if (isNaN(fechaDate.getTime())) {
+      setErrorMensaje("⚠️ Fecha inválida al actualizar cita.");
+      return;
+    }
+
     try {
-      await actualizarCita(citaId, {
-        fecha,
+      const citaData = {
+        fecha: fechaDate.toISOString(),
         horaInicio,
         horaFin,
         motivo,
         idHospital,
-        idServicio
-      });
-  
+        idServicio,
+      };
+
+      await actualizarCita(citaId, citaData);
       modalRef().hide();
       await fetchData();
     } catch (err) {
       setErrorMensaje(err.response?.data?.mensaje || "Error al actualizar la cita.");
     }
   };
-  
 
   const cambiarEstado = async (id, nuevoEstado) => {
     try {
       await actualizarCita(id, { estado: nuevoEstado });
+
+      if (nuevoEstado === "Confirmada") {
+        const citaConfirmada = citas().find((c) => c._id === id);
+        if (!citaConfirmada) return;
+
+        const payload = {
+          dpi: citaConfirmada.idPaciente?.documento,
+          nombre: citaConfirmada.idPaciente?.nombre,
+          apellido: citaConfirmada.idPaciente?.apellido,
+          fecha: citaConfirmada.fecha,
+          horaInicio: citaConfirmada.horaInicio,
+          horaFin: citaConfirmada.horaFin,
+          motivo: citaConfirmada.motivo,
+          idHospital: citaConfirmada.idHospital?._id,
+          idServicio: citaConfirmada.idServicio?._id,
+          idAseguradora: citaConfirmada.idAseguradora?._id || null,
+          numeroAutorizacion: citaConfirmada.numeroAutorizacion || "GEN-AUTO",
+        };
+
+        try {
+          await enviarCitaAlHospital(payload);
+          alert("✅ Cita confirmada y enviada al hospital.");
+        } catch (error) {
+          alert("⚠️ La cita fue confirmada, pero hubo un error al enviarla al hospital.");
+        }
+      }
+
       await fetchData();
     } catch (err) {
       alert(err.response?.data?.mensaje || "Error al actualizar el estado.");
@@ -128,7 +161,6 @@ export default function ManageCitas() {
         </tbody>
       </table>
 
-      {/* Modal de edición */}
       <div class="modal fade" id="editarModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">

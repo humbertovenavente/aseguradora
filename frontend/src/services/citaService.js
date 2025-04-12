@@ -39,13 +39,15 @@ export const agendarCita = async (citaData) => {
 //  Actualizar una cita (cambiar estado, asignar autorización, etc.)
 export const actualizarCita = async (id, citaData) => {
     try {
+        console.log("Enviando actualización para cita:", id, citaData); // 👈 Agrega esto
         const response = await axios.put(`${CITAS_API}/${id}`, citaData);
         return response.data;
     } catch (error) {
-        console.error(`Error al actualizar la cita con ID ${id}:`, error.response?.data || error.message);
+        console.error(`Error al actualizar la cita con ID ${id}:`, error.response?.data || error.message); // 👈 Esto ya lo tienes
         throw error;
     }
 };
+
 
 // Eliminar una cita
 export const eliminarCita = async (id) => {
