@@ -34,6 +34,8 @@ import UsuariosAdmin from "./components/UsuariosAdmin.jsx";
 import AprobacionView from "./views/AprobacionView.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
+import ManageCitas from "./views/ManageCitas";
+
 
 import FichasTM from "./views/FichasTM";
 import FichasDetalleTM from "./views/FichasDetalleTM";
@@ -98,6 +100,7 @@ render(() => (
             <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
             <Route path="/solicitudes" component={requireRole("admin", SolicitudServiceView)} />
+            <Route path="/managecitas" component={requireRole("admin", ManageCitas)} />
             
             <Route path="/operadoras/fichastm" component={requireRole("admin", FichasTM)} />
             <Route path="/operadoras/fichastm/:id" component={requireRole("admin", FichasDetalleTM)} />

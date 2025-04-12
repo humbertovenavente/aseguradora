@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
             return res.status(404).json({ mensaje: "Paciente, hospital o servicio no encontrados." });
         }
 
-        // ✅ Verificar si ya existe una cita para esa fecha y hora
+        //  Verificar si ya existe una cita para esa fecha y hora
         const citaExistente = await Cita.findOne({
             fecha: new Date(fecha),
             horaInicio,
@@ -120,29 +120,6 @@ router.get("/:id", async (req, res) => {
 
 
 
-// * Actualizar el estado de una cita (Confirmar, Cancelar, Completar)**
-router.put("/:id", async (req, res) => {
-    try {
-        const { estado, numeroAutorizacion, diagnostico, resultados } = req.body;
-        
-        // Validar que el estado sea válido
-        const estadosPermitidos = ["Pendiente", "Confirmada", "Cancelada", "Completada"];
-        if (!estadosPermitidos.includes(estado)) {
-            return res.status(400).json({ mensaje: "Estado no válido." });
-        }
-
-        const citaActualizada = await Cita.findByIdAndUpdate(req.params.id, 
-            { estado, numeroAutorizacion, diagnostico, resultados },
-            { new: true }
-        );
-
-        if (!citaActualizada) return res.status(404).json({ mensaje: "Cita no encontrada." });
-        res.status(200).json(citaActualizada);
-    } catch (error) {
-        res.status(500).json({ mensaje: "Error al actualizar la cita.", error });
-    }
-});
-
 // ** Eliminar una cita**
 router.delete("/:id", async (req, res) => {
     try {
@@ -153,5 +130,83 @@ router.delete("/:id", async (req, res) => {
         res.status(500).json({ mensaje: "Error al eliminar la cita.", error });
     }
 });
+
+router.put("/:id", async (req, res) => {
+    try {
+      const {
+        fecha,
+        horaInicio,
+        horaFin,
+        motivo,
+        idHospital,
+        idServicio,
+        estado,
+        numeroAutorizacion,
+        diagnostico,
+        resultados,
+      } = req.body;
+  
+      const citaActual = await Cita.findById(req.params.id);
+      if (!citaActual) return res.status(404).json({ mensaje: "Cita no encontrada." });
+  
+      // Si se quiere confirmar la cita, verificar conflictos
+      if (estado === "Confirmada") {
+        const conflicto = await Cita.findOne({
+          _id: { $ne: req.params.id },
+          fecha: new Date(fecha || citaActual.fecha),
+          horaInicio: horaInicio || citaActual.horaInicio,
+          idHospital: idHospital || citaActual.idHospital,
+          idServicio: idServicio || citaActual.idServicio,
+          estado: "Confirmada",
+        });
+  
+        if (conflicto) {
+          return res.status(409).json({
+            mensaje: "Ya existe una cita confirmada en esa fecha y hora para ese hospital y servicio.",
+          });
+        }
+      }
+  
+      // Actualizar los datos válidos
+      const camposPermitidos = {
+        fecha,
+        horaInicio,
+        horaFin,
+        motivo,
+        idHospital,
+        idServicio,
+        estado,
+        numeroAutorizacion,
+        diagnostico,
+        resultados,
+      };
+      
+      for (const key in camposPermitidos) {
+        if (
+          camposPermitidos[key] === undefined ||
+          camposPermitidos[key] === null ||
+          camposPermitidos[key] === ""
+        ) {
+          delete camposPermitidos[key];
+        }
+      }
+      
+     
+      // Filtrar los campos definidos
+      Object.keys(camposPermitidos).forEach((key) => {
+        if (camposPermitidos[key] === undefined) delete camposPermitidos[key];
+      });
+  
+      const citaActualizada = await Cita.findByIdAndUpdate(req.params.id, camposPermitidos, {
+        new: true,
+      });
+  
+      res.status(200).json(citaActualizada);
+    } catch (error) {
+      console.error("Error actualizando cita:", error);
+      res.status(500).json({ mensaje: "Error al actualizar la cita.", error });
+    }
+  });
+  
 
 export default router;

@@ -24,8 +24,8 @@ export default function Citas() {
         horaInicio: "",
         horaFin: "",
         motivo: "",
-        idAseguradora: null,
         diagnostico: "",
+        idAseguradora: "67f84c1741019fe432da579c",
         resultados: ""
     });
 
