@@ -1,21 +1,35 @@
 // src/services/citaSolicitud.js
 import axios from "axios";
 
-// IP pública del backend hospitalario
-const HOSPITAL_API = "http://137.184.71.127:8080/citas/externa";
+// ✅ Dirección IP local del backend del hospital
+const HOSPITAL_API = "http://192.168.0.5:8080/citas/externa";
 
 /**
- * Envía una cita confirmada al sistema del hospital
- * @param {Object} payload - Datos de la cita a enviar
- * @returns {Promise<Object>} - Respuesta del backend del hospital
+ * Envía una cita confirmada al sistema del hospital.
+ * Este método se utiliza cuando una aseguradora aprueba una cita
+ * y necesita registrarla también en la base de datos del hospital.
+ *
+ * @param {Object} payload - Objeto con los datos de la cita, debe incluir:
+ *   - dpi
+ *   - nombre
+ *   - apellido
+ *   - fecha
+ *   - horaInicio
+ *   - horaFin
+ *   - motivo
+ *   - idHospital
+ *   - idServicio
+ *   - idAseguradora
+ *   - numeroAutorizacion
+ * @returns {Promise<Object>} - Respuesta del backend hospitalario
  */
 export const enviarCitaAlHospital = async (payload) => {
   try {
     const response = await axios.post(HOSPITAL_API, payload);
-    console.log(" Cita enviada correctamente al hospital:", response.data);
+    console.log("✅ Cita enviada correctamente al hospital:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error al enviar cita al hospital:", error.response?.data || error.message);
+    console.error("❌ Error al enviar cita al hospital:", error.response?.data || error.message);
     throw error;
   }
 };

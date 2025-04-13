@@ -139,15 +139,38 @@ router.put("/:id", async (req, res) => {
       const citaActual = await Cita.findById(req.params.id);
       if (!citaActual) return res.status(404).json({ mensaje: "Cita no encontrada." });
   
-      // ✅ Validar y convertir la fecha correctamente
+      //  Validar y convertir la fecha correctamente
       if (fecha) {
-        const fechaDate = new Date(`${fecha}T00:00:00`);
-        if (isNaN(fechaDate.getTime())) {
-          return res.status(400).json({ mensaje: "⚠️ Fecha inválida al actualizar cita." });
+        try {
+          const [year, month, day] = fecha.split("-");
+          const fechaDate = new Date(Date.UTC(+year, +month - 1, +day));
+          if (isNaN(fechaDate.getTime())) {
+            return res.status(400).json({ mensaje: "⚠️ Fecha inválida al actualizar cita." });
+          }
+          fecha = fechaDate;
+        } catch (e) {
+          return res.status(400).json({ mensaje: "⚠️ Formato de fecha inválido." });
         }
-        fecha = fechaDate;
       }
-  
+      
+      // Validar formato y orden de horaInicio y horaFin
+      if (horaInicio && horaFin) {
+        const [hiH, hiM] = horaInicio.split(":").map(Number);
+        const [hfH, hfM] = horaFin.split(":").map(Number);
+      
+        const minutosInicio = hiH * 60 + hiM;
+        const minutosFin = hfH * 60 + hfM;
+      
+        if (minutosInicio < 480) {
+          return res.status(400).json({ mensaje: "La hora de inicio debe ser a partir de las 08:00." });
+        }
+      
+        if (minutosInicio >= minutosFin) {
+          return res.status(400).json({ mensaje: "La hora de inicio debe ser menor que la hora de fin." });
+        }
+      }
+      
+      
       // ✅ Verificar conflicto si se va a confirmar
       if (estado === "Confirmada") {
         const conflicto = await Cita.findOne({
