@@ -44,6 +44,8 @@ import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
 import SolicitudServiceView from "./views/SolicitudServiceView.jsx";
 import FarmaciasView from "./views/FarmaciasView.jsx";
+import Resultados from "./views/Resultados.jsx";
+
 
 
 
@@ -118,6 +120,9 @@ render(() => (
             <Route path="/pages" component={requireRole("admin", PaginasView)} />
             <Route path="/moderacion" component={requireRole("admin", ModeracionView)} />
             <Route path="/drafts/:id" component={DraftEditorView} />
+            <Route path="/resultados" component={requireRole("admin", Resultados)} />
+
+
 
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // ✅ Dirección IP local del backend del hospital
-const HOSPITAL_API = "http://192.168.0.5:8080/citas/externa";
+const HOSPITAL_API = "http://localhost:8080/citas/externa";
 
 /**
  * Envía una cita confirmada al sistema del hospital.

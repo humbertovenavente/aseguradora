@@ -22,6 +22,7 @@ import recetasRoutes from './routes/recetasRoutes.js';
 import solicitudAtencionRoutes from "./routes/solicitudAtencionRoutes.js";
 
 
+import resultadosRoutes from './routes/resultadosRoutes.js';
 
 
 
@@ -75,6 +76,8 @@ app.use('/api/reporte', reporteRouter);
 app.use('/api/recetas', recetasRoutes);
 app.use("/api/solicitudes-atencion", solicitudAtencionRoutes);
 app.use('/api/discount', discountProxyRoutes);
+app.use('/api/resultados', resultadosRoutes);
+
 
 
 
