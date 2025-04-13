@@ -8,7 +8,7 @@ const ResultadoSchema = new mongoose.Schema({
   documento: { type: String },
   nombre: { type: String },
   apellido: { type: String },
-  doctor: { type: String }
+  doctor: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model("Resultado", ResultadoSchema);

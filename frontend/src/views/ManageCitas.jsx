@@ -51,15 +51,13 @@ export default function ManageCitas() {
   const guardarCambios = async () => {
     const citaId = citaSeleccionada()._id;
     const { fecha, horaInicio, horaFin, motivo, idHospital, idServicio } = formData();
-  
-    // ✅ Validar que esté en formato correcto YYYY-MM-DD
+
     const fechaValida = Date.parse(fecha);
     if (isNaN(fechaValida)) {
       setErrorMensaje("⚠ Fecha inválida al actualizar cita.");
       return;
     }
-  
-    // ✅ Validación opcional para evitar fechas pasadas
+
     const fechaDate = new Date(fechaValida);
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -67,17 +65,17 @@ export default function ManageCitas() {
       setErrorMensaje("⚠ No se puede agendar una cita en una fecha pasada.");
       return;
     }
-  
+
     try {
       const citaData = {
-        fecha, // 👈 MANDAR COMO STRING "YYYY-MM-DD"
+        fecha,
         horaInicio,
         horaFin,
         motivo,
         idHospital,
         idServicio,
       };
-  
+
       await actualizarCita(citaId, citaData);
       modalRef().hide();
       await fetchData();
@@ -85,7 +83,6 @@ export default function ManageCitas() {
       setErrorMensaje(err.response?.data?.mensaje || "Error al actualizar la cita.");
     }
   };
-  
 
   const cambiarEstado = async (id, nuevoEstado) => {
     try {
@@ -96,24 +93,19 @@ export default function ManageCitas() {
         if (!citaConfirmada) return;
 
         const payload = {
-          dpi: citaConfirmada.idPaciente?.documento,
-          nombre: citaConfirmada.idPaciente?.nombre,
-          apellido: citaConfirmada.idPaciente?.apellido,
-          fecha: citaConfirmada.fecha,
+          fecha: citaConfirmada.fecha?.slice(0, 10),
           horaInicio: citaConfirmada.horaInicio,
           horaFin: citaConfirmada.horaFin,
           motivo: citaConfirmada.motivo,
-          idHospital: citaConfirmada.idHospital?._id,
-          idServicio: citaConfirmada.idServicio?._id,
-          idAseguradora: citaConfirmada.idAseguradora?._id || null,
-          numeroAutorizacion: citaConfirmada.numeroAutorizacion || "GEN-AUTO",
+          numeroAutorizacion: citaConfirmada.numeroAutorizacion || "AUTO-" + citaConfirmada._id.slice(-4),
         };
+        
 
         try {
           await enviarCitaAlHospital(payload);
-          alert(" Cita confirmada y enviada al hospital.");
+          alert("✅ Cita confirmada y enviada al hospital.");
         } catch (error) {
-          alert("La cita fue confirmada, pero hubo un error al enviarla al hospital.");
+          alert("❌ La cita fue confirmada, pero hubo un error al enviarla al hospital.");
         }
       }
 
