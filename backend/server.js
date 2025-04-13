@@ -45,6 +45,7 @@ import menuRoutes from './routes/menuRoutes.js';
 import footerRoutes from './routes/footerRoutes.js';
 import moderacionRoutes from "./routes/moderacionRoutes.js";
 import solicitudesFarmaciaRoutes from './routes/solicitudesFarmaciaRoutes.js';
+import discountProxyRoutes from './routes/discountProxyRoutes.js';
 
 
 
@@ -73,6 +74,7 @@ app.use("/api/solicitudes", solicitudRoutes);
 app.use('/api/reporte', reporteRouter);
 app.use('/api/recetas', recetasRoutes);
 app.use("/api/solicitudes-atencion", solicitudAtencionRoutes);
+app.use('/api/discount', discountProxyRoutes);
 
 
 

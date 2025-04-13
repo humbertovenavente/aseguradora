@@ -43,6 +43,7 @@ import EmpleadosView from "./views/EmpleadosView";
 import Citas from "./views/Citas";
 import Copago from "./views/copagoView";
 import SolicitudServiceView from "./views/SolicitudServiceView.jsx";
+import FarmaciasView from "./views/FarmaciasView.jsx";
 
 
 
@@ -101,7 +102,7 @@ render(() => (
             <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
             <Route path="/solicitudes" component={requireRole("admin", SolicitudServiceView)} />
             <Route path="/managecitas" component={requireRole("admin", ManageCitas)} />
-            
+            <Route path="/farmacias" component={requireRole("admin", FarmaciasView)} />
             <Route path="/operadoras/fichastm" component={requireRole("admin", FichasTM)} />
             <Route path="/operadoras/fichastm/:id" component={requireRole("admin", FichasDetalleTM)} />
             <Route path="/citas" component={requireRole("admin", Citas)} /> 
