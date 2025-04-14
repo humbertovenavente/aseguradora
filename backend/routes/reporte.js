@@ -31,8 +31,14 @@ router.get('/hospital/:mes/generar', async (req, res) => {
 
     clientes.forEach(cliente => {
       cliente.historialServicios.forEach(h => {
+        // Verificar si el hospital está correctamente poblado
+        if (!h.hospital || !h.hospital._id || !h.hospital.nombre) {
+          console.warn("⚠️ Hospital no encontrado para un historial, se omite:", h);
+          return; // Saltar este historial
+        }
+
         if (h.fechaServicio >= inicioMes && h.fechaServicio < finMes) {
-          const id = h.hospital?._id?.toString();
+          const id = h.hospital._id.toString();
           if (!agrupado[id]) {
             agrupado[id] = {
               nombre: h.hospital.nombre,
@@ -44,7 +50,7 @@ router.get('/hospital/:mes/generar', async (req, res) => {
 
           agrupado[id].servicios.push({
             fecha: h.fechaServicio,
-            servicioNombre: `${h.servicio?.nombre} (${h.servicio?.descripcion})`,
+            servicioNombre: `${h.servicio?.nombre || 'Sin nombre'} (${h.servicio?.descripcion || 'Sin descripción'})`,
             clienteNombre: `${cliente.nombre} ${cliente.apellido}`,
             copago: h.copago,
             costoTotal: h.costo

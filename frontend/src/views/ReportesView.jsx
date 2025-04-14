@@ -6,6 +6,8 @@ import {
 } from "../services/reportesService";
 import { format } from "date-fns";
 import emailjs from "@emailjs/browser";
+import API_BASE_URL from "../config";
+
 
 export default function ReportesMensualesView() {
   const hoy = new Date();
@@ -152,12 +154,13 @@ export default function ReportesMensualesView() {
                 <p><strong>Servicios:</strong> {serviciosUnicos(reporte.servicios)}</p>
                 <p><strong>Generado el:</strong> {formatearFecha(reporte.fechaGeneracion)}</p>
                 <a
-                  class="btn btn-success me-2"
-                  href={`http://localhost:5001/${reporte.archivoExcelUrl}`}
-                  download
-                >
-                  Descargar Excel
-                </a>
+  class="btn btn-success me-2"
+  href={`${API_BASE_URL.replace("/api", "")}/${reporte.archivoExcelUrl}`}
+  download
+>
+  Descargar Excel
+</a>
+
                 <button class="btn btn-danger me-2" onClick={() => manejarEliminar(reporte._id)}>
                   Eliminar
                 </button>
