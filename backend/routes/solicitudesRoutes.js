@@ -161,12 +161,12 @@ router.put("/solicitudes/:id/aprobar", async (req, res) => {
         resultados: "Pendiente de evaluación"
       });
     } catch (histErr) {
-      console.error("⚠️ Error enviando historial:", histErr.message);
+      console.error("Error enviando historial:", histErr.message);
     }
 
     res.status(200).json({ message: "Solicitud aprobada y registrada correctamente." });
   } catch (error) {
-    console.error("❌ Error al aprobar solicitud:", error);
+    console.error("Error al aprobar solicitud:", error);
     res.status(500).json({ message: "Error al aprobar solicitud", error: error.message });
   }
 });

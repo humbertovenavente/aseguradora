@@ -116,6 +116,18 @@ export const buscarClientePorDPI = async (documento) => {
     }
   };
 
+  // 🔍 Obtener cliente por su ID (con usuario y aseguradora)
+export const obtenerClientePorId = async (clienteId) => {
+    try {
+      const response = await axios.get(`${CLIENTES_API}/${clienteId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error al obtener cliente con ID ${clienteId}:`, error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+
   export const buscarClientePorDpiYAseguradora = async (dpi, aseguradoraId) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/clientes/buscar-por-documento/${dpi}`);
@@ -131,6 +143,10 @@ export const buscarClientePorDPI = async (documento) => {
       console.error("Error al buscar cliente por DPI y aseguradora:", error.response?.data || error.message);
       throw error;
     }
+
+    
   };
+
+  
   
   

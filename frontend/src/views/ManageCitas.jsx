@@ -3,8 +3,11 @@ import { obtenerCitas, actualizarCita } from "../services/citaService";
 import { obtenerHospitales } from "../services/hospitalService";
 import { obtenerServicios } from "../services/servicioService";
 import { enviarCitaAlHospital } from "../services/citaSolicitud";
+import { obtenerClientePorId } from "../services/clientesService";
 import Modal from "bootstrap/js/dist/modal";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { obtenerSeguroPorId } from "../services/seguroService";
+
 
 export default function ManageCitas() {
   const [citas, setCitas] = createSignal([]);
@@ -67,15 +70,7 @@ export default function ManageCitas() {
     }
 
     try {
-      const citaData = {
-        fecha,
-        horaInicio,
-        horaFin,
-        motivo,
-        idHospital,
-        idServicio,
-      };
-
+      const citaData = { fecha, horaInicio, horaFin, motivo, idHospital, idServicio };
       await actualizarCita(citaId, citaData);
       modalRef().hide();
       await fetchData();
@@ -92,25 +87,32 @@ export default function ManageCitas() {
         const citaConfirmada = citas().find((c) => c._id === id);
         if (!citaConfirmada) return;
 
+        const cliente = await obtenerClientePorId(citaConfirmada.idPaciente?._id);
+        const seguro = await obtenerSeguroPorId(citaConfirmada.idAseguradora?._id || citaConfirmada.idAseguradora);
+
+
+
+
         const payload = {
-          documento: citaConfirmada.idPaciente?.documento,
-          nombre: citaConfirmada.idPaciente?.nombre,
-          apellido: citaConfirmada.idPaciente?.apellido,
+          documento: cliente.documento,
+          nombre: cliente.nombre,
+          apellido: cliente.apellido,
           fecha: citaConfirmada.fecha?.slice(0, 10),
           horaInicio: citaConfirmada.horaInicio,
           horaFin: citaConfirmada.horaFin,
           motivo: citaConfirmada.motivo,
           numeroAutorizacion: citaConfirmada.numeroAutorizacion || "AUTO-" + citaConfirmada._id.slice(-4),
           nombreAseguradora: citaConfirmada.idAseguradora?.nombre || "Sin nombre",
+          numeroAfiliacion: cliente.numeroAfiliacion,
+          codigoSeguro: seguro.codigo || "A001",
+          carnetSeguro: cliente.usuarioId?._id
         };
-        
-        
 
         try {
           await enviarCitaAlHospital(payload);
-          alert("✅ Cita confirmada y enviada al hospital.");
+          alert("Cita confirmada y enviada al hospital.");
         } catch (error) {
-          alert("❌ La cita fue confirmada, pero hubo un error al enviarla al hospital.");
+          alert("La cita fue confirmada, pero hubo un error al enviarla al hospital.");
         }
       }
 
@@ -141,30 +143,28 @@ export default function ManageCitas() {
           </tr>
         </thead>
         <tbody>
-          <For each={citas()}>
-            {(cita) => (
-              <tr>
-                <td>{cita._id.slice(-6)}</td>
-                <td>{cita.idPaciente?.nombre} {cita.idPaciente?.apellido}</td>
-                <td>{cita.idPaciente?.documento}</td>
-                <td>{cita.idHospital?.nombre}</td>
-                <td>{cita.idServicio?.nombre}</td>
-                <td>{cita.fecha?.slice(0, 10)}</td>
-                <td>{cita.horaInicio}</td>
-                <td>{cita.horaFin}</td>
-                <td>{cita.motivo}</td>
-                <td>{cita.idAseguradora?.nombre || "N/A"}</td>
-                <td>{cita.estado}</td>
-                <td>
-                  <button class="btn btn-primary btn-sm me-1" onClick={() => abrirModal(cita)}>Editar</button>
-                  <Show when={cita.estado === "Pendiente"}>
-                    <button class="btn btn-success btn-sm me-1" onClick={() => cambiarEstado(cita._id, "Confirmada")}>Aprobar</button>
-                    <button class="btn btn-danger btn-sm" onClick={() => cambiarEstado(cita._id, "Cancelada")}>Cancelar</button>
-                  </Show>
-                </td>
-              </tr>
-            )}
-          </For>
+          <For each={citas()}>{(cita) => (
+            <tr>
+              <td>{cita._id.slice(-6)}</td>
+              <td>{cita.idPaciente?.nombre} {cita.idPaciente?.apellido}</td>
+              <td>{cita.idPaciente?.documento}</td>
+              <td>{cita.idHospital?.nombre}</td>
+              <td>{cita.idServicio?.nombre}</td>
+              <td>{cita.fecha?.slice(0, 10)}</td>
+              <td>{cita.horaInicio}</td>
+              <td>{cita.horaFin}</td>
+              <td>{cita.motivo}</td>
+              <td>{cita.idAseguradora?.nombre || "N/A"}</td>
+              <td>{cita.estado}</td>
+              <td>
+                <button class="btn btn-primary btn-sm me-1" onClick={() => abrirModal(cita)}>Editar</button>
+                <Show when={cita.estado === "Pendiente"}>
+                  <button class="btn btn-success btn-sm me-1" onClick={() => cambiarEstado(cita._id, "Confirmada")}>Aprobar</button>
+                  <button class="btn btn-danger btn-sm" onClick={() => cambiarEstado(cita._id, "Cancelada")}>Cancelar</button>
+                </Show>
+              </td>
+            </tr>
+          )}</For>
         </tbody>
       </table>
 
@@ -189,15 +189,11 @@ export default function ManageCitas() {
               <input type="text" class="form-control mb-2" name="motivo" value={formData().motivo} onInput={handleChange} />
               <label>Hospital:</label>
               <select class="form-control mb-2" name="idHospital" value={formData().idHospital} onChange={handleChange}>
-                <For each={hospitales()}>
-                  {(h) => <option value={h._id}>{h.nombre}</option>}
-                </For>
+                <For each={hospitales()}>{(h) => <option value={h._id}>{h.nombre}</option>}</For>
               </select>
               <label>Servicio:</label>
               <select class="form-control mb-2" name="idServicio" value={formData().idServicio} onChange={handleChange}>
-                <For each={servicios()}>
-                  {(s) => <option value={s._id}>{s.nombre}</option>}
-                </For>
+                <For each={servicios()}>{(s) => <option value={s._id}>{s.nombre}</option>}</For>
               </select>
             </div>
             <div class="modal-footer">
