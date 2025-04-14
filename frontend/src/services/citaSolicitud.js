@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.0.5:8080/citas/externa"; // Reemplaza con la IP correcta de tu backend del hospital
+const API_URL = "http://localhost:8080/citas/externa"; // Asegúrate que esta URL sea correcta y accesible
 
 export const enviarCitaAlHospital = async (payload) => {
   try {
+    console.log("📦 Enviando cita al hospital:", payload);
     const response = await axios.post(API_URL, payload);
     return response.data;
   } catch (error) {

@@ -93,12 +93,17 @@ export default function ManageCitas() {
         if (!citaConfirmada) return;
 
         const payload = {
+          documento: citaConfirmada.idPaciente?.documento,
+          nombre: citaConfirmada.idPaciente?.nombre,
+          apellido: citaConfirmada.idPaciente?.apellido,
           fecha: citaConfirmada.fecha?.slice(0, 10),
           horaInicio: citaConfirmada.horaInicio,
           horaFin: citaConfirmada.horaFin,
           motivo: citaConfirmada.motivo,
           numeroAutorizacion: citaConfirmada.numeroAutorizacion || "AUTO-" + citaConfirmada._id.slice(-4),
+          nombreAseguradora: citaConfirmada.idAseguradora?.nombre || "Sin nombre",
         };
+        
         
 
         try {
