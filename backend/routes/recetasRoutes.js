@@ -1,6 +1,7 @@
 import express from 'express';
 import Receta from '../models/Receta.js';
 import Config from '../models/Configuracion.js';
+import ClientePoliza from '../models/ClientePoliza.js';
 import Cliente from '../models/Clientes.js';
 
 const router = express.Router();
@@ -13,26 +14,41 @@ router.post('/validar', async (req, res) => {
     const config = await Config.findOne({ clave: 'montoMinimoReceta' });
     const montoMinimo = config?.valor ?? 250;
 
-    const estado = monto >= montoMinimo ? 'aprobada' : 'rechazada';
-
+    let estado = "rechazada";
     let descuentoAplicado = 0;
-    let infoDescuento = "No aplica descuento";
+    let infoDescuento = "Sin descuento";
+    let mensaje = "";
 
-    if (clienteId && estado === 'aprobada') {
-      const cliente = await Cliente.findById(clienteId).populate({
-        path: 'polizaId',
-        populate: {
-          path: 'coberturaId'
-        }
+    if (!clienteId) {
+      return res.json({
+        estado: "rechazada",
+        mensaje: "Cliente no proporcionado",
+        descuento: 0,
+        infoDescuento: "Falta el ID del cliente"
       });
+    }
 
-      if (cliente && cliente.estadoPago && cliente.fechaVencimiento > new Date()) {
-        const porcentaje = cliente.polizaId?.coberturaId?.porcentajeCobertura || 0;
-        descuentoAplicado = parseFloat((monto * (porcentaje / 100)).toFixed(2));
-        infoDescuento = `Descuento aplicado (${porcentaje}%): Q${descuentoAplicado}`;
-      } else {
-        infoDescuento = "Cliente sin póliza activa o vencida";
-      }
+    const relacion = await ClientePoliza.findOne({
+      id_cliente: clienteId,
+      estado_pago: true,
+      fecha_vencimiento: { $gt: new Date() }
+    }).populate({
+      path: "id_poliza",
+      populate: { path: "coberturaId" }
+    });
+
+    if (!relacion) {
+      mensaje = "Cliente sin póliza activa o vencida";
+      infoDescuento = "No tiene una relación vigente en clientepolizas";
+    } else if (monto < montoMinimo) {
+      mensaje = `Monto insuficiente (mínimo requerido: Q${montoMinimo})`;
+      infoDescuento = mensaje;
+    } else {
+      const porcentaje = relacion.id_poliza?.coberturaId?.porcentajeCobertura || 0;
+      descuentoAplicado = parseFloat((monto * (porcentaje / 100)).toFixed(2));
+      estado = "aprobada";
+      mensaje = `Receta aprobada con ${porcentaje}% de cobertura`;
+      infoDescuento = `Descuento aplicado: Q${descuentoAplicado}`;
     }
 
     const receta = new Receta({
@@ -40,34 +56,35 @@ router.post('/validar', async (req, res) => {
       farmacia,
       monto,
       estado,
-      cliente: clienteId || null,
+      cliente: clienteId,
       descuento: descuentoAplicado
     });
 
     await receta.save();
 
-    res.json({
+    return res.json({
       estado,
-      mensaje: `Receta ${estado}`,
+      mensaje,
       descuento: descuentoAplicado,
       infoDescuento
     });
 
   } catch (error) {
     console.error("Error al validar receta:", error);
-    res.status(500).json({ error: "Error al validar la receta" });
+    return res.status(500).json({ error: "Error al validar la receta" });
   }
 });
 
-// ✅ Obtener todas las recetas con cliente y póliza
+// ✅ Obtener todas las recetas con cliente
 router.get('/todas', async (req, res) => {
   try {
     const recetas = await Receta.find()
       .populate({
         path: 'cliente',
-        select: 'nombre apellido polizaNombre'
+        select: 'nombre apellido'
       })
       .sort({ fecha: -1 });
+
     res.json(recetas);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener las recetas' });
@@ -101,32 +118,25 @@ router.put('/configuracion/monto', async (req, res) => {
     monto: { $gte: valor },
     estado: 'rechazada',
     cliente: { $ne: null },
-  }).populate({
-    path: "cliente",
-    populate: {
-      path: "polizaId",
-      populate: {
-        path: "coberturaId",
-      },
-    },
   });
 
   for (const receta of recetasAActualizar) {
-    let descuento = 0;
+    const relacion = await ClientePoliza.findOne({
+      id_cliente: receta.cliente,
+      estado_pago: true,
+      fecha_vencimiento: { $gt: new Date() }
+    }).populate({
+      path: "id_poliza",
+      populate: { path: "coberturaId" }
+    });
 
-    if (
-      receta.cliente &&
-      receta.cliente.estadoPago &&
-      receta.cliente.fechaVencimiento > new Date()
-    ) {
-      const porcentaje =
-        receta.cliente.polizaId?.coberturaId?.porcentajeCobertura || 0;
-      descuento = parseFloat((receta.monto * porcentaje / 100).toFixed(2));
+    if (relacion) {
+      const porcentaje = relacion.id_poliza?.coberturaId?.porcentajeCobertura || 0;
+      const descuento = parseFloat((receta.monto * (porcentaje / 100)).toFixed(2));
+      receta.estado = "aprobada";
+      receta.descuento = descuento;
+      await receta.save();
     }
-
-    receta.estado = "aprobada";
-    receta.descuento = descuento;
-    await receta.save();
   }
 
   res.json({ mensaje: 'Monto y recetas actualizados correctamente con lógica de descuento' });
