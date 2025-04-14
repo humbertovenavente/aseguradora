@@ -6,9 +6,9 @@ import Cliente from '../models/Clientes.js';
 
 const router = express.Router();
 
-// ✅ Validar receta desde farmacia
+// ✅ Validar receta desde farmacia (clienteId se obtiene internamente)
 router.post('/validar', async (req, res) => {
-  const { idReceta, farmacia, monto, clienteId } = req.body;
+  const { idReceta, farmacia, monto } = req.body;
 
   try {
     const config = await Config.findOne({ clave: 'montoMinimoReceta' });
@@ -19,14 +19,18 @@ router.post('/validar', async (req, res) => {
     let infoDescuento = "Sin descuento";
     let mensaje = "";
 
-    if (!clienteId) {
+    const recetaExistente = await Receta.findOne({ idReceta });
+
+    if (!recetaExistente || !recetaExistente.cliente) {
       return res.json({
         estado: "rechazada",
-        mensaje: "Cliente no proporcionado",
+        mensaje: "Receta no encontrada o sin cliente vinculado",
         descuento: 0,
-        infoDescuento: "Falta el ID del cliente"
+        infoDescuento: "No se pudo validar la receta por falta de información"
       });
     }
+
+    const clienteId = recetaExistente.cliente;
 
     const relacion = await ClientePoliza.findOne({
       id_cliente: clienteId,
@@ -51,16 +55,12 @@ router.post('/validar', async (req, res) => {
       infoDescuento = `Descuento aplicado: Q${descuentoAplicado}`;
     }
 
-    const receta = new Receta({
-      idReceta,
-      farmacia,
-      monto,
-      estado,
-      cliente: clienteId,
-      descuento: descuentoAplicado
-    });
-
-    await receta.save();
+    // 💾 Actualizar receta existente
+    recetaExistente.farmacia = farmacia;
+    recetaExistente.monto = monto;
+    recetaExistente.estado = estado;
+    recetaExistente.descuento = descuentoAplicado;
+    await recetaExistente.save();
 
     return res.json({
       estado,
@@ -74,6 +74,44 @@ router.post('/validar', async (req, res) => {
     return res.status(500).json({ error: "Error al validar la receta" });
   }
 });
+
+
+// ✅ Guardar receta enviada desde hospital
+router.post('/', async (req, res) => {
+  try {
+    const { idReceta, cliente, medicamentos, estado, fecha, monto } = req.body;
+
+    if (!idReceta || !cliente) {
+      return res.status(400).json({ error: "Los campos 'idReceta' y 'cliente' son obligatorios" });
+    }
+
+    // Verificar si la receta ya existe
+    const existente = await Receta.findOne({ idReceta });
+    if (existente) {
+      return res.status(409).json({ error: "La receta ya está registrada" });
+    }
+
+    const nuevaReceta = new Receta({
+      idReceta,
+      cliente,
+      medicamentos: medicamentos || [],
+      estado: estado || 'pendiente',
+      fecha: fecha ? new Date(fecha) : new Date(),
+      monto: monto || 0,
+      descuento: 0
+    });
+
+    await nuevaReceta.save();
+
+    return res.status(201).json({ mensaje: "Receta registrada exitosamente" });
+
+  } catch (error) {
+    console.error("❌ Error al guardar receta:", error);
+    res.status(500).json({ error: "Error interno al registrar receta" });
+  }
+});
+
+
 
 // ✅ Obtener todas las recetas con cliente
 router.get('/todas', async (req, res) => {
