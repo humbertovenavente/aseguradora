@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
 // Crear nueva solicitud desde hospital
 router.post('/api/solicitudes/hospital', async (req, res) => {
   try {
-    console.log("📥 Datos recibidos desde el hospital:", req.body);
+    console.log(" Datos recibidos desde el hospital:", req.body);
     const { nombre, direccion, telefono, aseguradora, estado, origen } = req.body;
     if (!nombre || !direccion || !telefono || !aseguradora || !origen) {
       return res.status(400).json({ error: "Datos incompletos. Verifique los campos enviados." });
@@ -30,10 +30,10 @@ router.post('/api/solicitudes/hospital', async (req, res) => {
 
     const nuevaSolicitud = new Solicitud(req.body);
     const guardada = await nuevaSolicitud.save();
-    console.log("✅ Solicitud guardada correctamente:", guardada);
+    console.log(" Solicitud guardada correctamente:", guardada);
     res.json(guardada);
   } catch (err) {
-    console.error("❌ Error al guardar solicitud:", err.message);
+    console.error(" Error al guardar solicitud:", err.message);
     res.status(500).json({ error: 'Error interno al procesar la solicitud' });
   }
 });

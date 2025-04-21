@@ -21,11 +21,14 @@ router.get('/hospital/:mes/generar', async (req, res) => {
   const { inicioMes, finMes } = getPeriodoDateRange(mes);
 
   try {
+    // filtra clientes que tienen servicios en el mes solicitado
     const clientes = await Cliente.find({
       "historialServicios.fechaServicio": { $gte: inicioMes, $lt: finMes }
     })
       .populate("historialServicios.hospital")
       .populate("historialServicios.servicio");
+
+      //Agrupa todos lso historiales por hospitales
 
     const agrupado = {};
 
@@ -33,7 +36,7 @@ router.get('/hospital/:mes/generar', async (req, res) => {
       cliente.historialServicios.forEach(h => {
         // Verificar si el hospital está correctamente poblado
         if (!h.hospital || !h.hospital._id || !h.hospital.nombre) {
-          console.warn("⚠️ Hospital no encontrado para un historial, se omite:", h);
+          console.warn(" Hospital no encontrado para un historial, se omite:", h);
           return; // Saltar este historial
         }
 
