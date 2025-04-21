@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: ClientePoliza.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,59 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: ClientePoliza.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema que relaciona a un cliente con una póliza.
+ * Registra el estado del pago, fecha de pago y vencimiento.
+ */
+const ClientePolizaSchema = new mongoose.Schema({
+  /** Cliente relacionado con la póliza */
+  id_cliente: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cliente',
+    required: true
+  },
 
-    <h3> </h3>
+  /** Póliza asociada al cliente */
+  id_poliza: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Poliza',
+    required: true
+  },
 
+  /** Estado actual del pago */
+  estado_pago: {
+    type: Boolean,
+    default: false
+  },
 
+  /** Fecha en la que se realizó el pago */
+  fecha_pago: {
+    type: Date,
+    default: null
+  },
 
+  /** Fecha de vencimiento de la póliza */
+  fecha_vencimiento: {
+    type: Date,
+    default: null
+  }
+}, { timestamps: true });
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('ClientePoliza', ClientePolizaSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

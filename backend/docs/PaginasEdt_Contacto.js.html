@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: PaginasEdt/Contacto.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,41 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: PaginasEdt/Contacto.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema para la información de contacto de la aseguradora.
+ */
+const ContactoSchema = new mongoose.Schema({
+  /** Título o encabezado del bloque de contacto */
+  titulo: { type: String, required: true },
 
-    <h3> </h3>
+  /** Texto introductorio o descripción */
+  introduccion: { type: String },
 
+  /** Teléfono de contacto */
+  telefono: { type: String },
 
+  /** Dirección física */
+  direccion: { type: String },
 
+  /** Correo electrónico */
+  correo: { type: String }
+});
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("Contacto", ContactoSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

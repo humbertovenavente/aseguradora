@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Receta.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,47 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Receta.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema para recetas médicas aprobadas o rechazadas por farmacia.
+ */
+const recetaSchema = new mongoose.Schema({
+  /** Código único de la receta */
+  idReceta: { type: String, required: true },
 
-    <h3> </h3>
+  /** Nombre de la farmacia que procesó la receta */
+  farmacia: { type: String, required: true },
 
+  /** Monto total de la receta */
+  monto: { type: Number, required: true },
 
+  /** Estado de la receta: aprobada o rechazada */
+  estado: { type: String, enum: ['aprobada', 'rechazada'], required: true },
 
+  /** Cliente relacionado */
+  cliente: { type: mongoose.Schema.Types.ObjectId, ref: "Cliente" },
 
+  /** Descuento aplicado, si aplica */
+  descuento: { type: Number, default: 0 },
 
+  /** Fecha de emisión de la receta */
+  fecha: { type: Date, default: Date.now }
+});
 
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("Receta", recetaSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
+/**
+ * Esquema para la página principal del sitio web.
+ * Contiene secciones como héroe, tranquilidad, why, about, servicios y testimonios.
+ */
 const HomeSchema = new mongoose.Schema({
-  // Ejemplo de una sección "hero"
+  /** Sección principal tipo "hero" */
   hero: {
     backgroundImage: { type: String, default: "" },
     title: { type: String, default: "" },
@@ -16,7 +20,7 @@ const HomeSchema = new mongoose.Schema({
     }
   },
 
-  // Ejemplo de otra sección: "Encuentra tu Tranquilidad"
+  /** Sección "Encuentra tu Tranquilidad" */
   tranquilidad: {
     imageUrl: { type: String, default: "" },
     title: { type: String, default: "" },
@@ -26,7 +30,7 @@ const HomeSchema = new mongoose.Schema({
     buttonLink: { type: String, default: "" }
   },
 
-  // Sección "Why" con un arreglo de tarjetas
+  /** Sección "Why" con tarjetas de razones */
   whySection: {
     sectionTitle: { type: String, default: "" },
     cards: [
@@ -40,7 +44,7 @@ const HomeSchema = new mongoose.Schema({
     ]
   },
 
-  // Sección "About"
+  /** Sección "About" */
   about: {
     title: { type: String, default: "" },
     text: { type: String, default: "" },
@@ -49,17 +53,13 @@ const HomeSchema = new mongoose.Schema({
     buttonLink: { type: String, default: "" }
   },
 
-  // Referencia a la colección de servicios para mostrar servicios destacados
-  serviciosDestacados: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Servicio" // Nombre del modelo que usas para servicios
-    }
-  ],
+  /** Servicios destacados seleccionados */
+  serviciosDestacados: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Servicio"
+  }],
 
-  // Referencia a la colección de testimonios (un documento o varios)
-  // En este ejemplo, asumimos que guardas un solo documento "Testimonios"
-  // que agrupa todo lo que necesitas. Si tienes varios, puedes usar un array.
+  /** Referencia a documento de testimonios */
   testimonios: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Testimonios"

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: SolicitudAtencion.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,56 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: SolicitudAtencion.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema para solicitudes de atención hospitalaria por parte del cliente asegurado.
+ */
+const solicitudAtencionSchema = new mongoose.Schema({
+  /** Cliente afiliado */
+  afiliado: { type: mongoose.Schema.Types.ObjectId, ref: "Cliente", required: true },
 
-    <h3> </h3>
+  /** Servicio solicitado */
+  servicio: { type: mongoose.Schema.Types.ObjectId, ref: "Servicio", required: true },
 
+  /** Hospital que brindará la atención */
+  hospital: { type: mongoose.Schema.Types.ObjectId, ref: "Hospital", required: true },
 
+  /** Monto estimado del servicio */
+  monto: Number,
 
+  /** Fecha en la que se brindará el servicio */
+  fechaServicio: { type: Date, default: Date.now },
 
+  /** Comentarios sobre la solicitud */
+  comentarios: String,
 
+  /** Resultados asociados (opcional) */
+  resultados: String,
 
+  /** Estado de la solicitud */
+  estado: {
+    type: String,
+    default: 'pendiente'
+  },
 
+  /** Número de autorización otorgado por la aseguradora */
+  numeroAutorizacion: String
+}, { timestamps: true });
 
-
-
-    
-
-
-
-
-
+export default mongoose.model('SolicitudAtencion', solicitudAtencionSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

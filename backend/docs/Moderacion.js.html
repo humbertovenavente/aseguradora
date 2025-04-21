@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Moderacion.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,57 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Moderacion.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema para moderación de contenido editable en el sistema (páginas, secciones, etc).
+ */
+const moderacionSchema = new mongoose.Schema({
+  /** Página a la que pertenece el contenido */
+  pagina: {
+    type: String,
+    required: true
+  },
 
-    <h3> </h3>
+  /** Contenido propuesto/modificado */
+  contenido: {
+    type: Object,
+    required: true
+  },
 
+  /** Estado del proceso de moderación */
+  estado: {
+    type: String,
+    enum: ["pendiente", "aprobado", "rechazado"],
+    default: "pendiente"
+  },
 
+  /** Comentario del revisor si fue rechazado */
+  comentarioRechazo: {
+    type: String,
+    default: ""
+  },
 
+  /** Nombre del creador o editor */
+  creadoPor: {
+    type: String,
+    required: false
+  }
+}, { timestamps: true });
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("Moderacion", moderacionSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

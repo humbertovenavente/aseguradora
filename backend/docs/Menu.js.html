@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Menu.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,43 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Menu.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema para la configuración de menús del sistema (principal o lateral).
+ */
+const menuSchema = new mongoose.Schema({
+  /** Tipo de menú */
+  tipo: { type: String, enum: ['principal', 'lateral'], required: true },
 
-    <h3> </h3>
+  /** Ítems que componen el menú */
+  items: [
+    {
+      /** Título del ítem */
+      titulo: String,
+      /** Icono del ítem */
+      icono: String,
+      /** Ruta o path asociado */
+      ruta: String,
+      /** Permiso requerido para visualizar */
+      permiso: { type: String, enum: ['ver', 'editar', 'crear', 'eliminar'], default: 'ver' }
+    }
+  ]
+});
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('Menu', menuSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

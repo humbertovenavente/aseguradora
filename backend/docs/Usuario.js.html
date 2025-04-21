@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Usuario.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,43 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Usuario.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema de usuario del sistema (cliente, administrador, etc).
+ * Contiene correo, contraseña, rol y estado.
+ */
+const UsuarioSchema = new mongoose.Schema({
+  /** Correo electrónico único del usuario */
+  correo: { type: String, required: true, unique: true },
 
-    <h3> </h3>
+  /** Contraseña encriptada del usuario */
+  contrasena: { type: String, required: true },
 
+  /** Fecha de creación del usuario */
+  fecha_creacion: { type: Date, default: Date.now },
 
+  /** Estado del usuario (1 = activo, 0 = inactivo) */
+  estado: { type: Number, default: 0 },
 
+  /** Rol del usuario (cliente, empleado, admin, etc.) */
+  rol_id: { type: mongoose.Schema.Types.ObjectId, ref: "Rol" }
+});
 
-
-
-
-
-
-
-    
-
-
-
-
-
+const Usuario = mongoose.model("Usuario", UsuarioSchema, "Usuario");
+export default Usuario;
+</code></pre>
+        </article>
+    </section>
 
 
 

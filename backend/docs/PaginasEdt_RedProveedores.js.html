@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: PaginasEdt/RedProveedores.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,43 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: PaginasEdt/RedProveedores.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Subdocumento para cada proveedor dentro de la red.
+ */
+const ProveedorSchema = new mongoose.Schema({
+  /** Nombre del proveedor */
+  nombre: { type: String, required: true },
 
-    <h3> </h3>
+  /** Descripción del proveedor o sus servicios */
+  descripcion: { type: String, required: true },
 
+  /** URL de la imagen del proveedor */
+  imagenUrl: { type: String, required: true }
+});
 
+/**
+ * Esquema que representa la red de proveedores del sistema.
+ */
+const RedProveedoresSchema = new mongoose.Schema({
+  /** Lista de proveedores disponibles */
+  proveedores: [ProveedorSchema]
+});
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("RedProveedores", RedProveedoresSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Cobertura.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,42 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Cobertura.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema de cobertura médica.
+ * Define el porcentaje de cobertura, monto mínimo y servicios aplicables.
+ */
+const CoberturaSchema = new mongoose.Schema({
+  /** Nombre de la cobertura */
+  nombre: { type: String, required: true },
 
-    <h3> </h3>
+  /** Descripción breve de la cobertura */
+  descripcion: { type: String },
 
+  /** Porcentaje que cubre el seguro (0 a 100) */
+  porcentajeCobertura: { type: Number, required: true, min: 0, max: 100 },
 
+  /** Monto mínimo para que la cobertura aplique */
+  montoMinimoCobertura: { type: Number, default: 250.0 },
 
+  /** Servicios que incluye esta cobertura */
+  servicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }]
+}, { timestamps: true });
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('Cobertura', CoberturaSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

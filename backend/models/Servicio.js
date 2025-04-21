@@ -1,16 +1,33 @@
 import mongoose from 'mongoose';
 
+/**
+ * Esquema que representa un servicio médico.
+ * Puede tener subservicios, una cobertura y hospitales aprobados.
+ */
 const ServicioSchema = new mongoose.Schema({
-    nombre: { type: String, required: true },
-    descripcion: { type: String },
-    precioAseguradora: { type: Number, required: true, min: 0 }, 
-    hospitalesAprobados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true }] , //  Ahora es un array
-    // Relación Many-to-One: Si es null, es un servicio principal; si tiene un valor, es un subservicio.
-    servicioPadre: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', default: null },
-    // Relación One-to-Many: Un servicio puede tener múltiples subservicios
-    subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
-    cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: true }, //coberura
-    imagenUrl: { type: String } // Agregado para manejar imágenes
+  /** Nombre del servicio */
+  nombre: { type: String, required: true },
+
+  /** Descripción del servicio */
+  descripcion: { type: String },
+
+  /** Precio asignado para la aseguradora */
+  precioAseguradora: { type: Number, required: true, min: 0 },
+
+  /** Lista de hospitales aprobados para brindar este servicio */
+  hospitalesAprobados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true }],
+
+  /** Referencia al servicio padre (si es subservicio) */
+  servicioPadre: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', default: null },
+
+  /** Subservicios relacionados */
+  subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
+
+  /** Cobertura asociada a este servicio */
+  cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: true },
+
+  /** URL de la imagen ilustrativa del servicio */
+  imagenUrl: { type: String }
 }, { timestamps: true });
 
 export default mongoose.model('Servicio', ServicioSchema);

@@ -1,26 +1,41 @@
-import mongoose from 'mongoose'; 
+import mongoose from 'mongoose';
+
+/**
+ * Esquema que relaciona a un cliente con una póliza.
+ * Registra el estado del pago, fecha de pago y vencimiento.
+ */
 const ClientePolizaSchema = new mongoose.Schema({
-id_cliente: {
+  /** Cliente relacionado con la póliza */
+  id_cliente: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cliente',
     required: true
-},
-id_poliza: {
+  },
+
+  /** Póliza asociada al cliente */
+  id_poliza: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Poliza',
     required: true
-},
-estado_pago: {
+  },
+
+  /** Estado actual del pago */
+  estado_pago: {
     type: Boolean,
     default: false
-},
-fecha_pago: {
+  },
+
+  /** Fecha en la que se realizó el pago */
+  fecha_pago: {
     type: Date,
     default: null
-},
-fecha_vencimiento: {
+  },
+
+  /** Fecha de vencimiento de la póliza */
+  fecha_vencimiento: {
     type: Date,
     default: null
-}
+  }
 }, { timestamps: true });
+
 export default mongoose.model('ClientePoliza', ClientePolizaSchema);

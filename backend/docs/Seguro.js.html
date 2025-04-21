@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Seguro.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,41 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Seguro.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema que representa a una entidad aseguradora.
+ */
+const seguroSchema = new mongoose.Schema({
+  /** Nombre del seguro */
+  nombre: { type: String, required: true },
 
-    <h3> </h3>
+  /** Código único del seguro */
+  codigo: { type: String, required: true, unique: true },
 
+  /** Dirección física de la aseguradora */
+  direccion: String,
 
+  /** Teléfono de contacto */
+  telefono: String,
 
+  /** Correo electrónico de contacto */
+  correo: String
+});
 
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('Seguro', seguroSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

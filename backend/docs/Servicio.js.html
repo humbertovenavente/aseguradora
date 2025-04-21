@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Servicio.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,51 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Servicio.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from 'mongoose';
 
+/**
+ * Esquema que representa un servicio médico.
+ * Puede tener subservicios, una cobertura y hospitales aprobados.
+ */
+const ServicioSchema = new mongoose.Schema({
+  /** Nombre del servicio */
+  nombre: { type: String, required: true },
 
-    <h3> </h3>
+  /** Descripción del servicio */
+  descripcion: { type: String },
 
+  /** Precio asignado para la aseguradora */
+  precioAseguradora: { type: Number, required: true, min: 0 },
 
+  /** Lista de hospitales aprobados para brindar este servicio */
+  hospitalesAprobados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Hospital', required: true }],
 
+  /** Referencia al servicio padre (si es subservicio) */
+  servicioPadre: { type: mongoose.Schema.Types.ObjectId, ref: 'Servicio', default: null },
 
+  /** Subservicios relacionados */
+  subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
 
+  /** Cobertura asociada a este servicio */
+  cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: true },
 
+  /** URL de la imagen ilustrativa del servicio */
+  imagenUrl: { type: String }
+}, { timestamps: true });
 
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('Servicio', ServicioSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

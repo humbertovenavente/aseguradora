@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Resultado.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,51 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Resultado.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema para resultados médicos enviados desde el hospital.
+ * Incluye diagnóstico, resultados y datos del paciente.
+ */
+const ResultadoSchema = new mongoose.Schema({
+  /** ID de la cita médica */
+  idCita: { type: String, required: true },
 
-    <h3> </h3>
+  /** Diagnóstico médico final */
+  diagnostico: { type: String, required: true },
 
+  /** Resultados médicos entregados */
+  resultados: { type: String, required: true },
 
+  /** Fecha de emisión del resultado */
+  fecha: { type: Date, required: true },
 
+  /** Documento del paciente */
+  documento: { type: String },
 
+  /** Nombre del paciente */
+  nombre: { type: String },
 
+  /** Apellido del paciente */
+  apellido: { type: String },
 
+  /** Doctor que emitió el resultado */
+  doctor: { type: String }
+}, { timestamps: true });
 
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("Resultado", ResultadoSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

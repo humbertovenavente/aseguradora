@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: PaginasEdt/Faq.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,40 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: PaginasEdt/Faq.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Subdocumento para cada ítem de FAQ (pregunta-respuesta).
+ */
+const FaqItemSchema = new mongoose.Schema({
+  /** Pregunta frecuente */
+  pregunta: { type: String, required: true },
 
-    <h3> </h3>
+  /** Respuesta asociada a la pregunta */
+  respuesta: { type: String, required: true }
+});
 
+/**
+ * Esquema que agrupa varias preguntas frecuentes (FAQs).
+ */
+const FaqSchema = new mongoose.Schema({
+  /** Arreglo de ítems de preguntas y respuestas */
+  items: [FaqItemSchema]
+});
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model("Faq", FaqSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 

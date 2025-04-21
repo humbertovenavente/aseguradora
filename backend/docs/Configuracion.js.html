@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Configuracion.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,33 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Configuracion.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
 
+/**
+ * Esquema para variables de configuración clave-valor en la plataforma.
+ * Permite guardar settings dinámicos.
+ */
+const configSchema = new mongoose.Schema({
+  /** Clave única de la configuración */
+  clave: { type: String, required: true, unique: true },
 
-    <h3> </h3>
+  /** Valor asociado (puede ser cualquier tipo de dato) */
+  valor: mongoose.Schema.Types.Mixed
+});
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+export default mongoose.model('Configuracion', configSchema);
+</code></pre>
+        </article>
+    </section>
 
 
 
