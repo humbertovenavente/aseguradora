@@ -47,7 +47,7 @@ import footerRoutes from './routes/footerRoutes.js';
 import moderacionRoutes from "./routes/moderacionRoutes.js";
 import solicitudesFarmaciaRoutes from './routes/solicitudesFarmaciaRoutes.js';
 import discountProxyRoutes from './routes/discountProxyRoutes.js';
-
+import elementosEditables from './routes/elementosEditables.js';
 
 
 dotenv.config();
@@ -102,6 +102,7 @@ app.use('/api/faq', faqRoutes);
 app.use('/api/redProveedores', redProveedoresRoutes);
 app.use('/api/testimonios', testimoniosRoutes);
 app.use("/api/home", homeRoutes);
+app.use('/api/elementos', elementosEditables);
 //menu
 app.use('/api/menu', menuRoutes);
 app.use("/api/footer", footerRoutes);
