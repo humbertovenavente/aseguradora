@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: PaginasEdt/Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: PaginasEdt/Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import mongoose from "mongoose";
+
+/**
+ * Esquema para la página principal del sitio web.
+ * Contiene secciones como héroe, tranquilidad, why, about, servicios y testimonios.
+ */
+const HomeSchema = new mongoose.Schema({
+  /** Sección principal tipo "hero" */
+  hero: {
+    backgroundImage: { type: String, default: "" },
+    title: { type: String, default: "" },
+    subtitle: { type: String, default: "" },
+    cta_1: {
+      text: { type: String, default: "" },
+      link: { type: String, default: "" }
+    },
+    cta_2: {
+      text: { type: String, default: "" },
+      link: { type: String, default: "" }
+    }
+  },
+
+  /** Sección "Encuentra tu Tranquilidad" */
+  tranquilidad: {
+    imageUrl: { type: String, default: "" },
+    title: { type: String, default: "" },
+    leadText: { type: String, default: "" },
+    description: { type: String, default: "" },
+    buttonText: { type: String, default: "" },
+    buttonLink: { type: String, default: "" }
+  },
+
+  /** Sección "Why" con tarjetas de razones */
+  whySection: {
+    sectionTitle: { type: String, default: "" },
+    cards: [
+      {
+        cardTitle: { type: String, default: "" },
+        cardText: { type: String, default: "" },
+        imageUrl: { type: String, default: "" },
+        buttonText: { type: String, default: "" },
+        buttonLink: { type: String, default: "" }
+      }
+    ]
+  },
+
+  /** Sección "About" */
+  about: {
+    title: { type: String, default: "" },
+    text: { type: String, default: "" },
+    imageUrl: { type: String, default: "" },
+    buttonText: { type: String, default: "" },
+    buttonLink: { type: String, default: "" }
+  },
+
+  /** Servicios destacados seleccionados */
+  serviciosDestacados: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Servicio"
+  }],
+
+  /** Referencia a documento de testimonios */
+  testimonios: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Testimonios"
+  }
+});
+
+export default mongoose.model("Home", HomeSchema);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AboutSchema">AboutSchema</a></li><li><a href="global.html#AseguradoraSchema">AseguradoraSchema</a></li><li><a href="global.html#CitaSchema">CitaSchema</a></li><li><a href="global.html#ClientePolizaSchema">ClientePolizaSchema</a></li><li><a href="global.html#ClienteSchema">ClienteSchema</a></li><li><a href="global.html#CoberturaSchema">CoberturaSchema</a></li><li><a href="global.html#ContactoSchema">ContactoSchema</a></li><li><a href="global.html#EmpleadoSchema">EmpleadoSchema</a></li><li><a href="global.html#FaqItemSchema">FaqItemSchema</a></li><li><a href="global.html#FaqSchema">FaqSchema</a></li><li><a href="global.html#FichaTecnicaSchema">FichaTecnicaSchema</a></li><li><a href="global.html#HistoriaSchema">HistoriaSchema</a></li><li><a href="global.html#HistorialServicioSchema">HistorialServicioSchema</a></li><li><a href="global.html#HomeSchema">HomeSchema</a></li><li><a href="global.html#HospitalSchema">HospitalSchema</a></li><li><a href="global.html#NewsletterSchema">NewsletterSchema</a></li><li><a href="global.html#PagoSchema">PagoSchema</a></li><li><a href="global.html#PolizaSchema">PolizaSchema</a></li><li><a href="global.html#ProveedorSchema">ProveedorSchema</a></li><li><a href="global.html#RedProveedoresSchema">RedProveedoresSchema</a></li><li><a href="global.html#ReporteSchema">ReporteSchema</a></li><li><a href="global.html#ResultadoSchema">ResultadoSchema</a></li><li><a href="global.html#ReviewSchema">ReviewSchema</a></li><li><a href="global.html#RolSchema">RolSchema</a></li><li><a href="global.html#ServicioReporteSchema">ServicioReporteSchema</a></li><li><a href="global.html#ServicioSchema">ServicioSchema</a></li><li><a href="global.html#TestimoniosSchema">TestimoniosSchema</a></li><li><a href="global.html#UsuarioSchema">UsuarioSchema</a></li><li><a href="global.html#about">about</a></li><li><a href="global.html#afiliado">afiliado</a></li><li><a href="global.html#apellido">apellido</a></li><li><a href="global.html#archivoExcelUrl">archivoExcelUrl</a></li><li><a href="global.html#aseguradora">aseguradora</a></li><li><a href="global.html#aseguradoraNombre">aseguradoraNombre</a></li><li><a href="global.html#auditoria">auditoria</a></li><li><a href="global.html#categoriaSchema">categoriaSchema</a></li><li><a href="global.html#clave">clave</a></li><li><a href="global.html#cliente">cliente</a></li><li><a href="global.html#clienteId">clienteId</a></li><li><a href="global.html#cliente_id">cliente_id</a></li><li><a href="global.html#cobertura">cobertura</a></li><li><a href="global.html#coberturaId">coberturaId</a></li><li><a href="global.html#codigo">codigo</a></li><li><a href="global.html#codigoSolicitud">codigoSolicitud</a></li><li><a href="global.html#comentarioRechazo">comentarioRechazo</a></li><li><a href="global.html#comentarios">comentarios</a></li><li><a href="global.html#configSchema">configSchema</a></li><li><a href="global.html#contenido">contenido</a></li><li><a href="global.html#contrasena">contrasena</a></li><li><a href="global.html#convenioActivo">convenioActivo</a></li><li><a href="global.html#copago">copago</a></li><li><a href="global.html#correo">correo</a></li><li><a href="global.html#correoDestino">correoDestino</a></li><li><a href="global.html#costo">costo</a></li><li><a href="global.html#creadoPor">creadoPor</a></li><li><a href="global.html#descripcion">descripcion</a></li><li><a href="global.html#descuento">descuento</a></li><li><a href="global.html#detallesTrabajo">detallesTrabajo</a></li><li><a href="global.html#diagnostico">diagnostico</a></li><li><a href="global.html#direccion">direccion</a></li><li><a href="global.html#doctor">doctor</a></li><li><a href="global.html#documento">documento</a></li><li><a href="global.html#entidadId">entidadId</a></li><li><a href="global.html#estado">estado</a></li><li><a href="global.html#estadoCopago">estadoCopago</a></li><li><a href="global.html#estadoPago">estadoPago</a></li><li><a href="global.html#estado_pago">estado_pago</a></li><li><a href="global.html#farmacia">farmacia</a></li><li><a href="global.html#farmaciaSchema">farmaciaSchema</a></li><li><a href="global.html#fecha">fecha</a></li><li><a href="global.html#fechaCreacion">fechaCreacion</a></li><li><a href="global.html#fechaGeneracion">fechaGeneracion</a></li><li><a href="global.html#fechaNacimiento">fechaNacimiento</a></li><li><a href="global.html#fechaServicio">fechaServicio</a></li><li><a href="global.html#fechaVencimiento">fechaVencimiento</a></li><li><a href="global.html#fecha_creacion">fecha_creacion</a></li><li><a href="global.html#fecha_pago">fecha_pago</a></li><li><a href="global.html#fecha_vencimiento">fecha_vencimiento</a></li><li><a href="global.html#footerSchema">footerSchema</a></li><li><a href="global.html#hero">hero</a></li><li><a href="global.html#historialServicios">historialServicios</a></li><li><a href="global.html#horaFin">horaFin</a></li><li><a href="global.html#horaInicio">horaInicio</a></li><li><a href="global.html#hospital">hospital</a></li><li><a href="global.html#hospitalesAprobados">hospitalesAprobados</a></li><li><a href="global.html#icono">icono</a></li><li><a href="global.html#idAseguradora">idAseguradora</a></li><li><a href="global.html#idCita">idCita</a></li><li><a href="global.html#idDoctor">idDoctor</a></li><li><a href="global.html#idHospital">idHospital</a></li><li><a href="global.html#idPaciente">idPaciente</a></li><li><a href="global.html#idReceta">idReceta</a></li><li><a href="global.html#idServicio">idServicio</a></li><li><a href="global.html#id_cliente">id_cliente</a></li><li><a href="global.html#id_poliza">id_poliza</a></li><li><a href="global.html#id_seguro">id_seguro</a></li><li><a href="global.html#imagenUrl">imagenUrl</a></li><li><a href="global.html#introduccion">introduccion</a></li><li><a href="global.html#items">items</a></li><li><a href="global.html#menuSchema">menuSchema</a></li><li><a href="global.html#moderacionSchema">moderacionSchema</a></li><li><a href="global.html#monto">monto</a></li><li><a href="global.html#montoMinimoCobertura">montoMinimoCobertura</a></li><li><a href="global.html#motivo">motivo</a></li><li><a href="global.html#motivo_rechazo">motivo_rechazo</a></li><li><a href="global.html#nombre">nombre</a></li><li><a href="global.html#nombreEntidad">nombreEntidad</a></li><li><a href="global.html#numeroAfiliacion">numeroAfiliacion</a></li><li><a href="global.html#numeroAutorizacion">numeroAutorizacion</a></li><li><a href="global.html#origen">origen</a></li><li><a href="global.html#pagina">pagina</a></li><li><a href="global.html#pago">pago</a></li><li><a href="global.html#parent">parent</a></li><li><a href="global.html#parrafos">parrafos</a></li><li><a href="global.html#periodo">periodo</a></li><li><a href="global.html#permiso">permiso</a></li><li><a href="global.html#photo">photo</a></li><li><a href="global.html#polizaId">polizaId</a></li><li><a href="global.html#polizaNombre">polizaNombre</a></li><li><a href="global.html#poliza_id">poliza_id</a></li><li><a href="global.html#porcentajeCobertura">porcentajeCobertura</a></li><li><a href="global.html#precioAseguradora">precioAseguradora</a></li><li><a href="global.html#pregunta">pregunta</a></li><li><a href="global.html#proveedores">proveedores</a></li><li><a href="global.html#recetaSchema">recetaSchema</a></li><li><a href="global.html#respuesta">respuesta</a></li><li><a href="global.html#resultados">resultados</a></li><li><a href="global.html#rol_id">rol_id</a></li><li><a href="global.html#role_name">role_name</a></li><li><a href="global.html#ruta">ruta</a></li><li><a href="global.html#seguroId">seguroId</a></li><li><a href="global.html#seguroSchema">seguroSchema</a></li><li><a href="global.html#servicio">servicio</a></li><li><a href="global.html#servicioPadre">servicioPadre</a></li><li><a href="global.html#servicios">servicios</a></li><li><a href="global.html#serviciosAprobados">serviciosAprobados</a></li><li><a href="global.html#serviciosDestacados">serviciosDestacados</a></li><li><a href="global.html#solicitudAtencionSchema">solicitudAtencionSchema</a></li><li><a href="global.html#solicitudSchema">solicitudSchema</a></li><li><a href="global.html#subservicios">subservicios</a></li><li><a href="global.html#telefono">telefono</a></li><li><a href="global.html#testimonios">testimonios</a></li><li><a href="global.html#tipo">tipo</a></li><li><a href="global.html#titulo">titulo</a></li><li><a href="global.html#totalMes">totalMes</a></li><li><a href="global.html#tranquilidad">tranquilidad</a></li><li><a href="global.html#usuarioId">usuarioId</a></li><li><a href="global.html#valor">valor</a></li><li><a href="global.html#vigencia">vigencia</a></li><li><a href="global.html#whySection">whySection</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Apr 21 2025 15:50:18 GMT-0600 (Central Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

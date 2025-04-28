@@ -33,3 +33,5 @@ Solid.js - Framework para construir interfaces en TypeScript.
 axios - Cliente HTTP para conectar con el backend.
 Bootstrap - Framework CSS para diseño y estilos.
 postcss & autoprefixer (dev) - Procesadores de CSS.
+
+file:///C:/Users/humbe/aseguradora/backend/docs/index.html

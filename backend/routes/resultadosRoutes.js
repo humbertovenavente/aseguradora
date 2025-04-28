@@ -6,7 +6,7 @@ const router = express.Router();
 // POST: Guardar resultado desde hospital (sin campo cliente)
 router.post("/", async (req, res) => {
   try {
-    console.log("📥 Datos recibidos desde el hospital:", req.body);
+    console.log(" Datos recibidos desde el hospital:", req.body);
     const { idCita, diagnostico, resultados, fecha, documento, nombre, apellido, doctor } = req.body;
 
     const nuevoResultado = new Resultado({

@@ -29,19 +29,19 @@ const Resultados = () => {
         setMensaje("");
       } else {
         setResultados([]);
-        setMensaje("🔍 No se encontraron resultados con ese criterio.");
+        setMensaje(" No se encontraron resultados con ese criterio.");
       }
     } catch (error) {
-      console.error("❌ Error al buscar resultados:", error);
+      console.error(" Error al buscar resultados:", error);
       setMensaje("Error al buscar los resultados.");
     }
   };
 
   return (
     <div class="container mt-5">
-      <h2 class="mb-4 text-center">📋 Resultados Enviados por el Hospital</h2>
+      <h2 class="mb-4 text-center"> Resultados Enviados por el Hospital</h2>
 
-      {/* 🔍 Buscador */}
+      {/*  Buscador */}
       <div class="d-flex mb-3 gap-2">
         <input
           type="text"
@@ -55,10 +55,10 @@ const Resultados = () => {
         </button>
       </div>
 
-      {/* ⚠️ Mensaje */}
+      {/* Mensaje */}
       {mensaje() && <div class="alert alert-info">{mensaje()}</div>}
 
-      {/* 📋 Tabla */}
+      {/* Tabla */}
       {resultados().length > 0 && (
         <table class="table table-striped table-bordered text-center">
           <thead class="table-primary">
