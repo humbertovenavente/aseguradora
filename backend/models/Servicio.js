@@ -24,7 +24,7 @@ const ServicioSchema = new mongoose.Schema({
   subservicios: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Servicio' }],
 
   /** Cobertura asociada a este servicio */
-  cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: true },
+  cobertura: { type: mongoose.Schema.Types.ObjectId, ref: 'Cobertura', required: false },
 
   /** URL de la imagen ilustrativa del servicio */
   imagenUrl: { type: String }

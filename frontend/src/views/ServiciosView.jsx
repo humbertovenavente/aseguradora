@@ -67,34 +67,40 @@ export default function ServiciosView() {
         setFormData({ ...formData(), servicioPadre: value });
     };
 
-    // 🔹 Crear o actualizar un servicio
+    // Crear o actualizar un servicio
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const servicioData = {
-                ...formData(),
+                nombre: formData().nombre,
+                descripcion: formData().descripcion,
+                precioAseguradora: Number(formData().precioAseguradora),
+                imagenUrl: formData().imagenUrl,
+                hospitalesAprobados: formData().hospitalesAprobados,
+                hospitalAprobado: formData().hospitalesAprobados[0] || null,  // 🛠️ aquí mandamos uno solo
                 servicioPadre: formData().servicioPadre || null
             };
-
-            console.log("Enviando datos al backend:", servicioData); // 👀 Debug
-
+    
+            console.log("Enviando datos corregidos:", servicioData);
+    
             if (editId()) {
                 await actualizarServicio(editId(), servicioData);
                 setEditId(null);
             } else {
                 await crearServicio(servicioData);
             }
-
+    
             await cargarServicios();
-            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalesAprobados: [], servicioPadre: "" });
+            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalesAprobados: [], servicioPadre: "", imagenUrl: "" });
             setError(null);
         } catch (err) {
             setError("Error al guardar el servicio.");
             console.error("Error en handleSubmit:", err.response?.data || err.message);
         }
     };
+    
 
-    // 🔹 Cargar datos al editar un servicio
+    //  Cargar datos al editar un servicio
     const handleEdit = async (id) => {
         try {
             const servicio = await obtenerServicioPorId(id);
