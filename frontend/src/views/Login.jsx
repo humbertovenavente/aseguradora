@@ -22,6 +22,7 @@ export default function Login() {
       
       // 🧠 Guarda el correo del usuario para luego saber quién hace propuestas
       localStorage.setItem("usuario", JSON.stringify({ correo: userData.correo }));
+      localStorage.setItem('usuarioId', userData._id);
       
       console.log("Usuario autenticado:", userData);
       

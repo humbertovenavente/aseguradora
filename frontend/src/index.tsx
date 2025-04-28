@@ -12,7 +12,8 @@ import HistorialServiciosView from "./views/HistorialServiciosView.jsx";
 import Signup from "./views/Signup";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
-//paginas informativas
+
+// Páginas informativas
 import SubhomeView from "./views/SubhomeView";
 import OperadorasView from "./views/OperadorasView";
 import Subhome2View from "./views/Subhome2View";
@@ -35,8 +36,6 @@ import AprobacionView from "./views/AprobacionView.jsx";
 import FichaTecnicaView from "./views/FichaTecnicaView";
 import FichaTecnicaDetail from "./views/FichaTecnicaDetail";
 import ManageCitas from "./views/ManageCitas";
-
-
 import FichasTM from "./views/FichasTM";
 import FichasDetalleTM from "./views/FichasDetalleTM";
 import EmpleadosView from "./views/EmpleadosView";
@@ -45,9 +44,6 @@ import Copago from "./views/copagoView";
 import SolicitudServiceView from "./views/SolicitudServiceView.jsx";
 import FarmaciasView from "./views/FarmaciasView.jsx";
 import Resultados from "./views/Resultados.jsx";
-
-
-
 
 import PaginasView from "./views/PaginasEdt/PaginasView";
 import AdminHistoriaView from "./views/PaginasEdt/AdminHistoriaView";
@@ -60,6 +56,7 @@ import NavbarView from "./views/PaginasEdt/NavbarView";
 import FooterEdit from "./views/PaginasEdt/FooterEdit";
 import ModeracionView from "./views/PaginasEdt/ModeracionView";
 import DraftEditorView from "./views/PaginasEdt/DraftEditorView";
+import PerfilPaciente from "./views/PerfilPaciente";
 
 import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 
@@ -67,66 +64,74 @@ import { restoreSession, isLoggedIn, userRole } from "./stores/authStore";
 restoreSession();
 
 // Middleware para proteger rutas
-const requireRole = (role: string, Component: any) => {
-    return () => (isLoggedIn() && userRole() === role ? <Component /> : <NotFound />);
+const ProtectedRoute = (allowedRoles: string[], Component: any) => {
+  return () => (isLoggedIn() && allowedRoles.includes(userRole()) ? <Component /> : <NotFound />);
 };
 
 render(() => (
-    <Router>
-        <Route path="/" component={App}>
-            <Route path="/" component={Home} />
-            <Route path="/subhome1" component={SubhomeView} />
-            <Route path="/subhome2" component={Subhome2View} />
-            <Route path="/catalogo" component={CatalogoServicios} />
-            <Route path="/empleados" component={EmpleadosView} />          
-            <Route path="/operadoras" component={OperadorasView} />
-            <Route path="/catalogo/:id" component={CatalogoServicios} />
-            <Route path="/historia" component={HistoriaView} />
-            <Route path="/testimonios" component={TestimoniosView} />
-            <Route path="/proveedores" component={RedProveedores} />
-            <Route path="/FAQ" component={FaqView} />
-            <Route path="/contacto" component={ContactoView} />
-            <Route path="/users" component={Users} />
-            <Route path="/reportes" component={ReportesView} />
-            <Route path="/clientes" component={requireRole("admin", ClientesView)} />
-            <Route path="/historial-servicios/:id" component={requireRole("admin", HistorialServiciosView)} />
-            <Route path="/hospitales-afiliados" component={requireRole("admin", HospitalesAView)} />
-            <Route path="/servicios-cubiertos" component={requireRole("admin", ServiciosView)} />
-            <Route path="/reportes" component={requireRole("admin", ReportesView)} />
-            <Route path="/polizas" component={requireRole("admin", PolizasView)} />
-            <Route path="/pagos" component={requireRole("admin", PagosView)} />
-            <Route path="/coberturas" component={requireRole("admin", CoberturasView)} />
-            <Route path="/aprobacion-org" component={requireRole("admin", AprobacionOrgView)} />
-            <Route path="/hospitales" component={requireRole("admin", HospitalesView)} />
-            <Route path="/seguros" component={requireRole("admin", SegurosView)} />
-            <Route path="/aprobacion" component={requireRole("admin", AprobacionView)} />
-            <Route path="/fichastecnicas" component={requireRole("admin", FichaTecnicaView)} />
-            <Route path="/fichastecnicas/:id" component={requireRole("admin", FichaTecnicaDetail)} />
-            <Route path="/solicitudes" component={requireRole("admin", SolicitudServiceView)} />
-            <Route path="/managecitas" component={requireRole("admin", ManageCitas)} />
-            <Route path="/farmacias" component={requireRole("admin", FarmaciasView)} />
-            <Route path="/operadoras/fichastm" component={requireRole("admin", FichasTM)} />
-            <Route path="/operadoras/fichastm/:id" component={requireRole("admin", FichasDetalleTM)} />
-            <Route path="/citas" component={requireRole("admin", Citas)} /> 
-            <Route path="/copago" component={requireRole("admin", Copago)} /> 
-            <Route path="/pages-historia" component={requireRole("admin", AdminHistoriaView)} />
-            <Route path="/pages-contacto" component={requireRole("admin", AdminContactoView)} />
-            <Route path="/pages-faq" component={requireRole("admin", AdminFaqView)} />
-            <Route path="/pages-proveedores" component={requireRole("admin", AdminRedProveedores)} />
-            <Route path="/pages-testimonios" component={requireRole("admin", AdminTestimoniosView)} />
-            <Route path="/pages-home" component={requireRole("admin", AdminHomeView)} />
-            <Route path="/pages-navbar" component={requireRole("admin", NavbarView)} />
-            <Route path="/pages-footer" component={requireRole("admin", FooterEdit)} />
-            <Route path="/pages" component={requireRole("admin", PaginasView)} />
-            <Route path="/moderacion" component={requireRole("admin", ModeracionView)} />
-            <Route path="/drafts/:id" component={DraftEditorView} />
-            <Route path="/resultados" component={requireRole("admin", Resultados)} />
+  <Router>
+    <Route path="/" component={App}>
+      {/* Rutas públicas */}
+      <Route path="/" component={Home} />
+      <Route path="/subhome1" component={SubhomeView} />
+      <Route path="/subhome2" component={Subhome2View} />
+      <Route path="/catalogo" component={CatalogoServicios} />
+      <Route path="/catalogo/:id" component={CatalogoServicios} />
+      <Route path="/historia" component={HistoriaView} />
+      <Route path="/testimonios" component={TestimoniosView} />
+      <Route path="/proveedores" component={RedProveedores} />
+      <Route path="/FAQ" component={FaqView} />
+      <Route path="/contacto" component={ContactoView} />
 
+      {/* Rutas protegidas para Admin y Empleado */}
+      <Route path="/operadoras" component={ProtectedRoute(["admin", "empleado"], OperadorasView)} />
+      <Route path="/clientes" component={ProtectedRoute(["admin"], ClientesView)} />
+      <Route path="/servicios-cubiertos" component={ProtectedRoute(["admin"], ServiciosView)} />
+      <Route path="/reportes" component={ProtectedRoute(["admin"], ReportesView)} />
+      <Route path="/citas" component={ProtectedRoute(["admin"], Citas)} />
+      <Route path="/managecitas" component={ProtectedRoute(["admin"], ManageCitas)} />
+      <Route path="/solicitudes" component={ProtectedRoute(["admin"], SolicitudServiceView)} />
+      <Route path="/resultados" component={ProtectedRoute(["admin"], Resultados)} />
 
+      {/* Rutas protegidas para cliente */}
+      <Route path="/perfil-paciente" component={ProtectedRoute(["cliente"], PerfilPaciente)} />      
 
-            <Route path="/signup" component={Signup} />
-            <Route path="/login" component={Login} />
-            <Route path="*" component={NotFound} />
-        </Route>
-    </Router>
+      {/* Rutas solo para Admin */}
+      <Route path="/users" component={ProtectedRoute(["admin"], Users)} />
+      <Route path="/hospitales-afiliados" component={ProtectedRoute(["admin"], HospitalesAView)} />
+      <Route path="/hospitales" component={ProtectedRoute(["admin"], HospitalesView)} />
+      <Route path="/polizas" component={ProtectedRoute(["admin"], PolizasView)} />
+      <Route path="/pagos" component={ProtectedRoute(["admin"], PagosView)} />
+      <Route path="/coberturas" component={ProtectedRoute(["admin"], CoberturasView)} />
+      <Route path="/seguros" component={ProtectedRoute(["admin"], SegurosView)} />
+      <Route path="/aprobacion" component={ProtectedRoute(["admin"], AprobacionView)} />
+      <Route path="/aprobacion-org" component={ProtectedRoute(["admin"], AprobacionOrgView)} />
+      <Route path="/farmacias" component={ProtectedRoute(["admin"], FarmaciasView)} />
+      <Route path="/fichastecnicas" component={ProtectedRoute(["admin"], FichaTecnicaView)} />
+      <Route path="/fichastecnicas/:id" component={ProtectedRoute(["admin"], FichaTecnicaDetail)} />
+      <Route path="/operadoras/fichastm" component={ProtectedRoute(["admin"], FichasTM)} />
+      <Route path="/operadoras/fichastm/:id" component={ProtectedRoute(["admin"], FichasDetalleTM)} />
+      <Route path="/copago" component={ProtectedRoute(["admin"], Copago)} />
+
+      {/* Páginas de edición de contenido (solo admin) */}
+      <Route path="/pages" component={ProtectedRoute(["admin"], PaginasView)} />
+      <Route path="/pages-historia" component={ProtectedRoute(["admin"], AdminHistoriaView)} />
+      <Route path="/pages-contacto" component={ProtectedRoute(["admin"], AdminContactoView)} />
+      <Route path="/pages-faq" component={ProtectedRoute(["admin"], AdminFaqView)} />
+      <Route path="/pages-proveedores" component={ProtectedRoute(["admin"], AdminRedProveedores)} />
+      <Route path="/pages-testimonios" component={ProtectedRoute(["admin"], AdminTestimoniosView)} />
+      <Route path="/pages-home" component={ProtectedRoute(["admin"], AdminHomeView)} />
+      <Route path="/pages-navbar" component={ProtectedRoute(["admin"], NavbarView)} />
+      <Route path="/pages-footer" component={ProtectedRoute(["admin"], FooterEdit)} />
+      <Route path="/moderacion" component={ProtectedRoute(["admin"], ModeracionView)} />
+      <Route path="/drafts/:id" component={ProtectedRoute(["admin"], DraftEditorView)} />
+
+      {/* Autenticación */}
+      <Route path="/signup" component={Signup} />
+      <Route path="/login" component={Login} />
+      
+      {/* Ruta de error */}
+      <Route path="*" component={NotFound} />
+    </Route>
+  </Router>
 ), document.getElementById("root") as HTMLElement);
