@@ -92,6 +92,8 @@ render(() => (
       <Route path="/managecitas" component={ProtectedRoute(["admin"], ManageCitas)} />
       <Route path="/solicitudes" component={ProtectedRoute(["admin"], SolicitudServiceView)} />
       <Route path="/resultados" component={ProtectedRoute(["admin"], Resultados)} />
+      <Route path="/historial-servicios" component={ProtectedRoute(["admin"], HistorialServiciosView)} />
+      <Route path="/historial-servicios/:id" component={ProtectedRoute(["admin"], HistorialServiciosView)} />
 
       {/* Rutas protegidas para cliente */}
       <Route path="/perfil-paciente" component={ProtectedRoute(["cliente"], PerfilPaciente)} />      

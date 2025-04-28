@@ -60,13 +60,12 @@ export default function App(props: any) {
               <A href="/users">Usuarios</A>
               <A href="/clientes">Clientes</A>
               <A href="/seguros">Información Aseguradora</A>
-              <A href="/empleados">Empleados</A>
               <A href="/fichastecnicas">Ficha Técnica</A>
               <A href="/servicios-cubiertos">Servicios</A>
               <A href="/polizas">Pólizas</A>
               <A href="/coberturas">Coberturas</A>
               <A href="/citas">Citas</A>
-              <A href="/managecitas">Manejar Citas</A>
+              <A href="/managecitas">Manejar Citas</A> 
               <A href="/reportes">Reportes</A>
               <A href="/aprobacion">Aprobación Servicios</A>
               <A href="/hospitales">Hospitales</A>
@@ -74,7 +73,7 @@ export default function App(props: any) {
               <A href="/pages">Páginas Editables</A>
               <A href="/solicitudes">Solicitudes</A>
               <A href="/resultados">Resultados de Citas</A>
-            </>}
+    </>}
 
             {/* Opciones para Empleado */}
             {userRole() === "empleado" && <>
