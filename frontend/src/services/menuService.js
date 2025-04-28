@@ -1,28 +1,23 @@
 import axios from "axios";
+import API_BASE_URL from "../config";
 
-const API_URL = "http://localhost:5001/api/menu";
+const API_URL = `${API_BASE_URL}/menu`;
 
-
-  // ✅ CORREGIDO
 export const obtenerMenuPorTipo = async (tipo) => {
-    const response = await axios.get(`http://localhost:5001/api/menu/${tipo}`);
-    return response.data;
-  };
-  
-  
-// Crear un nuevo menú (usa esto si querés insertar desde el frontend)
+  const response = await axios.get(`${API_BASE_URL}/menu/${tipo}`);
+  return response.data;
+};
+
 export const crearMenu = async (menu) => {
   const response = await axios.post(API_URL, menu);
   return response.data;
 };
 
-// Actualizar menú por tipo
 export const actualizarMenu = async (tipo, menu) => {
   const response = await axios.put(`${API_URL}/${tipo}`, menu);
   return response.data;
 };
 
-// Eliminar menú por tipo
 export const eliminarMenu = async (tipo) => {
   const response = await axios.delete(`${API_URL}/${tipo}`);
   return response.data;

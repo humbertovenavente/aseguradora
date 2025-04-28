@@ -1,14 +1,13 @@
 import axios from "axios";
+import API_BASE_URL from "../config";
 
-const API_URL = "http://localhost:5001/api/hospitales";
+const API_URL = `${API_BASE_URL}/hospitales`;
 
-// Crear un nuevo hospital
 export const crearHospital = async (hospital) => {
   const response = await axios.post(API_URL, hospital);
   return response.data;
 };
 
-//  Obtener todos los hospitales (opcionalmente filtrado por convenio)
 export const obtenerHospitales = async (convenioActivo = null) => {
   let url = API_URL;
   if (convenioActivo !== null) {
@@ -18,46 +17,37 @@ export const obtenerHospitales = async (convenioActivo = null) => {
   return response.data;
 };
 
-//  Obtener un hospital por ID
 export const obtenerHospitalPorId = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
   return response.data;
 };
 
-//  Actualizar un hospital
 export const actualizarHospital = async (id, hospital) => {
   const response = await axios.put(`${API_URL}/${id}`, hospital);
   return response.data;
 };
 
-//  Eliminar un hospital
 export const eliminarHospital = async (id) => {
   const response = await axios.delete(`${API_URL}/${id}`);
   return response.data;
 };
 
-//  Obtener hospitales por servicio aprobado
 export const obtenerHospitalesPorServicio = async (servicioId) => {
   const response = await axios.get(`${API_URL}?servicioId=${servicioId}`);
   return response.data;
 };
 
-/// esto es para conexion
-// Obtener hospitales pendientes
 export const obtenerHospitalesPendientes = async () => {
   const response = await axios.get(`${API_URL}/pendientes`);
   return response.data;
 };
 
-// Aprobar hospital
 export const aprobarHospital = async (id) => {
   const response = await axios.patch(`${API_URL}/aprobar/${id}`);
   return response.data;
 };
 
-// Rechazar hospital
 export const rechazarHospital = async (id) => {
   const response = await axios.patch(`${API_URL}/rechazar/${id}`);
   return response.data;
 };
-

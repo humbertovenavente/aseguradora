@@ -1,21 +1,19 @@
 import axios from "axios";
+import API_BASE_URL from "../config"; // <- esta es la forma correcta en tu caso
 
-const API_URL = "http://localhost:5001/api/footer";
-
-const MODERACION_URL = "http://localhost:5001/api/moderacion";
+const API_URL = `${API_BASE_URL}/footer`;
+const MODERACION_URL = `${API_BASE_URL}/moderacion`;
 
 export const obtenerFooter = async () => {
   const response = await axios.get(API_URL);
   return response.data;
 };
 
-
-// Enviar propuesta de edición del footer (moderación)
 export const proponerEdicionFooter = async (contenido, creadoPor) => {
   const propuesta = {
     pagina: "footer",
     contenido: { contenido },
-    creadoPor, // ID del usuario que edita (debe enviarse desde el frontend)
+    creadoPor,
     estado: "pendiente"
   };
 

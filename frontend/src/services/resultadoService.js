@@ -1,9 +1,9 @@
-// src/services/resultadoService.js
-import axios from 'axios';
+import axios from "axios";
+import API_BASE_URL from "../config";
 
-const API_URL = 'http://localhost:5001/api/resultados';
+const API_URL = `${API_BASE_URL}/resultados`;
 
 export const obtenerResultados = async () => {
-  const res = await axios.get(API_URL);
-  return res.data;
+  const response = await axios.get(API_URL);
+  return response.data;
 };

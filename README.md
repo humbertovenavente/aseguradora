@@ -34,4 +34,6 @@ axios - Cliente HTTP para conectar con el backend.
 Bootstrap - Framework CSS para diseño y estilos.
 postcss & autoprefixer (dev) - Procesadores de CSS.
 
+
+npm run doc
 file:///C:/Users/humbe/aseguradora/backend/docs/index.html

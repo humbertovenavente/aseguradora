@@ -53,7 +53,12 @@ import discountProxyRoutes from './routes/discountProxyRoutes.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+  
 app.use(express.json());
 app.use('/api/polizas', polizaRoutes); 
 app.use('/api/auth', authRoutes);
@@ -81,10 +86,10 @@ app.use('/api/resultados', resultadosRoutes);
 
 
 
-// ✅ Servir archivos Excel de la carpeta /reportes
+//  Servir archivos Excel de la carpeta /reportes
 app.use('/reportes', express.static(path.join(process.cwd(), 'reportes')));
 
-// ✅ Rutas
+//  Rutas
 app.use('/api/reporte', reporteRouter);
 // - Solicitudes de Hospital
 app.use("/api/solicitudes/hospital", solicitudRoutes);
