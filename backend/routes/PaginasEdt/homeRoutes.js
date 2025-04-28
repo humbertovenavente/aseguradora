@@ -3,10 +3,9 @@ import Home from "../../models/PaginasEdt/Home.js";
 
 const router = express.Router();
 
-// Obtener la configuración del Home
+// 🔹 Obtener la configuración del Home
 router.get("/", async (req, res) => {
   try {
-    // populate() para traer los datos de servicios y testimonios
     const homeData = await Home.findOne()
       .populate("serviciosDestacados")
       .populate("testimonios");
@@ -16,12 +15,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Actualizar la configuración del Home
+// 🔹 Actualizar la configuración del Home (incluyendo nuevas imágenes de secciones)
 router.put("/", async (req, res) => {
   try {
-    const { hero, tranquilidad, whySection, about, serviciosDestacados, testimonios } = req.body;
+    const { 
+      hero, 
+      tranquilidad, 
+      whySection, 
+      about, 
+      serviciosDestacados, 
+      testimonios,
+      imagenesSecciones // ✅ AGREGADO
+    } = req.body;
 
-    // Busca el único documento del Home (o créalo si no existe)
     let home = await Home.findOne();
     if (!home) {
       home = new Home({
@@ -30,7 +36,8 @@ router.put("/", async (req, res) => {
         whySection,
         about,
         serviciosDestacados,
-        testimonios
+        testimonios,
+        imagenesSecciones // ✅ Nuevo
       });
     } else {
       home.hero = hero;
@@ -39,10 +46,11 @@ router.put("/", async (req, res) => {
       home.about = about;
       home.serviciosDestacados = serviciosDestacados;
       home.testimonios = testimonios;
+      home.imagenesSecciones = imagenesSecciones; // ✅ Nuevo
     }
 
     await home.save();
-    // Retorna el documento actualizado con sus referencias
+
     const homeUpdated = await Home.findById(home._id)
       .populate("serviciosDestacados")
       .populate("testimonios");

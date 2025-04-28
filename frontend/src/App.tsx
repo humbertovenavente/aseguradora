@@ -18,7 +18,7 @@ export default function App(props: any) {
   const [menuPrincipal] = createResource<string, Menu>(() => "principal", obtenerMenuPorTipo);
   const [footer] = createResource<FooterData>(obtenerFooter);
 
-  const hasMenuOptions = () => isLoggedIn() || userRole() === "admin";
+  const hasMenuOptions = () => isLoggedIn() && (["admin", "empleado", "cliente"].includes(userRole()));
 
   return (
     <>
@@ -54,24 +54,36 @@ export default function App(props: any) {
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
           </div>
           <div class="offcanvas-body">
-            {userRole() === "admin" && <A href="/operadoras"> OPERADORAS</A>}
-            {isLoggedIn() && <A href="/users">Users</A>}
-            {userRole() === "admin" && <A href="/clientes">Clientes</A>}
-            {userRole() === "admin" && <A href="/seguros">Informacion de Aseguradora</A>}
-            {userRole() === "admin" && <A href="/empleados">Empleados</A>}
-            {userRole() === "admin" && <A href="/fichastecnicas">Ficha Técnica</A>}
-            {userRole() === "admin" && <A href="/servicios-cubiertos">Servicios</A>}
-            {userRole() === "admin" && <A href="/polizas">Pólizas</A>}
-            {userRole() === "admin" && <A href="/coberturas">Coberturas</A>}
-            {userRole() === "admin" && <A href="/citas">Citas</A>}
-            {userRole() === "admin" && <A href="/managecitas">Manejar Citas</A>}
-            {userRole() === "admin" && <A href="/reportes">Reportes</A>}
-            {userRole() === "admin" && <A href="/aprobacion">Aprobación</A>}
-            {userRole() === "admin" && <A href="/hospitales">Hospitales</A>}
-            {userRole() === "admin" && <A href="/aprobacion-org">Aprobación Recetas</A>}
-            {userRole() === "admin" && <A href="/pages">Páginas editables</A>}
-            {userRole() === "admin" && <A href="/solicitudes">Solicitud Servicios</A>}
-            {userRole() === "admin" && <A href="/resultados">Resultados de Citas Hospital</A>}
+            {/* Opciones para Admin */}
+            {userRole() === "admin" && <>
+              <A href="/operadoras">Operadoras</A>
+              <A href="/users">Usuarios</A>
+              <A href="/clientes">Clientes</A>
+              <A href="/seguros">Información Aseguradora</A>
+              <A href="/empleados">Empleados</A>
+              <A href="/fichastecnicas">Ficha Técnica</A>
+              <A href="/servicios-cubiertos">Servicios</A>
+              <A href="/polizas">Pólizas</A>
+              <A href="/coberturas">Coberturas</A>
+              <A href="/citas">Citas</A>
+              <A href="/managecitas">Manejar Citas</A>
+              <A href="/reportes">Reportes</A>
+              <A href="/aprobacion">Aprobación Servicios</A>
+              <A href="/hospitales">Hospitales</A>
+              <A href="/aprobacion-org">Aprobación Recetas</A>
+              <A href="/pages">Páginas Editables</A>
+              <A href="/solicitudes">Solicitudes</A>
+              <A href="/resultados">Resultados de Citas</A>
+            </>}
+
+            {/* Opciones para Empleado */}
+            {userRole() === "empleado" && <>
+              <A href="/operadoras">Operadoras</A>
+            </>}
+
+            {userRole() === "cliente" && <>
+              <A href="/perfil-paciente">Mi perfil</A>
+            </>}
           </div>
         </div>
       )}

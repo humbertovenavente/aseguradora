@@ -7,6 +7,7 @@ import Servicio from '../models/Servicio.js';
 import Poliza from '../models/Poliza.js';
 
 const router = express.Router();
+
 const ROL_CLIENTE_ID = new mongoose.Types.ObjectId("67d652411d30a899ff50a40e");
 
 router.get("/", async (req, res) => {
@@ -34,13 +35,35 @@ router.get("/", async (req, res) => {
 /**
  *  GET - Obtener un cliente por su ID con historial de servicios
  */
+
+// 🥇 Rutas específicas primero
+router.get('/buscar-por-usuario/:usuarioId', async (req, res) => {
+    try {
+        const { usuarioId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(usuarioId)) {
+            return res.status(400).json({ message: "usuarioId inválido" });
+        }
+
+        const cliente = await Cliente.findOne({ usuarioId });
+        if (!cliente) {
+            return res.status(404).json({ message: "Cliente no encontrado para este usuarioId." });
+        }
+
+        res.status(200).json(cliente);
+    } catch (error) {
+        console.error("Error buscando cliente por usuarioId:", error);
+        res.status(500).json({ message: "Error interno al buscar cliente por usuarioId.", error: error.message });
+    }
+});
+
+// 🥈 Luego la ruta genérica
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const cliente = await Cliente.findById(id)
             .populate('usuarioId', 'correo')
-            .populate("historialServicios.hospital", "nombre direccion telefono")
-            .populate("historialServicios.servicio", "nombre descripcion precioAseguradora");
+            .populate('historialServicios.hospital', 'nombre direccion telefono')
+            .populate('historialServicios.servicio', 'nombre descripcion precioAseguradora');
 
         if (!cliente) return res.status(404).json({ message: "Cliente no encontrado." });
 
@@ -50,6 +73,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ message: "Error al obtener el cliente." });
     }
 });
+
 
 /**
  *  POST - Crear un Cliente y Usuario asociado

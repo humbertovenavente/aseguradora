@@ -39,8 +39,8 @@ export default function AdminNavbarEditor() {
     const propuesta = {
       pagina: "navbar",
       contenido: {
-        tipo: "principal",       // 👈 necesario para el switch-case del backend
-        items: menu().items,     // solo mandamos lo necesario
+        tipo: "principal",       
+        items: menu().items,    
       },
       creadoPor: usuario
     };

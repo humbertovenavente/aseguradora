@@ -10,14 +10,8 @@ const HomeSchema = new mongoose.Schema({
     backgroundImage: { type: String, default: "" },
     title: { type: String, default: "" },
     subtitle: { type: String, default: "" },
-    cta_1: {
-      text: { type: String, default: "" },
-      link: { type: String, default: "" }
-    },
-    cta_2: {
-      text: { type: String, default: "" },
-      link: { type: String, default: "" }
-    }
+    cta_1: { text: { type: String, default: "" }, link: { type: String, default: "" }},
+    cta_2: { text: { type: String, default: "" }, link: { type: String, default: "" }}
   },
 
   /** Sección "Encuentra tu Tranquilidad" */
@@ -51,6 +45,16 @@ const HomeSchema = new mongoose.Schema({
     imageUrl: { type: String, default: "" },
     buttonText: { type: String, default: "" },
     buttonLink: { type: String, default: "" }
+  },
+
+  /** 🔥 Agregado: Imagenes para las secciones especiales */
+  imagenesSecciones: {
+    imagenTopCoberturas: { type: String, default: "" },
+    imagenTopPolizas: { type: String, default: "" },
+    imagenTopServiciosSolicitados: { type: String, default: "" },
+    imagenUltimosServicios: { type: String, default: "" },
+    imagenProximasCitas: { type: String, default: "" },
+    imagenTopEmpleados: { type: String, default: "" }
   },
 
   /** Servicios destacados seleccionados */

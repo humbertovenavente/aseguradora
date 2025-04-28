@@ -1,6 +1,9 @@
 import { createSignal, onMount } from "solid-js";
 import { obtenerHome } from "../services/PaginasEdt/homeService.js";
 
+import ElementoProximasCitas from "./PaginasEdt/ElementoProximasCitas.jsx";
+import ElementoTopCoberturas from "./PaginasEdt/ElementoTopCoberturas.jsx";
+
 function SubhomeView() {
   const [homeData, setHomeData] = createSignal(null);
 
@@ -16,79 +19,61 @@ function SubhomeView() {
   return (
     <>
       {/* Estilos locales para esta vista */}
-      <style>
-        {`
-          /* Efecto hover para tarjetas (similar a TestimoniosView) */
-          .card:hover {
-            transform: translateY(-5px);
-            transition: transform 0.3s ease;
-          }
-
-          /* Sección Hero */
-          .hero-section {
-            background-size: cover;
-            position: relative;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            height: 90vh; /* Ajusta la altura al gusto */
-          }
-          .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.5);
-          }
-          .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-          }
-          .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-          }
-          .hero-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-          }
-          .hero-btn {
-            border-radius: 50px;
-            padding: 0.75rem 2rem;
-            margin: 0 0.5rem;
-            font-weight: 600;
-          }
-
-          /* Sección Tranquilidad */
-          .tranquilidad-section img {
-            border-radius: 1rem;
-          }
-
-          /* Sección Why */
-          .why-section .card {
-            border: none;
-            border-radius: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-          }
-          .why-section .card:hover {
-            transform: translateY(-5px);
-          }
-          .why-section .card-body {
-            text-align: center;
-          }
-
-          /* Sección About */
-          .about-section img {
-            border-radius: 1rem;
-          }
-        `}
-      </style>
+      <style>{`
+        .hero-section {
+          background: url(${homeData()?.hero?.backgroundImage || ""}) no-repeat center center;
+          background-size: cover;
+          color: #fff;
+          text-align: center;
+          padding: 100px 20px;
+          border-radius: 20px;
+          margin-bottom: 3rem;
+          position: relative;
+        }
+        .hero-overlay {
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-color: rgba(0,0,0,0.5);
+          border-radius: 20px;
+        }
+        .hero-content {
+          position: relative;
+          z-index: 2;
+          max-width: 700px;
+          margin: auto;
+        }
+        .section-image {
+          width: 100%;
+          max-height: 400px;
+          object-fit: cover;
+          border-radius: 20px;
+          margin-bottom: 2rem;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          animation: fadeIn 1s ease-in-out;
+        }
+        .why-cards {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2rem;
+          justify-content: center;
+        }
+        .why-card {
+          width: 250px;
+          background: #fff;
+          padding: 1rem;
+          border-radius: 1rem;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          text-align: center;
+          transition: transform 0.3s ease;
+        }
+        .why-card:hover {
+          transform: translateY(-5px);
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
       <div >
 
@@ -217,6 +202,14 @@ function SubhomeView() {
                     )}
                   </div>
                 </div>
+        {/* Imagenes de Secciones + Componentes */}
+
+        {homeData()?.imagenesSecciones?.imagenProximasCitas && (
+          <div class="text-center">
+            <img src={homeData().imagenesSecciones.imagenProximasCitas} class="section-image" alt="Próximas Citas" />
+          </div>
+        )}
+        <ElementoProximasCitas />
 
                 {/* SECCIÓN: About */}
                 <div class="about-section my-5">
@@ -242,6 +235,12 @@ function SubhomeView() {
                     </div>
                   </div>
                 </div>
+                {homeData()?.imagenesSecciones?.imagenTopCoberturas && (
+          <div class="text-center">
+            <img src={homeData().imagenesSecciones.imagenTopCoberturas} class="section-image" alt="Coberturas" />
+          </div>
+        )}
+        <ElementoTopCoberturas />
               </>
             );
           })()
