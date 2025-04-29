@@ -52,6 +52,8 @@ import AdminFaqView from "./views/PaginasEdt/AdminFaqView";
 import AdminRedProveedores from "./views/PaginasEdt/AdminRedProveedores";
 import AdminTestimoniosView from "./views/PaginasEdt/AdminTestimoniosView";
 import AdminHomeView from "./views/PaginasEdt/AdminHomeView";
+import AdminSubhomeView from "./views/PaginasEdt/AdminSubhomeView";
+import AdminSubhome2View from "./views/PaginasEdt/AdminSubhome2View";
 import NavbarView from "./views/PaginasEdt/NavbarView";
 import FooterEdit from "./views/PaginasEdt/FooterEdit";
 import ModeracionView from "./views/PaginasEdt/ModeracionView";
@@ -123,6 +125,8 @@ render(() => (
       <Route path="/pages-proveedores" component={ProtectedRoute(["admin"], AdminRedProveedores)} />
       <Route path="/pages-testimonios" component={ProtectedRoute(["admin"], AdminTestimoniosView)} />
       <Route path="/pages-home" component={ProtectedRoute(["admin"], AdminHomeView)} />
+      <Route path="/pages-subhome1" component={ProtectedRoute(["admin"], AdminSubhomeView)} />
+      <Route path="/pages-subhome2" component={ProtectedRoute(["admin"], AdminSubhome2View)} />
       <Route path="/pages-navbar" component={ProtectedRoute(["admin"], NavbarView)} />
       <Route path="/pages-footer" component={ProtectedRoute(["admin"], FooterEdit)} />
       <Route path="/moderacion" component={ProtectedRoute(["admin"], ModeracionView)} />

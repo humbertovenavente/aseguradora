@@ -14,6 +14,8 @@ function PaginasView() {
     { path: "/pages-proveedores", label: "Red de Proveedores" },
     { path: "/pages-testimonios", label: "Testimonios" },
     { path: "/pages-home", label: "Home" },
+    { path: "/pages-subhome1", label: "Subhome1" },
+    { path: "/pages-subhome2", label: "Subhome2" },
     { path: "/pages-navbar", label: "Navbar" },
     { path: "/pages-footer", label: "Footer" },
   ];

@@ -7,6 +7,9 @@ import RedProveedores from "../models/PaginasEdt/RedProveedores.js";
 import Testimonios from "../models/PaginasEdt/Testimonios.js";
 import Menu from "../models/Menu.js"; 
 import Footer from "../models/Footer.js";
+import Home from "../models/PaginasEdt/Home.js";
+import Subhome1   from "../models/PaginasEdt/Subhome1.js";
+import Subhome2   from "../models/PaginasEdt/Subhome2.js";
 
 const router = express.Router();
 
@@ -132,6 +135,66 @@ router.put("/aprobar/:id", async (req, res) => {
         await footer.save();
         break;
       }
+
+case "home": {
+  // encuentra o crea el documento Home
+  let home = await Home.findOne();
+  if (!home) {
+    // todo el contenido en el body de tu propuesta
+    home = new Home(contenido);
+  } else {
+    // sustituye todos los campos relevantes
+    home.hero               = contenido.hero;
+    home.tranquilidad       = contenido.tranquilidad;
+    home.whySection         = contenido.whySection;
+    home.about              = contenido.about;
+    home.imagenesSecciones  = contenido.imagenesSecciones;
+    home.serviciosDestacados= contenido.serviciosDestacados;
+    home.testimonios        = contenido.testimonios;
+  }
+  await home.save();
+  break;
+}
+
+case "subhome1": {
+  // aplica la propuesta a Subhome1
+  let doc = await Subhome1.findOne();
+  if (!doc) {
+    // contenido ya tiene hero, tranquilidad, etc.
+    doc = new Subhome1(contenido);
+  } else {
+    // asigna cada campo
+    doc.hero               = contenido.hero;
+    doc.tranquilidad       = contenido.tranquilidad;
+    doc.whySection         = contenido.whySection;
+    doc.about              = contenido.about;
+    doc.imagenesSecciones  = contenido.imagenesSecciones;
+    doc.serviciosDestacados= contenido.serviciosDestacados;
+    doc.testimonios        = contenido.testimonios;
+  }
+  await doc.save();
+  break;
+}
+
+case "subhome2": {
+  // aplica la propuesta a Subhome2
+  let doc = await Subhome2.findOne();
+  if (!doc) {
+    doc = new Subhome2(contenido);
+  } else {
+    doc.hero               = contenido.hero;
+    doc.tranquilidad       = contenido.tranquilidad;
+    doc.whySection         = contenido.whySection;
+    doc.about              = contenido.about;
+    doc.imagenesSecciones  = contenido.imagenesSecciones;
+    doc.serviciosDestacados= contenido.serviciosDestacados;
+    doc.testimonios        = contenido.testimonios;
+  }
+  await doc.save();
+  break;
+}
+
+
 
       default:
         return res.status(400).json({

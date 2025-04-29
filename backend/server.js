@@ -38,6 +38,8 @@ import fichaTecnicaRoutes from './routes/fichaTecnicaRoutes.js';
 
 import citaRoutes from "./routes/citas.js";
 import homeRoutes from "./routes/PaginasEdt/homeRoutes.js";
+import subhome1Routes from "./routes/PaginasEdt/subhome1Routes.js";
+import subhome2Routes from "./routes/PaginasEdt/subhome2Routes.js";
 import clientePoliza from "./routes/clientePoliza.js";
 
 import dashboardTrabajador from './routes/dashboardTrabajador.js';
@@ -108,6 +110,8 @@ app.use('/api/faq', faqRoutes);
 app.use('/api/redProveedores', redProveedoresRoutes);
 app.use('/api/testimonios', testimoniosRoutes);
 app.use("/api/home", homeRoutes);
+app.use("/api/subhome1", subhome1Routes);
+app.use("/api/subhome2", subhome2Routes);
 app.use('/api/elementos', elementosEditables);
 //menu
 app.use('/api/menu', menuRoutes);

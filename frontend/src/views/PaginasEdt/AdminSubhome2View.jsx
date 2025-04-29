@@ -1,252 +1,249 @@
+// src/views/AdminSubhome2View.jsx
 import { createSignal, onMount } from "solid-js";
-import { obtenerHome, actualizarHome } from "../../services/PaginasEdt/homeService.js";
+import { obtenerSubhome2 } from "../../services/PaginasEdt/subhome2Service.js";
+import { crearPropuesta } from "../../services/moderacionService.js";
 
-// Objeto por defecto (basado en los datos de Postman)
-const defaultHome = {
+const defaultSubhome2 = {
   hero: {
-    backgroundImage: "https://example.com/bg.jpg",
-    title: "Bienvenido a Mi Aseguradora",
-    subtitle: "Protege lo que más importa",
-    cta_1: { text: "Conócenos", link: "https://example.com/conocenos" },
-    cta_2: { text: "Cotiza Ahora", link: "https://example.com/cotizar" },
+    backgroundImage: "",
+    title: "",
+    subtitle: "",
+    cta_1: { text: "", link: "" },
+    cta_2: { text: "", link: "" }
   },
   tranquilidad: {
-    imageUrl: "https://example.com/tranquilidad.jpg",
-    title: "Encuentra tu Tranquilidad",
-    leadText: "Protege a tu familia",
-    description: "Con nuestros planes de seguro, tendrás la paz que mereces.",
-    buttonText: "Conoce más",
-    buttonLink: "https://example.com/tranquilidad",
+    imageUrl: "",
+    title: "",
+    leadText: "",
+    description: "",
+    buttonText: "",
+    buttonLink: ""
   },
   whySection: {
-    sectionTitle: "¿Por qué elegirnos?",
-    cards: [
-      {
-        cardTitle: "Cobertura Ampliada",
-        cardText: "Planes que cubren tus necesidades.",
-        imageUrl: "https://example.com/card1.jpg",
-        buttonText: "Ver más",
-        buttonLink: "https://example.com/card1",
-      },
-      {
-        cardTitle: "Atención Personalizada",
-        cardText: "Estamos contigo en cada paso.",
-        imageUrl: "https://example.com/card2.jpg",
-        buttonText: "Contactar",
-        buttonLink: "https://example.com/card2",
-      },
-    ],
+    sectionTitle: "",
+    cards: []
   },
   about: {
-    title: "Sobre Nuestra Aseguradora",
-    text: "Con años de experiencia, ofrecemos soluciones integrales para proteger a tu familia y patrimonio.",
-    imageUrl: "https://example.com/about.jpg",
-    buttonText: "Conócenos",
-    buttonLink: "https://example.com/about",
+    title: "",
+    text: "",
+    imageUrl: "",
+    buttonText: "",
+    buttonLink: ""
   },
+  imagenesSecciones: {
+    imagenTopCoberturas:           "",
+    imagenTopPolizas:              "",
+    imagenTopServiciosSolicitados: "",
+    imagenUltimosServicios:        "",
+    imagenProximasCitas:           "",
+    imagenTopEmpleados:            ""
+  },
+  serviciosDestacados: [],
+  testimonios: null
 };
 
 function AdminSubhome2View() {
-  // Inicializamos con el objeto por defecto para que el formulario se muestre
-  const [homeData, setHomeData] = createSignal(defaultHome);
+  const [data, setData]       = createSignal(defaultSubhome2);
   const [mensaje, setMensaje] = createSignal("");
 
   onMount(async () => {
     try {
-      const data = await obtenerHome();
-      console.log("Home recibido:", data);
-      // Si el backend retorna datos válidos y con la propiedad hero, actualizamos
-      if (data && data.hero) {
-        setHomeData(data);
-      } else {
-        console.log("No se recibió data válida, se mantendrá el objeto por defecto.");
+      const resp = await obtenerSubhome2();
+      if (resp && resp.hero) {
+        setData(resp);
       }
-      console.log("homeData() después de asignar:", homeData());
-    } catch (error) {
-      console.error("Error al obtener Home:", error);
+    } catch (err) {
+      console.error("Error al obtener Subhome2:", err);
     }
   });
 
-  // Función para manejar cambios en secciones simples (hero, tranquilidad, about, whySection)
   const handleChange = (section, field, value) => {
-    setHomeData((prev) => ({
+    setData(prev => ({
       ...prev,
       [section]: {
         ...prev[section],
-        [field]: value,
-      },
+        [field]: value
+      }
     }));
   };
 
-  // Función para manejar cambios en cta_1 o cta_2 dentro de hero
   const handleCTAChange = (ctaKey, field, value) => {
-    setHomeData((prev) => ({
+    setData(prev => ({
       ...prev,
       hero: {
         ...prev.hero,
         [ctaKey]: {
           ...prev.hero[ctaKey],
-          [field]: value,
-        },
-      },
+          [field]: value
+        }
+      }
     }));
   };
 
-  // Función para manejar cambios en las tarjetas de whySection
-  const handleCardChange = (index, field, value) => {
-    setHomeData((prev) => {
-      const newCards = [...prev.whySection.cards];
-      newCards[index] = { ...newCards[index], [field]: value };
+  const handleCardChange = (i, field, value) => {
+    setData(prev => {
+      const cards = [...prev.whySection.cards];
+      cards[i] = { ...cards[i], [field]: value };
       return {
         ...prev,
         whySection: {
           ...prev.whySection,
-          cards: newCards,
-        },
+          cards
+        }
       };
     });
   };
 
-  // Agrega una nueva tarjeta vacía a whySection.cards
-  const addWhyCard = () => {
-    setHomeData((prev) => ({
+  const addCard = () => {
+    setData(prev => ({
       ...prev,
       whySection: {
         ...prev.whySection,
         cards: [
           ...prev.whySection.cards,
-          {
-            cardTitle: "",
-            cardText: "",
-            imageUrl: "",
-            buttonText: "",
-            buttonLink: "",
-          },
-        ],
-      },
+          { cardTitle: "", cardText: "", imageUrl: "", buttonText: "", buttonLink: "" }
+        ]
+      }
     }));
   };
 
-  // Enviar la actualización al backend
-  const handleSubmit = async (e) => {
+  const handleImagenSeccionChange = (key, value) => {
+    setData(prev => ({
+      ...prev,
+      imagenesSecciones: {
+        ...prev.imagenesSecciones,
+        [key]: value
+      }
+    }));
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
     setMensaje("");
     try {
-      console.log("Enviando datos al backend:", homeData());
-      await actualizarHome(homeData());
-      setMensaje("¡Home actualizado correctamente!");
-    } catch (error) {
-      console.error("Error al actualizar el Home:", error);
-      setMensaje("Hubo un error al actualizar el Home.");
+      const usuario = JSON.parse(localStorage.getItem("usuario")) || {};
+      const correo  = usuario.correo;
+      if (!correo) throw new Error("Usuario no identificado");
+
+      await crearPropuesta({
+        pagina:    "subhome2",
+        contenido: data(),
+        creadoPor: correo
+      });
+
+      setMensaje("✅ Tu propuesta fue enviada a moderación");
+    } catch (err) {
+      console.error("Error al enviar propuesta:", err);
+      setMensaje("❌ No se pudo enviar la propuesta");
     }
   };
 
-  if (!homeData() || !homeData().hero) {
+  if (!data().hero) {
     return <div class="container my-5 text-center">Cargando formulario...</div>;
   }
 
   return (
     <div class="container my-5">
-      <h1>Panel de Administración - Home</h1>
+      <h1>Panel de Administración – Subhome 2</h1>
       {mensaje() && <div class="alert alert-info my-3">{mensaje()}</div>}
+
       <form onSubmit={handleSubmit}>
-        {/* ---------- Sección Hero ---------- */}
+
+        {/* Hero Section */}
         <h2>Hero Section</h2>
         <div class="mb-3">
           <label class="form-label">Background Image</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.backgroundImage}
-            onInput={(e) => handleChange("hero", "backgroundImage", e.currentTarget.value)}
+            type="text"
+            value={data().hero.backgroundImage}
+            onInput={e => handleChange("hero", "backgroundImage", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Título</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.title}
-            onInput={(e) => handleChange("hero", "title", e.currentTarget.value)}
+            type="text"
+            value={data().hero.title}
+            onInput={e => handleChange("hero", "title", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Subtítulo</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.subtitle}
-            onInput={(e) => handleChange("hero", "subtitle", e.currentTarget.value)}
+            type="text"
+            value={data().hero.subtitle}
+            onInput={e => handleChange("hero", "subtitle", e.currentTarget.value)}
           />
         </div>
-        {/* CTA 1 */}
         <div class="mb-3">
           <label class="form-label">CTA 1 Text</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.cta_1.text}
-            onInput={(e) => handleCTAChange("cta_1", "text", e.currentTarget.value)}
+            type="text"
+            value={data().hero.cta_1.text}
+            onInput={e => handleCTAChange("cta_1", "text", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">CTA 1 Link</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.cta_1.link}
-            onInput={(e) => handleCTAChange("cta_1", "link", e.currentTarget.value)}
+            type="text"
+            value={data().hero.cta_1.link}
+            onInput={e => handleCTAChange("cta_1", "link", e.currentTarget.value)}
           />
         </div>
-        {/* CTA 2 */}
         <div class="mb-3">
           <label class="form-label">CTA 2 Text</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.cta_2.text}
-            onInput={(e) => handleCTAChange("cta_2", "text", e.currentTarget.value)}
+            type="text"
+            value={data().hero.cta_2.text}
+            onInput={e => handleCTAChange("cta_2", "text", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">CTA 2 Link</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().hero.cta_2.link}
-            onInput={(e) => handleCTAChange("cta_2", "link", e.currentTarget.value)}
+            type="text"
+            value={data().hero.cta_2.link}
+            onInput={e => handleCTAChange("cta_2", "link", e.currentTarget.value)}
           />
         </div>
 
         <hr />
 
-        {/* ---------- Sección Tranquilidad ---------- */}
+        {/* Tranquilidad Section */}
         <h2>Tranquilidad Section</h2>
         <div class="mb-3">
           <label class="form-label">Image URL</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().tranquilidad.imageUrl}
-            onInput={(e) => handleChange("tranquilidad", "imageUrl", e.currentTarget.value)}
+            type="text"
+            value={data().tranquilidad.imageUrl}
+            onInput={e => handleChange("tranquilidad", "imageUrl", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Título</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().tranquilidad.title}
-            onInput={(e) => handleChange("tranquilidad", "title", e.currentTarget.value)}
+            type="text"
+            value={data().tranquilidad.title}
+            onInput={e => handleChange("tranquilidad", "title", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Lead Text</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().tranquilidad.leadText}
-            onInput={(e) => handleChange("tranquilidad", "leadText", e.currentTarget.value)}
+            type="text"
+            value={data().tranquilidad.leadText}
+            onInput={e => handleChange("tranquilidad", "leadText", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
@@ -254,55 +251,55 @@ function AdminSubhome2View() {
           <textarea
             class="form-control"
             rows="3"
-            value={homeData().tranquilidad.description}
-            onInput={(e) => handleChange("tranquilidad", "description", e.currentTarget.value)}
-          ></textarea>
+            value={data().tranquilidad.description}
+            onInput={e => handleChange("tranquilidad", "description", e.currentTarget.value)}
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">Button Text</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().tranquilidad.buttonText}
-            onInput={(e) => handleChange("tranquilidad", "buttonText", e.currentTarget.value)}
+            type="text"
+            value={data().tranquilidad.buttonText}
+            onInput={e => handleChange("tranquilidad", "buttonText", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Button Link</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().tranquilidad.buttonLink}
-            onInput={(e) => handleChange("tranquilidad", "buttonLink", e.currentTarget.value)}
+            type="text"
+            value={data().tranquilidad.buttonLink}
+            onInput={e => handleChange("tranquilidad", "buttonLink", e.currentTarget.value)}
           />
         </div>
 
         <hr />
 
-        {/* ---------- Sección Why ---------- */}
+        {/* Why Section */}
         <h2>Why Section</h2>
         <div class="mb-3">
           <label class="form-label">Section Title</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().whySection.sectionTitle}
-            onInput={(e) => handleChange("whySection", "sectionTitle", e.currentTarget.value)}
+            type="text"
+            value={data().whySection.sectionTitle}
+            onInput={e => handleChange("whySection", "sectionTitle", e.currentTarget.value)}
           />
         </div>
-        <button type="button" class="btn btn-secondary mb-3" onClick={addWhyCard}>
+        <button type="button" class="btn btn-secondary mb-3" onClick={addCard}>
           Agregar Tarjeta
         </button>
-        {homeData().whySection.cards.map((card, index) => (
-          <div key={index} class="mb-3 border p-3">
-            <h5>Tarjeta {index + 1}</h5>
+        {data().whySection.cards.map((card, i) => (
+          <div key={i} class="mb-3 border p-3">
+            <h5>Tarjeta {i + 1}</h5>
             <div class="mb-2">
               <label class="form-label">Título</label>
               <input
-                type="text"
                 class="form-control"
+                type="text"
                 value={card.cardTitle}
-                onInput={(e) => handleCardChange(index, "cardTitle", e.currentTarget.value)}
+                onInput={e => handleCardChange(i, "cardTitle", e.currentTarget.value)}
               />
             </div>
             <div class="mb-2">
@@ -311,34 +308,34 @@ function AdminSubhome2View() {
                 class="form-control"
                 rows="2"
                 value={card.cardText}
-                onInput={(e) => handleCardChange(index, "cardText", e.currentTarget.value)}
-              ></textarea>
+                onInput={e => handleCardChange(i, "cardText", e.currentTarget.value)}
+              />
             </div>
             <div class="mb-2">
               <label class="form-label">Imagen URL</label>
               <input
-                type="text"
                 class="form-control"
+                type="text"
                 value={card.imageUrl}
-                onInput={(e) => handleCardChange(index, "imageUrl", e.currentTarget.value)}
+                onInput={e => handleCardChange(i, "imageUrl", e.currentTarget.value)}
               />
             </div>
             <div class="mb-2">
               <label class="form-label">Button Text</label>
               <input
-                type="text"
                 class="form-control"
+                type="text"
                 value={card.buttonText}
-                onInput={(e) => handleCardChange(index, "buttonText", e.currentTarget.value)}
+                onInput={e => handleCardChange(i, "buttonText", e.currentTarget.value)}
               />
             </div>
             <div class="mb-2">
               <label class="form-label">Button Link</label>
               <input
-                type="text"
                 class="form-control"
+                type="text"
                 value={card.buttonLink}
-                onInput={(e) => handleCardChange(index, "buttonLink", e.currentTarget.value)}
+                onInput={e => handleCardChange(i, "buttonLink", e.currentTarget.value)}
               />
             </div>
           </div>
@@ -346,15 +343,15 @@ function AdminSubhome2View() {
 
         <hr />
 
-        {/* ---------- Sección About ---------- */}
+        {/* About Section */}
         <h2>About Section</h2>
         <div class="mb-3">
           <label class="form-label">Título</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().about.title}
-            onInput={(e) => handleChange("about", "title", e.currentTarget.value)}
+            type="text"
+            value={data().about.title}
+            onInput={e => handleChange("about", "title", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
@@ -362,43 +359,58 @@ function AdminSubhome2View() {
           <textarea
             class="form-control"
             rows="3"
-            value={homeData().about.text}
-            onInput={(e) => handleChange("about", "text", e.currentTarget.value)}
-          ></textarea>
+            value={data().about.text}
+            onInput={e => handleChange("about", "text", e.currentTarget.value)}
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">Imagen URL</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().about.imageUrl}
-            onInput={(e) => handleChange("about", "imageUrl", e.currentTarget.value)}
+            type="text"
+            value={data().about.imageUrl}
+            onInput={e => handleChange("about", "imageUrl", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Button Text</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().about.buttonText}
-            onInput={(e) => handleChange("about", "buttonText", e.currentTarget.value)}
+            type="text"
+            value={data().about.buttonText}
+            onInput={e => handleChange("about", "buttonText", e.currentTarget.value)}
           />
         </div>
         <div class="mb-3">
           <label class="form-label">Button Link</label>
           <input
-            type="text"
             class="form-control"
-            value={homeData().about.buttonLink}
-            onInput={(e) => handleChange("about", "buttonLink", e.currentTarget.value)}
+            type="text"
+            value={data().about.buttonLink}
+            onInput={e => handleChange("about", "buttonLink", e.currentTarget.value)}
           />
         </div>
 
-        <button type="submit" class="btn btn-primary">
-          Guardar Cambios
+        <hr />
+
+        {/* Imágenes de Secciones */}
+        <h2>Imágenes de Secciones</h2>
+        {Object.entries(data().imagenesSecciones).map(([key, val]) => (
+          <div class="mb-3" key={key}>
+            <label class="form-label">{key}</label>
+            <input
+              class="form-control"
+              type="text"
+              value={val}
+              onInput={e => handleImagenSeccionChange(key, e.currentTarget.value)}
+            />
+          </div>
+        ))}
+
+        <button type="submit" class="btn btn-primary mt-4">
+          Enviar propuesta
         </button>
       </form>
-      {mensaje() && <div class="alert alert-success mt-3">{mensaje()}</div>}
     </div>
   );
 }

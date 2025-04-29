@@ -1,27 +1,27 @@
+// src/views/Subhome2View.jsx
 import { createSignal, onMount } from "solid-js";
-import { obtenerHome } from "../services/PaginasEdt/homeService.js";
+import { obtenerSubhome2 } from "../services/PaginasEdt/subhome2Service.js";
 
 import ElementoTopPolizas from "./PaginasEdt/ElementoTopPolizas.jsx";
 import ElementoTopServiciosSolicitados from "./PaginasEdt/ElementoTopServiciosSolicitados.jsx";
 
 function Subhome2View() {
-  const [homeData, setHomeData] = createSignal(null);
+  const [subhomeData, setSubhomeData] = createSignal(null);
 
   onMount(async () => {
     try {
-      const data = await obtenerHome();
-      setHomeData(data);
+      const data = await obtenerSubhome2();
+      setSubhomeData(data);
     } catch (error) {
-      console.error("Error al obtener el Home:", error);
+      console.error("Error al obtener Subhome2:", error);
     }
   });
 
   return (
     <>
-      {/* Estilos locales para esta vista */}
       <style>{`
         .hero-section {
-          background: url(${homeData()?.hero?.backgroundImage || ""}) no-repeat center center;
+          background: url(${subhomeData()?.hero?.backgroundImage || ""}) no-repeat center center;
           background-size: cover;
           color: #fff;
           text-align: center;
@@ -51,194 +51,109 @@ function Subhome2View() {
           box-shadow: 0 4px 15px rgba(0,0,0,0.2);
           animation: fadeIn 1s ease-in-out;
         }
-        .why-cards {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 2rem;
-          justify-content: center;
-        }
-        .why-card {
-          width: 250px;
-          background: #fff;
-          padding: 1rem;
-          border-radius: 1rem;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-          text-align: center;
-          transition: transform 0.3s ease;
-        }
-        .why-card:hover {
-          transform: translateY(-5px);
-        }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
-      <div >
-
-        {/* Verificamos si homeData() ya está cargado */}
-        {homeData() ? (
+      <div class="container my-5">
+        {subhomeData() ? (
           (() => {
-            // Extraemos las secciones de homeData
-            const { hero, tranquilidad, whySection, about } = homeData();
-
-            // Imagen de fondo para el hero
-            const heroBg =
-              hero.backgroundImage ||
-              "https://gustavomirabalcastro.com/wp-content/uploads/2020/10/Gustavo-Mirabal-Castro-que-es-un-asesor-financiero.jpg";
+            const { hero, tranquilidad, whySection, about, imagenesSecciones } = subhomeData();
 
             return (
               <>
                 {/* HERO SECTION */}
-                <div
-                  class="hero-section"
-                  style={{
-                    background: `url("${heroBg}") no-repeat center center`,
-                    backgroundSize: "cover",
-                  }}
-                >
+                <div class="hero-section">
                   <div class="hero-overlay"></div>
                   <div class="hero-content">
-                    <h1 class="hero-title">
-                      {hero.title || "Bienvenido a Mi Aseguradora"}
-                    </h1>
-                    <p class="hero-subtitle">
-                      {hero.subtitle ||
-                        "Protege tu futuro y el de los tuyos con nuestras soluciones de seguros a tu medida."}
-                    </p>
+                    <h1 class="hero-title">{hero.title}</h1>
+                    <p class="hero-subtitle">{hero.subtitle}</p>
                     <div>
-                      <button class="btn btn-warning hero-btn">
-                        {hero.cta_1?.text || "Conócenos"}
-                      </button>
-                      <button class="btn btn-outline-light hero-btn">
-                        {hero.cta_2?.text || "Cotiza Ahora"}
-                      </button>
+                      {hero.cta_1?.text && (
+                        <a href={hero.cta_1.link} class="btn btn-warning m-2">
+                          {hero.cta_1.text}
+                        </a>
+                      )}
+                      {hero.cta_2?.text && (
+                        <a href={hero.cta_2.link} class="btn btn-outline-light m-2">
+                          {hero.cta_2.text}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* SECCIÓN: Tranquilidad */}
-                <div class="tranquilidad-section my-5">
-                  <div class="row align-items-center">
-                    <div class="col-md-6 mb-4 mb-md-0">
-                      <img
-                        src={
-                          tranquilidad.imageUrl ||
-                          "https://example.com/tranquilidad.jpg"
-                        }
-                        alt="Tranquilidad"
-                        class="img-fluid"
-                      />
-                    </div>
-                    <div class="col-md-6">
-                      <h2>
-                        {tranquilidad.title || "Encuentra tu Tranquilidad"}
-                      </h2>
-                      <p class="lead">
-                        {tranquilidad.leadText || "Protege a tu familia"}
-                      </p>
-                      <p>
-                        {tranquilidad.description ||
-                          "Con nuestros planes de seguro, tendrás la paz que mereces."}
-                      </p>
-                      <button class="btn btn-primary">
-                        {tranquilidad.buttonText || "Conoce más"}
-                      </button>
-                    </div>
+                {/* IMAGEN Top Pólizas */}
+                {imagenesSecciones?.imagenTopPolizas && (
+                  <div class="text-center">
+                    <img
+                      src={imagenesSecciones.imagenTopPolizas}
+                      class="section-image"
+                      alt="Top Pólizas"
+                    />
                   </div>
-                </div>
+                )}
+                <ElementoTopPolizas />
 
-                {homeData()?.imagenesSecciones?.imagenTopPolizas && (
-          <div class="text-center">
-            <img src={homeData().imagenesSecciones.imagenTopPolizas} class="section-image" alt="Polizas" />
-          </div>
-        )}
-        <ElementoTopPolizas />
-
-
-                {/* SECCIÓN: Why */}
+                {/* WHY SECTION */}
                 <div class="why-section my-5">
-                  <h2 class="text-center mb-5">
-                    {whySection.sectionTitle || "¿Por qué elegirnos?"}
-                  </h2>
+                  <h2 class="text-center mb-5">{whySection.sectionTitle}</h2>
                   <div class="row g-4">
-                    {whySection.cards && whySection.cards.length > 0 ? (
-                      whySection.cards.map((card, index) => (
-                        <div class="col-md-4" key={index}>
-                          <div class="card h-100">
-                            <img
-                              src={
-                                card.imageUrl ||
-                                "https://example.com/card-default.jpg"
-                              }
-                              class="card-img-top"
-                              alt={card.cardTitle}
-                            />
-                            <div class="card-body">
-                              <h5 class="card-title">
-                                {card.cardTitle || "Título de Tarjeta"}
-                              </h5>
-                              <p class="card-text">
-                                {card.cardText ||
-                                  "Planes que cubren tus necesidades."}
-                              </p>
-                              <button class="btn btn-outline-primary">
-                                {card.buttonText || "Ver más"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div class="col-md-4">
+                    {whySection.cards.map((card, idx) => (
+                      <div class="col-md-4" key={idx}>
                         <div class="card h-100">
                           <img
-                            src="https://example.com/card-default.jpg"
+                            src={card.imageUrl}
                             class="card-img-top"
-                            alt="Default Card"
+                            alt={card.cardTitle}
                           />
                           <div class="card-body">
-                            <h5 class="card-title">Seguros de Auto</h5>
-                            <p class="card-text">Conduce con confianza...</p>
-                            <button class="btn btn-outline-primary">
-                              Ver Planes
-                            </button>
+                            <h5 class="card-title">{card.cardTitle}</h5>
+                            <p class="card-text">{card.cardText}</p>
+                            {card.buttonText && (
+                              <a href={card.buttonLink} class="btn btn-outline-primary">
+                                {card.buttonText}
+                              </a>
+                            )}
                           </div>
                         </div>
                       </div>
-                    )}
+                    ))}
                   </div>
                 </div>
 
-                {homeData()?.imagenesSecciones?.imagenTopServiciosSolicitados && (
-          <div class="text-center">
-            <img src={homeData().imagenesSecciones.imagenTopServiciosSolicitados} class="section-image" alt="Servicios Solicitados" />
-          </div>
-        )}
-        <ElementoTopServiciosSolicitados />
+                {/* IMAGEN Top Servicios Solicitados */}
+                {imagenesSecciones?.imagenTopServiciosSolicitados && (
+                  <div class="text-center">
+                    <img
+                      src={imagenesSecciones.imagenTopServiciosSolicitados}
+                      class="section-image"
+                      alt="Servicios Solicitados"
+                    />
+                  </div>
+                )}
+                <ElementoTopServiciosSolicitados />
 
-                {/* SECCIÓN: About */}
+                {/* ABOUT SECTION */}
                 <div class="about-section my-5">
                   <div class="row align-items-center">
-                    <div class="col-md-6 mb-4 mb-md-0">
+                    <div class="col-md-6">
                       <img
-                        src={about.imageUrl || "https://example.com/about.jpg"}
-                        alt="Sobre Nosotros"
-                        class="img-fluid"
+                        src={about.imageUrl}
+                        alt="About"
+                        class="section-image"
                       />
                     </div>
                     <div class="col-md-6">
-                      <h2>
-                        {about.title || "Sobre Nuestra Aseguradora"}
-                      </h2>
-                      <p class="lead">
-                        {about.text ||
-                          "Con años de experiencia, ofrecemos soluciones integrales para proteger a tu familia y patrimonio."}
-                      </p>
-                      <button class="btn btn-success">
-                        {about.buttonText || "Conócenos"}
-                      </button>
+                      <h2>{about.title}</h2>
+                      <p class="lead">{about.text}</p>
+                      {about.buttonText && (
+                        <a href={about.buttonLink} class="btn btn-success">
+                          {about.buttonText}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -246,7 +161,7 @@ function Subhome2View() {
             );
           })()
         ) : (
-          <div class="text-center">Cargando Home...</div>
+          <div class="text-center">Cargando Subhome2...</div>
         )}
       </div>
     </>
