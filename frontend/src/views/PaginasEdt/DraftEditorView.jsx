@@ -4,7 +4,7 @@ import { createResource, createSignal, createEffect, Show } from "solid-js";
 import axios from "axios";
 
 const fetchPropuesta = async (id) => {
-  const res = await axios.get(`http://192.168.1.8:5001/api/moderacion/${id}`);
+  const res = await axios.get(`${API_URL}/api/moderacion/${id}`);
   return res.data;
 };
 
@@ -22,7 +22,7 @@ createEffect(() => {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`http://192.168.1.8:5001/api/moderacion/reenviar/${params.id}`, {
+      await axios.put(`${API_URL}/api/moderacion/reenviar/${params.id}`, {
         contenido: contenido(),
       });
       alert("✅ Propuesta reenviada correctamente");
