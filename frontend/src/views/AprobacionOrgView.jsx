@@ -12,11 +12,11 @@ export default function AdminRecetas() {
 
   const cargarDatos = async () => {
     try {
-      const recetasData = await obtenerRecetas();
-      const montoData = await obtenerMontoMinimo();
-      setRecetas(recetasData);
-      setMontoMinimo(montoData.valor);
-      setNuevoMonto(montoData.valor);
+      const data = await obtenerRecetas();
+      setRecetas(data);
+      const mt = await obtenerMontoMinimo();
+      setMontoMinimo(mt.valor);
+      setNuevoMonto(mt.valor);
     } catch (err) {
       console.error("Error cargando datos de recetas:", err);
     }
@@ -25,9 +25,9 @@ export default function AdminRecetas() {
   const actualizarMonto = async () => {
     try {
       await actualizarMontoMinimo(nuevoMonto());
-      alert("Monto mínimo actualizado correctamente");
       setMontoMinimo(nuevoMonto());
-      cargarDatos();
+      await cargarDatos();
+      alert("Monto mínimo actualizado correctamente");
     } catch (err) {
       console.error("Error actualizando monto mínimo:", err);
     }
@@ -57,33 +57,40 @@ export default function AdminRecetas() {
       <table class="table table-bordered table-striped">
         <thead class="thead-dark">
           <tr>
-            <th>ID Receta</th>
+            <th>Código</th>
             <th>Farmacia</th>
             <th>Cliente</th>
-            <th>Póliza</th>
             <th>Monto</th>
             <th>Descuento</th>
             <th>Total a Pagar</th>
-            <th>Estado</th>
-            <th>Fecha</th>
+            <th>Estado Seguro</th>
+            <th>Fecha Emisión</th>
           </tr>
         </thead>
         <tbody>
           {recetas().map((r) => {
-            const cliente = r.cliente;
+            // Mostrar nombre completo si vino poblado, si no el ID
+            const clienteNombre =
+              r.cliente && typeof r.cliente === "object"
+                ? `${r.cliente.nombre} ${r.cliente.apellido || ""}`
+                : r.cliente;
+
+            const total      = r.total      ?? 0;
+            const descuento  = r.descuento  ?? 0;
+            const totalFinal = r.totalFinal ?? total;
+            const estado     = r.estadoSeguro;
+            const fecha      = new Date(r.fechaEmision);
+
             return (
-              <tr>
-                <td>{r.idReceta}</td>
+              <tr key={r.codigo}>
+                <td>{r.codigo}</td>
                 <td>{r.farmacia}</td>
-                <td>{cliente ? `${cliente.nombre} ${cliente.apellido || ""}` : "No registrado"}</td>
-                <td>{cliente?.polizaNombre || "Sin póliza"}</td>
-                <td>Q{r.monto?.toFixed(2)}</td>
-                <td>Q{r.descuento?.toFixed(2)}</td>
-                <td>
-                  Q{(r.estado === "aprobada" ? (r.monto - r.descuento) : r.monto).toFixed(2)}
-                </td>
-                <td>{r.estado}</td>
-                <td>{new Date(r.fecha).toLocaleString()}</td>
+                <td>{clienteNombre}</td>
+                <td>Q{total.toFixed(2)}</td>
+                <td>Q{descuento.toFixed(2)}</td>
+                <td>Q{totalFinal.toFixed(2)}</td>
+                <td>{estado}</td>
+                <td>{fecha.toLocaleString()}</td>
               </tr>
             );
           })}
