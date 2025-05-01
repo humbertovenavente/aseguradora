@@ -18,8 +18,8 @@ export default function ModeracionView() {
 
     await rechazarPropuesta(id, comentario);
 
-    // Reemplaza por la IP que estés usando si no es localhost
-    const draftLink = `${API_URL}/drafts/${id}`;
+    
+    const draftLink = `${window.location.origin}/drafts/${id}`;
 
 
     await sendEmail(propuesta.creadoPor, "rejected", {
