@@ -21,7 +21,7 @@ const SolicitudServiceView = () => {
 
   return (
     <div class="container mt-4">
-      <h2>Solicitudes de Atención Hospitalaria DOS</h2>
+      <h2>Solicitudes de Atención Hospitalaria TRES</h2>
       {solicitudes().length > 0 ? (
         <table class="table table-bordered table-hover">
           <thead class="table-dark">

@@ -129,7 +129,7 @@ const AprobacionView = () => {
 
   return (
     <div class="container mt-4">
-      <h3>Historial de Solicitudes del Hospital y Farmacias</h3>
+      <h3>Historial de Solicitudes del Hospital y Farmacias TRES</h3>
       {mensaje() && <div class="alert alert-info mt-3">{mensaje()}</div>}
       <Seccion titulo="Pendientes" color="warning" icono="exclamation-circle" lista={pendientes} />
       <Seccion titulo="Aprobadas" color="success" icono="check-circle" lista={aprobadas} />

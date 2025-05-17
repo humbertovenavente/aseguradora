@@ -119,7 +119,7 @@ app.use("/api/footer", footerRoutes);
 app.use("/api/moderacion", moderacionRoutes);
 app.use('/api/paciente', pacienteRoutes);
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5033;
 const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
