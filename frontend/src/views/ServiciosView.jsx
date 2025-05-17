@@ -16,7 +16,7 @@ export default function ServiciosView() {
         nombre: "",
         descripcion: "",
         precioAseguradora: "",
-        hospitalesAprobados: [], // ✅ Ahora es un array de hospitales seleccionados
+        hospitalesAprobados: [], //  Ahora es un array de hospitales seleccionados
         servicioPadre: null,
         imagenUrl: ""
     });
@@ -77,7 +77,7 @@ export default function ServiciosView() {
                 precioAseguradora: Number(formData().precioAseguradora),
                 imagenUrl: formData().imagenUrl,
                 hospitalesAprobados: formData().hospitalesAprobados,
-                hospitalAprobado: formData().hospitalesAprobados[0] || null,  // 🛠️ aquí mandamos uno solo
+                hospitalAprobado: formData().hospitalesAprobados[0] || null,  // aquí mandamos uno solo
                 servicioPadre: formData().servicioPadre || null
             };
     
