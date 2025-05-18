@@ -6,7 +6,7 @@ import { setUser } from "../stores/authStore";
 
 export default function Login() {
   const [showModal, setShowModal] = createSignal(false);
-  const [errorMessage, setErrorMessage] = createSignal(""); //  Para mostrar el mensaje en el modal
+  const [errorMessage, setErrorMessage] = createSignal(""); // Para mostrar el mensaje en el modal
   const navigate = useNavigate();
 
   const handleLogin = async (e, { correo, contrasena }) => {
@@ -14,26 +14,28 @@ export default function Login() {
     try {
       const res = await login({ correo, contrasena });
       const userData = res.data.usuario;
-      
+
       if (!userData) {
         alert("Error en la autenticación");
         return;
       }
-      
-      // 🧠 Guarda el correo del usuario para luego saber quién hace propuestas
-      localStorage.setItem("usuario", JSON.stringify({ correo: userData.correo }));
-      localStorage.setItem('usuarioId', userData._id);
-      
-      console.log("Usuario autenticado:", userData);
-      
+
       if (userData.estado !== 1) {
         setErrorMessage("Tu cuenta aún no ha sido activada. Contacta al administrador.");
         setShowModal(true);
         return;
       }
-      
+
+      // 🧠 Guardar en localStorage
+      localStorage.setItem("usuario", JSON.stringify({ correo: userData.correo }));
+      localStorage.setItem("usuarioId", userData._id);
+      localStorage.setItem("usuarioRol", userData.rol_nombre); // ← Aquí se guarda el rol
+
+      console.log("Usuario autenticado:", userData);
+
+      // Setear usuario en store y redirigir
       setUser(userData.id, userData.rol_nombre, navigate);
-      
+
     } catch (error) {
       if (error.response?.status === 403) {
         setErrorMessage("Tu cuenta aún no ha sido activada. Contacta al administrador.");
@@ -59,7 +61,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/*  Modal Bootstrap para cuenta inactiva */}
+      {/* Modal Bootstrap para cuenta inactiva */}
       {showModal() && (
         <div class="modal fade show d-block" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
@@ -75,7 +77,7 @@ export default function Login() {
                 ></button>
               </div>
               <div class="modal-body">
-                <p>{errorMessage()}</p> {/* Ahora muestra el modal */}
+                <p>{errorMessage()}</p>
               </div>
               <div class="modal-footer">
                 <button

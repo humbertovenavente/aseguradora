@@ -85,31 +85,27 @@ render(() => (
       <Route path="/FAQ" component={FaqView} />
       <Route path="/contacto" component={ContactoView} />
 
-      {/* Rutas protegidas para Admin y Empleado */}
+      {/* Rutas protegidas */}
       <Route path="/operadoras" component={ProtectedRoute(["admin", "empleado"], OperadorasView)} />
       <Route path="/clientes" component={ProtectedRoute(["admin"], ClientesView)} />
       <Route path="/servicios-cubiertos" component={ProtectedRoute(["admin"], ServiciosView)} />
       <Route path="/reportes" component={ProtectedRoute(["admin"], ReportesView)} />
       <Route path="/citas" component={ProtectedRoute(["admin"], Citas)} />
       <Route path="/managecitas" component={ProtectedRoute(["admin"], ManageCitas)} />
-      <Route path="/solicitudes" component={ProtectedRoute(["admin"], SolicitudServiceView)} />
-      <Route path="/resultados" component={ProtectedRoute(["admin"], Resultados)} />
-      <Route path="/historial-servicios" component={ProtectedRoute(["admin"], HistorialServiciosView)} />
-      <Route path="/historial-servicios/:id" component={ProtectedRoute(["admin"], HistorialServiciosView)} />
-
-      {/* Rutas protegidas para cliente */}
-      <Route path="/perfil-paciente" component={ProtectedRoute(["cliente"], PerfilPaciente)} />      
-
-      {/* Rutas solo para Admin */}
+      <Route path="/solicitudes" component={ProtectedRoute(["admin", "inter"], SolicitudServiceView)} />
+      <Route path="/resultados" component={ProtectedRoute(["admin", "inter"], Resultados)} />
+      <Route path="/historial-servicios" component={ProtectedRoute(["admin", "inter"], HistorialServiciosView)} />
+      <Route path="/historial-servicios/:id" component={ProtectedRoute(["admin", "inter"], HistorialServiciosView)} />
+      <Route path="/perfil-paciente" component={ProtectedRoute(["cliente"], PerfilPaciente)} />
       <Route path="/users" component={ProtectedRoute(["admin"], Users)} />
       <Route path="/hospitales-afiliados" component={ProtectedRoute(["admin"], HospitalesAView)} />
-      <Route path="/hospitales" component={ProtectedRoute(["admin"], HospitalesView)} />
+      <Route path="/hospitales" component={ProtectedRoute(["admin", "inter"], HospitalesView)} />
       <Route path="/polizas" component={ProtectedRoute(["admin"], PolizasView)} />
       <Route path="/pagos" component={ProtectedRoute(["admin"], PagosView)} />
       <Route path="/coberturas" component={ProtectedRoute(["admin"], CoberturasView)} />
       <Route path="/seguros" component={ProtectedRoute(["admin"], SegurosView)} />
-      <Route path="/aprobacion" component={ProtectedRoute(["admin"], AprobacionView)} />
-      <Route path="/aprobacion-org" component={ProtectedRoute(["admin"], AprobacionOrgView)} />
+      <Route path="/aprobacion" component={ProtectedRoute(["admin", "inter"], AprobacionView)} />
+      <Route path="/aprobacion-org" component={ProtectedRoute(["admin", "inter"], AprobacionOrgView)} />
       <Route path="/farmacias" component={ProtectedRoute(["admin"], FarmaciasView)} />
       <Route path="/fichastecnicas" component={ProtectedRoute(["admin"], FichaTecnicaView)} />
       <Route path="/fichastecnicas/:id" component={ProtectedRoute(["admin"], FichaTecnicaDetail)} />
@@ -117,7 +113,7 @@ render(() => (
       <Route path="/operadoras/fichastm/:id" component={ProtectedRoute(["admin"], FichasDetalleTM)} />
       <Route path="/copago" component={ProtectedRoute(["admin"], Copago)} />
 
-      {/* Páginas de edición de contenido (solo admin) */}
+      {/* Páginas de edición */}
       <Route path="/pages" component={ProtectedRoute(["admin"], PaginasView)} />
       <Route path="/pages-historia" component={ProtectedRoute(["admin"], AdminHistoriaView)} />
       <Route path="/pages-contacto" component={ProtectedRoute(["admin"], AdminContactoView)} />
@@ -135,8 +131,8 @@ render(() => (
       {/* Autenticación */}
       <Route path="/signup" component={Signup} />
       <Route path="/login" component={Login} />
-      
-      {/* Ruta de error */}
+
+      {/* Ruta 404 */}
       <Route path="*" component={NotFound} />
     </Route>
   </Router>
