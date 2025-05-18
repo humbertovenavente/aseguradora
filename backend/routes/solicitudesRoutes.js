@@ -93,7 +93,7 @@ router.put('/:id', async (req, res) => {
           convenioActivo: true,
           estado: "aprobado",
         });
-        console.log("🏥 Hospital creado a partir de la solicitud");
+        console.log(" Hospital creado a partir de la solicitud");
       }
     }
 
