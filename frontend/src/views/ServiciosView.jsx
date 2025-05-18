@@ -70,35 +70,39 @@ export default function ServiciosView() {
     // Crear o actualizar un servicio
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const servicioData = {
-                nombre: formData().nombre,
-                descripcion: formData().descripcion,
-                precioAseguradora: Number(formData().precioAseguradora),
-                imagenUrl: formData().imagenUrl,
-                hospitalesAprobados: formData().hospitalesAprobados,
-                hospitalAprobado: formData().hospitalesAprobados[0] || null,  // aquí mandamos uno solo
-                servicioPadre: formData().servicioPadre || null
-            };
-    
-            console.log("Enviando datos corregidos:", servicioData);
-    
-            if (editId()) {
-                await actualizarServicio(editId(), servicioData);
-                setEditId(null);
-            } else {
-                await crearServicio(servicioData);
-            }
-    
-            await cargarServicios();
-            setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalesAprobados: [], servicioPadre: "", imagenUrl: "" });
-            setError(null);
-        } catch (err) {
-            setError("Error al guardar el servicio.");
-            console.error("Error en handleSubmit:", err.response?.data || err.message);
+      
+        let hospitalesSeleccionados = formData().hospitalesAprobados;
+        if (!hospitalesSeleccionados || hospitalesSeleccionados.length === 0) {
+          hospitalesSeleccionados = hospitales().map(h => h._id);
         }
-    };
-    
+      
+        const servicioData = {
+          nombre: formData().nombre,
+          descripcion: formData().descripcion,
+          precioAseguradora: Number(formData().precioAseguradora),
+          imagenUrl: formData().imagenUrl,
+          hospitalesAprobados: hospitalesSeleccionados,
+          hospitalAprobado: hospitalesSeleccionados[0] || null,
+          servicioPadre: formData().servicioPadre || null
+        };
+      
+        try {
+          if (editId()) {
+            await actualizarServicio(editId(), servicioData);
+            setEditId(null);
+          } else {
+            await crearServicio(servicioData);
+          }
+      
+          await cargarServicios();
+          setFormData({ nombre: "", descripcion: "", precioAseguradora: "", hospitalesAprobados: [], servicioPadre: "", imagenUrl: "" });
+          setError(null);
+        } catch (err) {
+          setError("Error al guardar el servicio.");
+          console.error("Error en handleSubmit:", err.response?.data || err.message);
+        }
+      };
+      
 
     //  Cargar datos al editar un servicio
     const handleEdit = async (id) => {
@@ -150,8 +154,8 @@ export default function ServiciosView() {
                     <input type="number" class="form-control" name="precioAseguradora" placeholder="Precio" value={formData().precioAseguradora} onInput={handleChange} required />
                 </div>
 
-                {/* Checkboxes para seleccionar hospitales */}
-                <div class="mb-3">
+                {/* Checkboxes para seleccionar hospitales 
+               <div class="mb-3"> 
                     <label class="form-label">Hospitales Aprobados</label>
                     <div class="border p-2 rounded" style="max-height: 200px; overflow-y: auto;">
                         {hospitales().map(hospital => (
@@ -168,6 +172,7 @@ export default function ServiciosView() {
                         ))}
                     </div>
                 </div>
+                */}
 
                 <div class="mb-3">
                     <label class="form-label">Categoría a la que pertenece</label>

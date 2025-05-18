@@ -6,40 +6,46 @@ import Cobertura from '../models/Cobertura.js';
 const router = express.Router();
 
 // Crear un nuevo servicio
+// Crear un nuevo servicio
 router.post('/', async (req, res) => {
-  let {
-    nombre,
-    descripcion,
-    precioAseguradora,
-    hospitalesAprobados,
-    servicioPadre,
-    imagenUrl
-  } = req.body;
-
-  try {
-    // Normalizar hospitalesAprobados a solo IDs
-    hospitalesAprobados = (hospitalesAprobados || []).map(h => typeof h === 'string' ? h : h._id);
-
-    // Validar hospitales
-    const hospitalesExistentes = await Hospital.find({ _id: { $in: hospitalesAprobados } });
-    if (hospitalesExistentes.length !== hospitalesAprobados.length) {
-      return res.status(404).json({ mensaje: "Uno o más hospitales no existen." });
-    }
-
-    const nuevoServicio = await Servicio.create({
+    let {
       nombre,
       descripcion,
       precioAseguradora,
       hospitalesAprobados,
-      servicioPadre: servicioPadre || null,
+      servicioPadre,
       imagenUrl
-    });
-
-    res.status(201).json({ mensaje: "Servicio creado exitosamente.", servicio: nuevoServicio });
-  } catch (error) {
-    res.status(500).json({ mensaje: "Error al crear el servicio", error: error.message });
-  }
-});
+    } = req.body;
+  
+    try {
+      if (!hospitalesAprobados || hospitalesAprobados.length === 0) {
+        const hospitales = await Hospital.find({ convenioActivo: true });
+        hospitalesAprobados = hospitales.map(h => h._id);
+      } else {
+        hospitalesAprobados = hospitalesAprobados.map(h => typeof h === 'string' ? h : h._id);
+      }
+  
+      const hospitalesExistentes = await Hospital.find({ _id: { $in: hospitalesAprobados } });
+      if (hospitalesExistentes.length !== hospitalesAprobados.length) {
+        return res.status(404).json({ mensaje: "Uno o más hospitales no existen." });
+      }
+  
+      const nuevoServicio = await Servicio.create({
+        nombre,
+        descripcion,
+        precioAseguradora,
+        hospitalesAprobados,
+        servicioPadre: servicioPadre || null,
+        imagenUrl
+      });
+  
+      res.status(201).json({ mensaje: "Servicio creado exitosamente.", servicio: nuevoServicio });
+    } catch (error) {
+      res.status(500).json({ mensaje: "Error al crear el servicio", error: error.message });
+    }
+  });
+  
+  
 
 // Listar todos los servicios
 router.get('/', async (req, res) => {
