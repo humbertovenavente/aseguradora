@@ -18,20 +18,25 @@ export default function App(props: any) {
   const [menuPrincipal] = createResource<string, Menu>(() => "principal", obtenerMenuPorTipo);
   const [footer] = createResource<FooterData>(obtenerFooter);
 
-  const hasMenuOptions = () => isLoggedIn() && (["admin", "empleado", "cliente"].includes(userRole()));
+  const hasMenuOptions = () =>
+    isLoggedIn() && ["admin", "empleado", "inter"].includes(userRole());
 
   return (
     <>
       {/* NAVBAR */}
       <nav class="main-nav">
         {hasMenuOptions() && (
-          <button class="btn menu-btn" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">☰</button>
+          <button class="btn menu-btn" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+            ☰
+          </button>
         )}
 
-        {/* Menú principal dinámico */}
+        {/* Menú principal dinámico (oculto para 'inter') */}
         <div class="nav-links">
-          <Show when={menuPrincipal.loading}><span>Cargando menú...</span></Show>
-          <Show when={menuPrincipal()?.items}>
+          <Show when={menuPrincipal.loading}>
+            <span>Cargando menú...</span>
+          </Show>
+          <Show when={menuPrincipal()?.items && userRole() !== "inter"}>
             <For each={menuPrincipal()?.items ?? []}>
               {(item) => <A href={item.ruta}>{item.icono} {item.titulo}</A>}
             </For>
@@ -65,7 +70,7 @@ export default function App(props: any) {
               <A href="/polizas">Pólizas</A>
               <A href="/coberturas">Coberturas</A>
               <A href="/citas">Citas</A>
-              <A href="/managecitas">Manejar Citas</A> 
+              <A href="/managecitas">Manejar Citas</A>
               <A href="/reportes">Reportes</A>
               <A href="/aprobacion">Aprobación Servicios</A>
               <A href="/hospitales">Hospitales</A>
@@ -73,15 +78,20 @@ export default function App(props: any) {
               <A href="/pages">Páginas Editables</A>
               <A href="/solicitudes">Solicitudes</A>
               <A href="/resultados">Resultados de Citas</A>
-    </>}
+            </>}
 
-            {/* Opciones para Empleado */}
-            {userRole() === "empleado" && <>
+            {/* Opciones para admin */}
+            {userRole() === "admin" && <>
               <A href="/operadoras">Operadoras</A>
             </>}
 
-            {userRole() === "cliente" && <>
-              <A href="/perfil-paciente">Mi perfil</A>
+            {/* Opciones para Cliente */}
+            {userRole() === "inter" && <>
+              <A href="/hospitales">Hospitales</A>
+              <A href="/solicitudes">Solicitudes</A>
+              <A href="/aprobacion">Aprobación Servicios</A>
+              <A href="/aprobacion-org">Aprobación Recetas</A>
+              <A href="/resultados">Resultados de Citas</A>
             </>}
           </div>
         </div>
