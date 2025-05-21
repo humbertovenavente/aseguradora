@@ -106,7 +106,7 @@ render(() => (
       <Route path="/seguros" component={ProtectedRoute(["admin"], SegurosView)} />
       <Route path="/aprobacion" component={ProtectedRoute(["admin", "inter"], AprobacionView)} />
       <Route path="/aprobacion-org" component={ProtectedRoute(["admin", "inter"], AprobacionOrgView)} />
-      <Route path="/farmacias" component={ProtectedRoute(["admin"], FarmaciasView)} />
+      <Route path="/farmacias" component={ProtectedRoute(["admin", "inter"], FarmaciasView)} />
       <Route path="/fichastecnicas" component={ProtectedRoute(["admin"], FichaTecnicaView)} />
       <Route path="/fichastecnicas/:id" component={ProtectedRoute(["admin"], FichaTecnicaDetail)} />
       <Route path="/operadoras/fichastm" component={ProtectedRoute(["admin"], FichasTM)} />

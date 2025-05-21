@@ -64,6 +64,7 @@ export default function App(props: any) {
               <A href="/operadoras">Operadoras</A>
               <A href="/users">Usuarios</A>
               <A href="/clientes">Clientes</A>
+              <A href="/farmacias">Farmacia Solicitud</A>
               <A href="/seguros">Información Aseguradora</A>
               <A href="/fichastecnicas">Ficha Técnica</A>
               <A href="/servicios-cubiertos">Servicios</A>
@@ -92,6 +93,7 @@ export default function App(props: any) {
               <A href="/aprobacion">Aprobación Servicios</A>
               <A href="/aprobacion-org">Aprobación Recetas</A>
               <A href="/resultados">Resultados de Citas</A>
+              <A href="/farmacias">Farmacia Solicitud</A>
             </>}
           </div>
         </div>
