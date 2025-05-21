@@ -1,9 +1,5 @@
 import mongoose from 'mongoose';
 
-/**
- * Esquema que representa un servicio médico.
- * Puede tener subservicios, una cobertura y hospitales aprobados.
- */
 const ServicioSchema = new mongoose.Schema({
   /** Nombre del servicio */
   nombre: { type: String, required: true },

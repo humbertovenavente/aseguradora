@@ -51,7 +51,8 @@ import solicitudesFarmaciaRoutes from './routes/solicitudesFarmaciaRoutes.js';
 import discountProxyRoutes from './routes/discountProxyRoutes.js';
 import elementosEditables from './routes/elementosEditables.js';
 import pacienteRoutes from './routes/pacienteRoutes.js';
-
+import servicioFarmaciasRoutes from './routes/servicioFarmaciasRoutes.js';
+import farmaciaDiscoveryRoutes from './routes/farmaciaDiscoveryRoutes.js';
 
 dotenv.config();
 
@@ -85,7 +86,8 @@ app.use('/api/recetas', recetasRoutes);
 app.use("/api/solicitudes-atencion", solicitudAtencionRoutes);
 app.use('/api/discount', discountProxyRoutes);
 app.use('/api/resultados', resultadosRoutes);
-
+app.use("/api/servicio-farmacias", servicioFarmaciasRoutes);
+app.use("/farmacias", farmaciaDiscoveryRoutes);
 
 
 

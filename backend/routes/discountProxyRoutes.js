@@ -1,53 +1,44 @@
 import express from "express";
-import fetch from "node-fetch";
+import axios   from "axios";
+import { getFarmaciaUrls } from "../utils/discovery.js";
 
 const router = express.Router();
-const FARMACIA_API_URL = process.env.FARMACIA_API_URL || "http://localhost:5000";
 
-// Endpoint para solicitar un descuento
-router.post("/solicitar", async (req, res) => {
+// GET /api/discount/medicamentos/listar
+router.get("/medicamentos/listar", async (_req, res) => {
   try {
-    const farmaciaResponse = await fetch(`${FARMACIA_API_URL}/discount/solicitar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req.body),
+    const urls = await getFarmaciaUrls();    // ['http://f1:5000', 'http://f2:5000', ...]
+    const promesas = urls.map(async base => {
+      try {
+        const { data } = await axios.get(`${base}/discount/listar`);
+        return data.map(sol => ({ ...sol, farmaciaBaseUrl: base }));
+      } catch {
+        return [];
+      }
     });
-    const status = farmaciaResponse.status;
-    const data = await farmaciaResponse.json();
-    res.status(status).json(data);
-  } catch (error) {
-    console.error("Error en solicitud de descuento proxy:", error);
-    res.status(500).json({ error: "Error interno en el servidor" });
+    const listas = await Promise.all(promesas);
+    res.json(listas.flat());
+  } catch (err) {
+    console.error("Error proxy listar:", err);
+    res.status(500).json({ error: "Error interno en proxy listar" });
   }
 });
 
-// Endpoint para procesar (aprobar/rechazar) descuento
+// POST /api/discount/procesar/:id
 router.post("/procesar/:id", async (req, res) => {
   try {
-    const farmaciaResponse = await fetch(`${FARMACIA_API_URL}/discount/procesar/${req.params.id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req.body),
-    });
-    const status = farmaciaResponse.status;
-    const data = await farmaciaResponse.json();
-    res.status(status).json(data);
-  } catch (error) {
-    console.error("Error procesando descuento proxy:", error);
-    res.status(500).json({ error: "Error interno en el servidor" });
-  }
-});
+    const { aprobar, farmaciaBaseUrl, nuevoDescuento } = req.body;
+    if (!farmaciaBaseUrl) return res.status(400).json({ error: "farmaciaBaseUrl requerido" });
 
-// Nuevo endpoint para listar medicamentos
-router.get("/medicamentos/listar", async (req, res) => {
-  try {
-    const farmaciaResponse = await fetch(`${FARMACIA_API_URL}/discount/listar`);
-    const status = farmaciaResponse.status;
-    const data = await farmaciaResponse.json();
-    res.status(status).json(data);
-  } catch (error) {
-    console.error("Error en proxy de solicitudes:", error);
-    res.status(500).json({ error: "Error interno en el servidor" });
+    const base = farmaciaBaseUrl.replace(/\/+$/, "");
+    const resp = await axios.post(
+      `${base}/discount/procesar/${req.params.id}`,
+      { aprobar, nuevoDescuento }
+    );
+    res.status(resp.status).json(resp.data);
+  } catch (err) {
+    console.error("Error proxy procesar:", err);
+    res.status(500).json({ error: "Error interno en proxy procesar" });
   }
 });
 
